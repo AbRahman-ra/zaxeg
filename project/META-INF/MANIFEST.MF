@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: MAlThaher
+Build-Jdk: 11.0.13
+Main-Class: com.zatca.sdk.MainApp
+

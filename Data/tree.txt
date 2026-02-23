@@ -1,0 +1,20 @@
+[  26]  [01;34m.[0m
+├── [ 910]  [01;34mcommon[0m
+│   ├── [ 44K]  CCTS_CCT_SchemaModule-2.1.xsd
+│   ├── [2.5M]  UBL-CommonAggregateComponents-2.1.xsd
+│   ├── [215K]  UBL-CommonBasicComponents-2.1.xsd
+│   ├── [9.3K]  UBL-CommonExtensionComponents-2.1.xsd
+│   ├── [5.4K]  UBL-CommonSignatureComponents-2.1.xsd
+│   ├── [3.1K]  UBL-CoreComponentParameters-2.1.xsd
+│   ├── [4.2K]  UBL-ExtensionContentDataType-2.1.xsd
+│   ├── [3.5K]  UBL-QualifiedDataTypes-2.1.xsd
+│   ├── [7.6K]  UBL-SignatureAggregateComponents-2.1.xsd
+│   ├── [4.1K]  UBL-SignatureBasicComponents-2.1.xsd
+│   ├── [ 27K]  UBL-UnqualifiedDataTypes-2.1.xsd
+│   ├── [ 21K]  UBL-XAdESv132-2.1.xsd
+│   ├── [1.3K]  UBL-XAdESv141-2.1.xsd
+│   └── [ 10K]  UBL-xmldsig-core-schema-2.1.xsd
+└── [  38]  [01;34mmaindoc[0m
+    └── [ 59K]  UBL-Invoice-2.1.xsd
+
+3 directories, 15 files
