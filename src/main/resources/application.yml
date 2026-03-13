@@ -1,0 +1,5 @@
+spring:
+    application:
+        name: zaxeg
+server:
+  port: 6699

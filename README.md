@@ -13,15 +13,15 @@
 
 The project is currently in the system design phase. I am actively evaluating the optimal ecosystem for regional B2B integration before committing to a final stack:
 
-- Public API (Stack Agnostic)
-- Typescript (NPM Package)
-- PHP (Composer Package)
-- Java (Maven Package or a Public JAR)
+- [x] Public API (Stack Agnostic) (<= Selected Stack ✅, Spring Boot API)
+- [ ] Typescript (NPM Package)
+- [ ] PHP (Composer Package)
+- [ ] Java (Maven Package or a Public JAR)
 
 ## SDLC Stages
 
-- [x] Requirements (We are here 👈)
-- [ ] Design
+- [x] Requirements
+- [x] Design (We are here 👈)
 - [ ] Development
 - [ ] Testing
 - [ ] Deployment
