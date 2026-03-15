@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.in.exception;
+package sa.abrahman.zaxeg.infrastructure.in.handler;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import sa.abrahman.zaxeg.infrastructure.out.exception.XmlGenerationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,5 +33,17 @@ public class GlobalExceptionHandler {
         errorResponse.put("details", validationErrors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(XmlGenerationException.class)
+    public ResponseEntity<Map<String, Object>> handleXmlGenerationException(XmlGenerationException e) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.put("error", "Internal Server Error");
+        // We log the real error on the server, but give the client a safe message
+        errorResponse.put("message", "An unexpected error occurred while generating the UBL 2.1 document.");
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
 }
