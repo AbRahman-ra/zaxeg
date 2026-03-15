@@ -13,6 +13,7 @@ import sa.abrahman.zaxeg.core.model.Invoice;
 import sa.abrahman.zaxeg.core.port.out.InvoiceFormatter;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.AccountingSupplierPartyDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.AmountDto;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.InvoiceTypeCodeDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.LegalMonetaryTotalDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.PartyDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.UBLInvoiceDto;
@@ -43,6 +44,13 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                 // metadata
                 .id(invoice.getInvoiceNumber()) // Assuming your core model has this
                 .issueDate(invoice.getIssueDate().toString())
+                .issueTime(invoice.getIssueTime().toString())
+                .documentCurrencyCode(invoice.getDocumentCurrency().getCurrencyCode())
+                .taxCurrencyCode(invoice.getTaxCurrency().getCurrencyCode())
+                .invoiceTypeCode(InvoiceTypeCodeDto.builder()
+                        .name(invoice.getInvoiceSubtype().code())
+                        .value(invoice.getInvoiceDocumentType().code())
+                        .build())
 
                 // supplier
                 .supplierParty(AccountingSupplierPartyDto.builder()

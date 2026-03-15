@@ -73,4 +73,5 @@ public interface UBLandZATCAConstants {
     // Attributes
     String ATTR_XMLNSCAC = "xmlns:cac";
     String ATTR_XMLNS_CBC = "xmlns:cbc"; // Added "_" before CBC to reduce confusion between CAC AND CBC
+    String ATTR_NAME = "name";
 }

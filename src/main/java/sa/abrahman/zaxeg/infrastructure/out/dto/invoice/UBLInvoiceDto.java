@@ -25,6 +25,18 @@ public class UBLInvoiceDto {
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAG_ISSUE_DATE, namespace = UBLandZATCAConstants.NAMESPACE_ROOT)
     private String issueDate;
 
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAG_ISSUE_TIME, namespace = UBLandZATCAConstants.NAMESPACE_ROOT)
+    private String issueTime;
+
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAG_INVOICE_TYPE_CODE, namespace = UBLandZATCAConstants.NAMESPACE_ROOT)
+    private InvoiceTypeCodeDto invoiceTypeCode;
+
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAG_DOCUMENT_CURRENCY_CODE, namespace = UBLandZATCAConstants.NAMESPACE_ROOT)
+    private String documentCurrencyCode;
+
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAG_TAX_CURRENCY_CODE, namespace = UBLandZATCAConstants.NAMESPACE_ROOT)
+    private String taxCurrencyCode;
+
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAG_ACCOUNTING_SUPPLIER_PARTY, namespace = UBLandZATCAConstants.NAMESPACE_ROOT)
     private AccountingSupplierPartyDto supplierParty;
 
