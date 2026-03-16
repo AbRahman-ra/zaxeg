@@ -2,18 +2,16 @@ package sa.abrahman.zaxeg.core.helper;
 
 import java.util.function.Function;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class StringValueValidator<E extends RuntimeException> {
     private final String subject;
     private final Function<String, E> exceptionFactory;
 
-    private StringValueValidator(String subject, Function<String, E> exceptionFactory) {
-        this.subject = subject;
-        this.exceptionFactory = exceptionFactory;
-    }
-
     /**
      * Entry point for the fluent chain.
-     * 
+     *
      * @param subject          The string to validate
      * @param exceptionFactory A method reference to the exception you want to throw
      *                         (e.g., MyCustomException::new)
@@ -47,6 +45,13 @@ public class StringValueValidator<E extends RuntimeException> {
 
     public StringValueValidator<E> startsAndEndsWith(String substring, String errMsg) {
         if (!this.subject.startsWith(substring) || !this.subject.endsWith(substring)) {
+            throw exceptionFactory.apply(errMsg);
+        }
+        return this;
+    }
+
+    public StringValueValidator<E> exists(String errMsg) {
+        if (this.subject == null || this.subject.isBlank()) {
             throw exceptionFactory.apply(errMsg);
         }
         return this;

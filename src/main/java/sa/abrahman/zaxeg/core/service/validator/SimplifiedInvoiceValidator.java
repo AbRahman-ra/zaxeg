@@ -16,7 +16,8 @@ public class SimplifiedInvoiceValidator implements InvoiceValidator {
     @Override
     public void validate(Invoice invoice) {
         // BR-KSA-25: Issue Date cannot be in the future
-        DateValueValidator.check(invoice.getIssueDate(), InvoiceRuleViolationException::new).notInFuture("BR-KSA-25: Invoice Issue Date cannot be in the future.");
+        DateValueValidator.check(invoice.getIssueDate(), InvoiceRuleViolationException::new)
+                .notInFuture("BR-KSA-25: Invoice Issue Date cannot be in the future.");
 
         // Buyer info is optional in simplified notes
         String buyerVat = Optional.ofNullable(invoice.getBuyer()).map(BusinessParty::getVatNumber).orElse(null);

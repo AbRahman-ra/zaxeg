@@ -1,0 +1,14 @@
+package sa.abrahman.zaxeg.infrastructure.out.dto.invoice.party;
+
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
+import lombok.Builder;
+import lombok.Data;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.UBLandZATCAConstants;
+
+@Data
+@Builder
+public class PartyLegalEntityDto {
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.REGISTRATION_NAME, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private String registrationName;
+}
