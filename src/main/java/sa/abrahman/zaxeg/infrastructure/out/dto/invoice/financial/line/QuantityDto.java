@@ -13,7 +13,7 @@ public class QuantityDto {
 
     @JacksonXmlProperty(isAttribute = true, localName = UBLandZATCAConstants.ATTRIBUTES.UNIT_CODE)
     @Builder.Default
-    private MeasuringUnit unitCode = MeasuringUnit.PCE;
+    private String unitCode = "PCE";
 
     @JacksonXmlText
     private String value;

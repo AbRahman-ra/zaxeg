@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import sa.abrahman.zaxeg.core.model.BillingReference;
 import sa.abrahman.zaxeg.core.model.BusinessParty;
 import sa.abrahman.zaxeg.core.model.DocumentFinancials;
 import sa.abrahman.zaxeg.core.model.Invoice;
@@ -30,6 +31,8 @@ import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.TaxCategor
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.TaxCategoryDto.TaxSchemeDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.TaxSubtotalDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.TaxTotalDto;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.BillingReferenceDto;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.DocumentReferenceDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.InvoiceTypeCodeDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.party.AccountingPartyDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.party.CountryDto;
@@ -57,6 +60,9 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                 .value(invoice.getInvoiceDocumentType().code())
                 .build();
 
+        // metadata
+        BillingReferenceDto billingReference = Extractor.billingReference(invoice.getBillingReference());
+
         // parties
         AccountingPartyDto supplier = Extractor.party(invoice.getSupplier());
         AccountingPartyDto buyer = Extractor.party(invoice.getBuyer());
@@ -75,6 +81,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                 .documentCurrencyCode(invoice.getDocumentCurrency().getCurrencyCode())
                 .taxCurrencyCode(invoice.getTaxCurrency().getCurrencyCode())
                 .invoiceTypeCode(invoiceTypeCode)
+                .billingReference(billingReference)
 
                 // parties
                 .supplierParty(supplier)
@@ -165,10 +172,15 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                                 .build())
                         .build();
 
+                QuantityDto quantity = QuantityDto.builder()
+                        .unitCode(line.getMeasuringUnit().toString())
+                        .value(line.getQuantity().toString())
+                        .build();
+
                 // 3. Assemble the Invoice Line DTO
                 return InvoiceLineDto.builder()
                         .id(line.getIdentifier())
-                        .invoicedQuantity(QuantityDto.builder().value(line.getQuantity().toString()).build())
+                        .invoicedQuantity(quantity)
                         .lineExtensionAmount(AmountDto.builder().value(line.getNetPrice().toString()).build())
                         .taxTotal(lineTaxTotal)
                         .item(item)
@@ -217,6 +229,15 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                     .build();
 
             return AccountingPartyDto.builder().party(party).build();
+        }
+
+        static BillingReferenceDto billingReference(BillingReference ref) {
+            if (ref == null || ref.getOriginalInvoiceNumber() == null) return null;
+            return BillingReferenceDto.builder()
+                    .invoiceDocumentReference(DocumentReferenceDto.builder()
+                            .id(ref.getOriginalInvoiceNumber())
+                            .build())
+                    .build();
         }
     };
 

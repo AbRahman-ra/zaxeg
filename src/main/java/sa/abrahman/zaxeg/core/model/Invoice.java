@@ -15,19 +15,27 @@ import lombok.Setter;
 @Getter
 @Builder
 public class Invoice {
+    private static final String DEFAULT_CURRENCY = "SAR";
+
     // Metadata
     private String invoiceNumber;
     private UUID invoiceUuid;
     private LocalDate issueDate;
     private LocalTime issueTime;
+    private LocalDate supplyDate;
     private InvoiceSubtype invoiceSubtype;
     private InvoiceDocumentType invoiceDocumentType;
 
-    @Builder.Default
-    private Currency documentCurrency = Currency.getInstance("SAR");
+    // Payments and billing
+    private BillingReference billingReference;
+    private String issuanceReason; // mandatory for credit / debit notes
+    private PaymentMethod paymentMethod;
 
     @Builder.Default
-    private Currency taxCurrency = Currency.getInstance("SAR");
+    private Currency documentCurrency = Currency.getInstance(DEFAULT_CURRENCY);
+
+    @Builder.Default
+    private Currency taxCurrency = Currency.getInstance(DEFAULT_CURRENCY);
 
     // Phase 2 Cryptographic & Sequential Data
     @Setter private int invoiceCounterValue; // ICV
@@ -56,7 +64,7 @@ public class Invoice {
             totalTax = totalTax.add(line.getTaxAmount());
         }
 
-        BigDecimal totalInclusive = totalExtension.add(totalTax).setScale(2, RoundingMode.HALF_UP);        
+        BigDecimal totalInclusive = totalExtension.add(totalTax).setScale(2, RoundingMode.HALF_UP);
         BigDecimal safePrepaid = (prepaidAmount != null) ? prepaidAmount : BigDecimal.ZERO;
         BigDecimal payableAmount = totalInclusive.subtract(safePrepaid).setScale(2, RoundingMode.HALF_UP);
 

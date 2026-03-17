@@ -9,8 +9,11 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 import lombok.Builder;
 import lombok.Data;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.LegalMonetaryTotalDto;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.PaymentMeansDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.line.InvoiceLineDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.TaxTotalDto;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.BillingReferenceDto;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.DeliveryDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.InvoiceTypeCodeDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.party.AccountingPartyDto;
 
@@ -39,6 +42,9 @@ public class UBLInvoiceDto {
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.INVOICE_TYPE_CODE, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private InvoiceTypeCodeDto invoiceTypeCode;
 
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.BILLING_REFERENCE, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private BillingReferenceDto billingReference;
+
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.DOCUMENT_CURRENCY_CODE, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private String documentCurrencyCode;
 
@@ -50,6 +56,12 @@ public class UBLInvoiceDto {
 
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.ACCOUNTING_CUSTOMER_PARTY, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private AccountingPartyDto buyerParty;
+
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.DELIVERY, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private DeliveryDto delivery;
+
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.PAYMENT_MEANS, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private PaymentMeansDto paymentMeans;
 
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.TAX_TOTAL, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private TaxTotalDto taxTotal;

@@ -12,6 +12,11 @@ import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorFactory;
 @Service
 @RequiredArgsConstructor
 public class ZatcaInvoiceGenerator implements InvoiceGenerator {
+    /**
+     * Change bean qualifier to switch adapters
+     * @implNote lombok's {@code @RequiredArgsConstructor}
+     * doesn't support qualifier-based injection
+     */
     private final InvoiceFormatter formatter;
     private final InvoiceValidatorFactory factory;
 

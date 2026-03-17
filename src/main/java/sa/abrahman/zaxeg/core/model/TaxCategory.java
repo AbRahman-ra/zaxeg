@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @RequiredArgsConstructor
@@ -15,4 +16,8 @@ public enum TaxCategory {
 
     private final String code;
     private final BigDecimal rate;
+
+    // We will use setter methods when instantiating the specific exemption reason
+    @Setter private String exemptionReasonCode; // e.g., "VATEX-SA-32"
+    @Setter private String exemptionReasonText; // e.g., "Export of goods"
 }

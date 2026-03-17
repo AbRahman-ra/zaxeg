@@ -21,10 +21,14 @@ The project is currently in the system design phase. I am actively evaluating th
 ## SDLC Stages
 
 - [x] Requirements
-- [x] Design (We are here 👈)
-- [ ] Development
+- [x] Design
+- [x] Development (We are here 👈)
 - [ ] Testing
 - [ ] Deployment
+
+## Architecture Diagram
+
+![architecture-diagram](./docs/ZAXEG.png)
 
 ## Changelog
 

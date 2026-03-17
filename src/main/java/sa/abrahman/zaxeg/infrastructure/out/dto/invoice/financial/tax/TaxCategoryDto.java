@@ -15,6 +15,12 @@ public class TaxCategoryDto {
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.PERCENT, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private String percent;
 
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.TAX_EXEMPTION_REASON_CODE, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private String taxExemptionReasonCode;
+
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.TAX_EXEMPTION_REASON, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private String taxExemptionReason;
+
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.TAX_SCHEME, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private TaxSchemeDto taxScheme;
 

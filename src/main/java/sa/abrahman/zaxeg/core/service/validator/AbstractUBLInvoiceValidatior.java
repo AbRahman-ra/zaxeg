@@ -48,13 +48,36 @@ public abstract class AbstractUBLInvoiceValidatior implements InvoiceValidator {
          * {@link sa.abrahman.zaxeg.core.model.Invoice} domain model level
          */
 
-        String rule15 = "An Invoice shall have the Amount due for payment";
+        String rule15 = "BR-15: An Invoice shall have the Amount due for payment";
         StringValueValidator.check(invoice.getFinancials().getPayableAmount().toString(), f).exists(rule15);
 
         String rule16 = "BR-16: An Invoice must have at least one line item";
-        CollectionValueValidator.check(invoice.getLines(), f).hasAtleast(1, rule16);
+        String rule21 = "BR-21: Each Invoice line shall have an Invoice line identifier";
+        String rule22 = "BR-22: Each Invoice line shall have an Invoiced quantity";
+        String rule24 = "BR-24: Each Invoice line shall have an Invoiced line net amount";
+        String rule25 = "BR-25: Each Invoice line shall contain the Item name";
+        String rule26 = "BR-26: Each Invoice line shall contain the Item net price";
+        CollectionValueValidator.check(invoice.getLines(), f)
+                .hasAtleast(1, rule16)
+                .allMatch((l) -> l.getIdentifier() != null && !l.getIdentifier().isBlank(), rule21)
+                .allMatch((l) -> l.getQuantity() != null, rule22)
+                .allMatch((l) -> l.getUnitPrice() != null, rule24)
+                .allMatch((l) -> l.getName() != null && !l.getName().isBlank(), rule25)
+                .allMatch((l) -> l.getNetPrice() != null, rule26);
 
-        // BR-CO-04: Invoice lines must have valid tax categories
+        // BR-31: Each Document level allowance shall have a Document level allowance amount
+        // BR-32: Each Document level allowance shall have a Document level allowance VAT category code
+        // BR-36: Each Document level charge shall have a Document level charge amount
+        // BR-37: Each Document level charge shall have a Document level charge VAT category code
+        // BR-41: Each Invoice line allowance shall have an Invoice line allowance amount
+        // BR-43: Each Invoice line charge shall have an Invoice line charge amount
+        // BR-45: Each VAT breakdown shall have a VAT category taxable amount
+        // BR-46: Each VAT breakdown shall have a VAT category tax amount
+        // BR-47: Each VAT breakdown shall be defined through a VAT category code
+        // BR-48: Each VAT breakdown shall have a VAT category rate, except if the Invoice is not subject to VAT
+        // BR-49: A Payment instruction shall specify the Payment means type code
+        // BR-53: If the VAT accounting currency code is present, then the Invoice total VAT amount in accounting currency shall be provided
+        // BR-55: Each Preceding Invoice reference shall contain a Preceding Invoice reference
 
         validateAdditionalBusinessRules(invoice);
     }

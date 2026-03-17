@@ -18,6 +18,10 @@ public class InvoiceLine {
 
     // Base Values
     private BigDecimal quantity;
+
+    @Builder.Default
+    private MeasuringUnit measuringUnit = MeasuringUnit.PCE;
+
     private BigDecimal unitPrice; // Price strictly BEFORE tax and discounts
     private BigDecimal lineDiscount; // Discount applied to this specific line
 
@@ -27,7 +31,7 @@ public class InvoiceLine {
     private BigDecimal lineTotalInclusive; // netPrice + taxAmount
 
     public static InvoiceLine create(String identifier, String name, TaxCategory taxCategory, BigDecimal quantity,
-            BigDecimal unitPrice, BigDecimal lineDiscount) {
+            MeasuringUnit measuringUnit, BigDecimal unitPrice, BigDecimal lineDiscount) {
         if (taxCategory == null) taxCategory = TaxCategory.STANDARD;
 
         BigDecimal rawNetPrice = quantity.multiply(unitPrice).subtract(lineDiscount);
@@ -37,10 +41,12 @@ public class InvoiceLine {
         BigDecimal taxAmount = netPrice.multiply(taxMultiplier).setScale(2, RoundingMode.HALF_UP);
 
         BigDecimal lineTotalInclusive = netPrice.add(taxAmount).setScale(2, RoundingMode.HALF_UP);
+        MeasuringUnit munit = measuringUnit != null ? measuringUnit : MeasuringUnit.PCE;
 
         return InvoiceLine.builder()
                 .identifier(identifier)
                 .name(name)
+                .measuringUnit(munit)
                 .quantity(quantity)
                 .unitPrice(unitPrice)
                 .lineDiscount(lineDiscount)

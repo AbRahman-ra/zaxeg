@@ -2,22 +2,30 @@ package sa.abrahman.zaxeg.core.helper;
 
 import java.util.Collection;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CollectionValueValidator<E extends RuntimeException> {
-    private final Collection<?> subject;
+public class CollectionValueValidator<C, E extends RuntimeException> {
+    private final Collection<C> subject;
     private final Function<String, E> exceptionFactory;
 
-    public static <E extends RuntimeException> CollectionValueValidator<E> check(Collection<?> subject,
+    public static <C, E extends RuntimeException> CollectionValueValidator<C, E> check(Collection<C> subject,
             Function<String, E> exceptionFactory) {
         if (subject == null) throw new NullPointerException("Subject must be NonNull Collection");
         return new CollectionValueValidator<>(subject, exceptionFactory);
     }
 
-    public CollectionValueValidator<E> hasAtleast(int length, String errMsg) {
-        if (this.subject.size() < length) {
+    public CollectionValueValidator<C, E> hasAtleast(int length, String errMsg) {
+        if (subject.size() < length) {
+            throw exceptionFactory.apply(errMsg);
+        }
+        return this;
+    }
+
+    public CollectionValueValidator<C, E> allMatch(Predicate<C> p, String errMsg) {
+        if (subject.stream().filter(p).count() != subject.size()) {
             throw exceptionFactory.apply(errMsg);
         }
         return this;

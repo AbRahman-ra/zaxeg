@@ -1,13 +1,14 @@
 package sa.abrahman.zaxeg.core.model;
 
 public enum InvoiceDocumentType {
-    INVOICE, DEBIT_NOTE, CREDIT_NOTE;
+    TAX_INVOICE, DEBIT_NOTE, CREDIT_NOTE, PREPAYMENT_INVOICE;
 
     public String code() {
         return switch (this) {
-            case INVOICE -> "381";
+            case TAX_INVOICE -> "388";
             case DEBIT_NOTE -> "383";
-            case CREDIT_NOTE -> "388";
+            case CREDIT_NOTE -> "381";
+            case PREPAYMENT_INVOICE -> "386";
         };
     }
 }

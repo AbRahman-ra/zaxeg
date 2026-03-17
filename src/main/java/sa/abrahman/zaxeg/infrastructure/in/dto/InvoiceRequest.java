@@ -19,6 +19,7 @@ import sa.abrahman.zaxeg.core.model.Invoice;
 import sa.abrahman.zaxeg.core.model.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.model.InvoiceLine;
 import sa.abrahman.zaxeg.core.model.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.model.MeasuringUnit;
 import sa.abrahman.zaxeg.core.model.TaxCategory;
 
 @Data
@@ -64,6 +65,7 @@ public class InvoiceRequest {
                         line.getName(),
                         line.getTaxCategory(),
                         line.getQuantity(),
+                        line.getMeasuringUnit(),
                         line.getUnitPrice(),
                         line.getLineDiscount() != null ? line.getLineDiscount() : BigDecimal.ZERO))
                 .collect(Collectors.toList());
@@ -138,6 +140,9 @@ public class InvoiceRequest {
         @NotNull(message = "Quantity is required")
         @Positive(message = "Quantity must be strictly greater than zero")
         private BigDecimal quantity;
+
+        @NotBlank(message = "Measuring Unit is required")
+        private MeasuringUnit measuringUnit;
 
         @NotNull(message = "Unit price is required")
         @PositiveOrZero(message = "Unit price cannot be negative")

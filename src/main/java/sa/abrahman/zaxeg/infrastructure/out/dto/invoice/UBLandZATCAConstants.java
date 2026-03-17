@@ -52,6 +52,7 @@ public final class UBLandZATCAConstants {
             public static final String POSTAL_ADDRESS = "cac:PostalAddress";
             public static final String PARTY_TAX_SCHEME = "cac:PartyTaxScheme";
             public static final String PARTY_LEGAL_ENTITY = "cac:PartyLegalEntity";
+            public static final String INVOICE_DOCUMENT_REFERENCE = "cac:InvoiceDocumentReference";
         };
 
         public static final class CBC {
@@ -98,6 +99,11 @@ public final class UBLandZATCAConstants {
             public static final String COUNTRY = "cbc:Country";
             public static final String COMPANY_ID = "cbc:CompanyID";
             public static final String REGISTRATION_NAME = "cbc:RegistrationName";
+            public static final String PAYMENT_MEANS_CODE = "cbc:PaymentMeansCode";
+            public static final String INSTRUCTION_NOTE = "cbc:InstructionNote";
+            public static final String ACTUAL_DELIVERY_DATE = "cbc:ActualDeliveryDate";
+            public static final String TAX_EXEMPTION_REASON_CODE = "cbc:TaxExemptionReasonCode";
+            public static final String TAX_EXEMPTION_REASON = "cbc:TaxExemptionReason";
         };
 
         public static final class EXT {
@@ -109,7 +115,8 @@ public final class UBLandZATCAConstants {
     public static final class ATTRIBUTES {
         public static final String NAME = "name";
         public static final String CURRENCY_ID = "currencyID";
-        public static final String UNIT_CODE =  "unitCode";
+        public static final String UNIT_CODE = "unitCode";
+
         public static final class XMLNS {
             public static final String CAC = "xmlns:cac";
             public static final String CBC = "xmlns:cbc";
