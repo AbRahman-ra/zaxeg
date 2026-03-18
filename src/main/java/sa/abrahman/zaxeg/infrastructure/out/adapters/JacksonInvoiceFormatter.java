@@ -28,7 +28,7 @@ import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.*;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.tax.TaxCategoryDto.TaxSchemeDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.meta.*;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.party.*;
-import sa.abrahman.zaxeg.infrastructure.out.exception.XmlGenerationException;
+import sa.abrahman.zaxeg.infrastructure.out.exception.XMLGenerationException;
 
 @Component
 public class JacksonInvoiceFormatter implements InvoiceFormatter {
@@ -92,7 +92,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         try {
             return mapper.writeValueAsString(ublDto);
         } catch (JsonProcessingException e) {
-            throw new XmlGenerationException("Failed to serialize ZATCA XML", e);
+            throw new XMLGenerationException("Failed to serialize ZATCA XML", e);
         }
     }
 
