@@ -64,6 +64,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         List<TaxTotalDto> taxtotals = Extractor.taxTotals(invoice.getLines(), invoice.getFinancials(), docCurrency,
                 taxCurrency);
         List<InvoiceLineDto> invoiceLines = Extractor.invoiceLines(invoice.getLines(), docCurrency);
+        List<InvoiceGlobalPayableDto> allowanceCharges = Extractor.allowanceCharges(invoice.getDocumentAllowanceCharges(), docCurrency);
 
         // assemble
         ZATCAInvoiceDto ublDto = ZATCAInvoiceDto.builder()
@@ -87,6 +88,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                 .taxTotals(taxtotals)
                 .invoiceLines(invoiceLines)
                 .legalMonetaryTotal(legalMonetaryTotal)
+                .allowanceCharges(allowanceCharges)
                 .build();
 
         try {
@@ -100,7 +102,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
     static class Extractor {
         static LegalMonetaryTotalDto legalMonetaryTotal(DocumentFinancials df, String currency) {
             String lineExtension = df.getTotalLineExtensionAmount().toString();
-            String taxExclusive = df.getTotalLineExtensionAmount().toString();
+            String taxExclusive = df.getTaxExclusiveAmount().toString();
             String inclusive = df.getTotalAmountInclusive().toString();
             String prepaid = df.getPrepaidAmount().toString();
             String payable = df.getPayableAmount().toString();
@@ -116,9 +118,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         static List<TaxTotalDto> taxTotals(List<InvoiceLine> l, DocumentFinancials df, String docCurrency,
                 String taxCurrency) {
             // Create a composite key to group by Category AND Exemption Reason
-            record TaxGroupKey(TaxCategory category, String exemptionCode, String exemptionText) {
-            }
-            ;
+            record TaxGroupKey(TaxCategory category, String exemptionCode, String exemptionText) {};
 
             Function<InvoiceLine, TaxGroupKey> compositeKey = (line) -> new TaxGroupKey(
                     line.getTaxCategory(),
@@ -309,6 +309,23 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                             .paymentMeansCode(code)
                             .instructionNote(reason)
                             .build();
+        }
+
+        static List<InvoiceGlobalPayableDto> allowanceCharges(List<InvoiceGlobalPayable> acList, String currency) {
+            if (acList == null || acList.isEmpty()) return null;
+
+            return acList.stream().map(ac -> InvoiceGlobalPayableDto.builder()
+                    .chargeIndicator(ac.isCharge())
+                    .allowanceChargeReason(ac.getReason())
+                    .amount(AmountDto.builder().currencyId(currency).value(ac.getAmount().toString()).build())
+                    .taxCategory(TaxCategoryDto.builder()
+                            .id(ac.getTaxCategory().getCode())
+                            .percent(ac.getTaxCategory().getRate().toString())
+                            .taxExemptionReasonCode(ac.getExemptionReasonCode())
+                            .taxExemptionReason(ac.getExemptionReasonText())
+                            .taxScheme(TaxCategoryDto.TaxSchemeDto.builder().build())
+                            .build())
+                    .build()).collect(Collectors.toList());
         }
     };
 }

@@ -18,6 +18,10 @@ public abstract class AbstractUBLInvoiceValidator implements InvoiceValidator {
     }
 
     protected void validateBusinessRules(Invoice invoice) {
+        /**
+         * TODO: Since we haven't built Document-Level Allowances/Charges into {@link sa.abrahman.core.model.Invoice}
+         * domain model yet, we will skip BR-31, 32, 36, and 37 for now.
+         */
         Function<String, RuntimeException> f = InvoiceRuleViolationException::new;
 
         String rule02 = "BR-02: An Invoice shall have an Invoice number";
@@ -57,34 +61,43 @@ public abstract class AbstractUBLInvoiceValidator implements InvoiceValidator {
         String rule24 = "BR-24: Each Invoice line shall have an Invoiced line net amount";
         String rule25 = "BR-25: Each Invoice line shall contain the Item name";
         String rule26 = "BR-26: Each Invoice line shall contain the Item net price";
+        String rule41Or43 = "BR-41/BR-43: Each Invoice line allowance/charge shall have an Invoice line allowance/charge amount";
+        String rules45To48 = """
+        BR-45: Each VAT breakdown shall have a VAT category taxable amount"
+        BR-46: Each VAT breakdown shall have a VAT category tax amount
+        BR-47: Each VAT breakdown shall be defined through a VAT category code
+        BR-48: Each VAT breakdown shall have a VAT category rate, except if the Invoice is not subject to VAT
+        """;
         CollectionValueValidator.check(invoice.getLines(), f)
                 .hasAtleast(1, rule16)
                 .allMatch((l) -> l.getIdentifier() != null && !l.getIdentifier().isBlank(), rule21)
                 .allMatch((l) -> l.getQuantity() != null, rule22)
                 .allMatch((l) -> l.getUnitPrice() != null, rule24)
                 .allMatch((l) -> l.getName() != null && !l.getName().isBlank(), rule25)
-                .allMatch((l) -> l.getNetPrice() != null, rule26);
+                .allMatch((l) -> l.getNetPrice() != null, rule26)
+                .allMatch((l) -> l.getLineDiscount() != null, rule41Or43)
+                .allMatch((l) -> l.getTaxCategory() != null, rules45To48);
 
-        // BR-31: Each Document level allowance shall have a Document level allowance
-        // amount
-        // BR-32: Each Document level allowance shall have a Document level allowance
-        // VAT category code
-        // BR-36: Each Document level charge shall have a Document level charge amount
-        // BR-37: Each Document level charge shall have a Document level charge VAT
-        // category code
-        // BR-41: Each Invoice line allowance shall have an Invoice line allowance
-        // amount
-        // BR-43: Each Invoice line charge shall have an Invoice line charge amount
-        // BR-45: Each VAT breakdown shall have a VAT category taxable amount
-        // BR-46: Each VAT breakdown shall have a VAT category tax amount
-        // BR-47: Each VAT breakdown shall be defined through a VAT category code
-        // BR-48: Each VAT breakdown shall have a VAT category rate, except if the
-        // Invoice is not subject to VAT
-        // BR-49: A Payment instruction shall specify the Payment means type code
-        // BR-53: If the VAT accounting currency code is present, then the Invoice total
-        // VAT amount in accounting currency shall be provided
-        // BR-55: Each Preceding Invoice reference shall contain a Preceding Invoice
-        // reference
+        if (invoice.getDocumentAllowanceCharges() != null) {
+            String rule31Or36 = "BR-31/BR-36: Each Document level allowance/charge shall have a Document level allowance/charge amount";
+            String rule32Or37 = "BR-32/BR-37: Each Document level allowance/charge shall have a Document level allowance/charge VAT category code";
+            CollectionValueValidator.check(invoice.getDocumentAllowanceCharges(), f)
+                .allMatch((ac) -> ac.getAmount() != null, rule31Or36)
+                .allMatch((ac) -> ac.getTaxCategory() != null, rule32Or37);
+        }
+
+        String rule49 = "BR-49: A Payment instruction shall specify the Payment means type code";
+        ObjectValueValidator.check(invoice.getPaymentMethod(), f).exists(rule49);
+
+        String rule53 = "BR-53: If the VAT accounting currency code is present, then the Invoice total VAT amount in accounting currency shall be provided";
+        if (invoice.getTaxCurrency() != null) {
+            ObjectValueValidator.check(invoice.getTaxCurrency(), f).matches((c) -> c.equals(invoice.getFinancials().getTotalTaxAmountInAccountingCurrency()), rule53);
+        }
+
+        if (invoice.getBillingReference() != null) {
+            String rule55 = "BR-55: Each Preceding Invoice reference shall contain a Preceding Invoice reference";
+            StringValueValidator.check(invoice.getBillingReference().getOriginalInvoiceNumber(), f).exists(rule55);
+        }
 
         validateAdditionalBusinessRules(invoice);
     }

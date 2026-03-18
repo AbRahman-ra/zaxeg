@@ -54,6 +54,7 @@ public class Invoice {
     // Line Items & Financials
     private List<InvoiceLine> lines;
     @Setter private DocumentFinancials financials;
+    private List<InvoiceGlobalPayable> documentAllowanceCharges;
 
     public void calculateFinancials(BigDecimal prepaidAmount) {
         if (this.lines == null || this.lines.isEmpty()) {
@@ -61,20 +62,48 @@ public class Invoice {
         }
 
         BigDecimal totalExtension = BigDecimal.ZERO;
-        BigDecimal totalTax = BigDecimal.ZERO;
+        BigDecimal totalLineTax = BigDecimal.ZERO;
 
+        // Add lines
         for (InvoiceLine line : this.lines) {
             totalExtension = totalExtension.add(line.getNetPrice());
-            totalTax = totalTax.add(line.getTaxAmount());
+            totalLineTax = totalLineTax.add(line.getTaxAmount());
         }
 
-        BigDecimal totalInclusive = totalExtension.add(totalTax).setScale(2, RoundingMode.HALF_UP);
+        // document allowances and charges
+        BigDecimal totalDocAllowances = BigDecimal.ZERO;
+        BigDecimal totalDocCharges = BigDecimal.ZERO;
+        BigDecimal totalDocAllowanceTax = BigDecimal.ZERO;
+        BigDecimal totalDocChargeTax = BigDecimal.ZERO;
+
+        if (this.documentAllowanceCharges != null) {
+            for (InvoiceGlobalPayable ac : this.documentAllowanceCharges) {
+                if (ac.isCharge()) {
+                    totalDocCharges = totalDocCharges.add(ac.getAmount());
+                    totalDocChargeTax = totalDocChargeTax.add(ac.getTaxAmount());
+                } else {
+                    totalDocAllowances = totalDocAllowances.add(ac.getAmount());
+                    totalDocAllowanceTax = totalDocAllowanceTax.add(ac.getTaxAmount());
+                }
+            }
+        }
+
+        // Tax Exclusive = Lines - Allowances + Charges
+        BigDecimal taxExclusiveAmount = totalExtension.subtract(totalDocAllowances).add(totalDocCharges);
+
+        // Total Tax = Line Taxes - Allowance Taxes + Charge Taxes
+        BigDecimal totalTaxAmount = totalLineTax.subtract(totalDocAllowanceTax).add(totalDocChargeTax);
+
+        // Total Inclusive = Exclusive + Tax
+        BigDecimal totalInclusive = taxExclusiveAmount.add(totalTaxAmount).setScale(2, RoundingMode.HALF_UP);
+
         BigDecimal safePrepaid = (prepaidAmount != null) ? prepaidAmount : BigDecimal.ZERO;
         BigDecimal payableAmount = totalInclusive.subtract(safePrepaid).setScale(2, RoundingMode.HALF_UP);
 
         this.financials = DocumentFinancials.builder()
                 .totalLineExtensionAmount(totalExtension)
-                .totalTaxAmount(totalTax)
+                .taxExclusiveAmount(taxExclusiveAmount)
+                .totalTaxAmount(totalTaxAmount)
                 .totalAmountInclusive(totalInclusive)
                 .prepaidAmount(safePrepaid)
                 .payableAmount(payableAmount)

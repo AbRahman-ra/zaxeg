@@ -104,6 +104,9 @@ public final class UBLandZATCAConstants {
             public static final String ACTUAL_DELIVERY_DATE = "cbc:ActualDeliveryDate";
             public static final String TAX_EXEMPTION_REASON_CODE = "cbc:TaxExemptionReasonCode";
             public static final String TAX_EXEMPTION_REASON = "cbc:TaxExemptionReason";
+            public static final String CHARGE_INDICATOR = "cbc:ChargeIndicator";
+            public static final String ALLOWANCE_CHARGE_REASON = "cbc:AllowanceChargeReason";
+            public static final String AMOUNT = "cbc:Amount";
         };
 
         public static final class EXT {

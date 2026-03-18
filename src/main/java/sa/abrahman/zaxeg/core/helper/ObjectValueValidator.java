@@ -1,6 +1,7 @@
 package sa.abrahman.zaxeg.core.helper;
 
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,12 @@ public class ObjectValueValidator<C, E extends RuntimeException> {
 
     public ObjectValueValidator<C, E> exists(String errMsg) {
         if (subject == null)
+            exceptionFactory.apply(errMsg);
+        return this;
+    }
+
+    public ObjectValueValidator<C, E> matches(Predicate<Object> predicate, String errMsg) {
+        if (!predicate.test(this))
             exceptionFactory.apply(errMsg);
         return this;
     }

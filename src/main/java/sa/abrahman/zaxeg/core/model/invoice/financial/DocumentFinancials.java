@@ -37,4 +37,10 @@ public class DocumentFinancials {
      * totalAmountInclusive - prepaidAmount (This is what the buyer actually owes)
      */
     private BigDecimal payableAmount;
+
+    /**
+     * totalLineExtensionAmount - documentAllowances + documentCharges
+     * (This is the true Taxable Base)
+     */
+    private BigDecimal taxExclusiveAmount;
 }

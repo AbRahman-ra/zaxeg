@@ -68,6 +68,10 @@ public class ZATCAInvoiceDto {
     private PaymentMeansDto paymentMeans;
 
     @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.ALLOWANCE_CHARGE, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
+    private List<InvoiceGlobalPayableDto> allowanceCharges;
+
+    @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.TAX_TOTAL, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private List<TaxTotalDto> taxTotals;
 

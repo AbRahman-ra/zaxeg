@@ -44,7 +44,12 @@ public class InvoiceRequest {
     @NotNull(message = "Document type is required")
     private InvoiceDocumentType documentType;
 
+    @Valid
     private PaymentMethod paymentMethod;
+
+    @Valid
+    private List<AllowanceChargeRequest> discountsOrFees;
+
     /**
      * Validated in Domain if documentType == CREDIT_NOTE
      */
@@ -81,11 +86,31 @@ public class InvoiceRequest {
                 l.getMeasuringUnit(),
                 l.getUnitPrice(),
                 Optional.ofNullable(l.getLineDiscount()).orElse(BigDecimal.ZERO));
+        Function<AllowanceChargeRequest, InvoiceGlobalPayable> allowanceChargeMapper = (ac) -> InvoiceGlobalPayable
+                .builder()
+                .isCharge(!ac.isDiscount())
+                .amount(ac.getAmount())
+                .reason(ac.getReason())
+                .taxCategory(ac.getTaxCategory())
+                .exemptionReasonCode(ac.getVatExemptionReasonCode())
+                .exemptionReasonText(ac.getVatExemptionReasonText())
+                .build();
 
         // lines
         List<InvoiceLine> domainLines = this.lines.stream()
                 .map(domainLineMapper)
                 .collect(Collectors.toList());
+
+        // allowance charges
+        List<InvoiceGlobalPayable> invoiceGlobalPayables = discountsOrFees == null
+                ? null
+                : discountsOrFees.stream()
+                        .map(allowanceChargeMapper)
+                        .collect(Collectors.toList());
+
+        BillingReference breference = Optional.ofNullable(billingReference)
+                .map(BillingReferenceRequest::toDomainModel)
+                .orElse(null);
 
         // assemble invoice
         Invoice invoice = Invoice.builder()
@@ -99,6 +124,8 @@ public class InvoiceRequest {
                 .supplier(this.supplier.toDomainModel())
                 .buyer(this.buyer != null ? this.buyer.toDomainModel() : null)
                 .lines(domainLines)
+                .billingReference(breference)
+                .documentAllowanceCharges(invoiceGlobalPayables)
                 .build();
 
         // calculate financials
@@ -185,5 +212,20 @@ public class InvoiceRequest {
         private TaxCategory taxCategory;
         private String exemptionReasonCode;
         private String exemptionReasonText;
+    }
+
+    @Data
+    static class AllowanceChargeRequest {
+        private boolean isDiscount; // is dicount is easier than isCharge for developers
+        private String reason; // e.g., "VIP Discount" or "Delivery Fee"
+        private BigDecimal amount; // The base amount of the discount/fee
+        private TaxCategory taxCategory; // The tax rate applied to this discount/fee
+
+        /**
+         * ZATCA strictly requires exemption reasons if the allowance/charge is
+         * Zero-Rated or Exempt
+         */
+        private String vatExemptionReasonCode;
+        private String vatExemptionReasonText;
     }
 }
