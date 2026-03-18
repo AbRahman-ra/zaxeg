@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model;
+package sa.abrahman.zaxeg.core.model.invoice.meta;
 
 public enum InvoiceDocumentType {
     TAX_INVOICE, DEBIT_NOTE, CREDIT_NOTE, PREPAYMENT_INVOICE;

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.DateValueValidator;
 import sa.abrahman.zaxeg.core.helper.StringValueValidator;
-import sa.abrahman.zaxeg.core.model.BusinessParty;
-import sa.abrahman.zaxeg.core.model.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
 
 @Component("SIMPLIFIED_INVOICE_VALIDATOR")
 public class SimplifiedInvoiceValidator implements InvoiceValidator {

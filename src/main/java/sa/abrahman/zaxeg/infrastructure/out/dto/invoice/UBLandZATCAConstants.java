@@ -116,10 +116,15 @@ public final class UBLandZATCAConstants {
         public static final String NAME = "name";
         public static final String CURRENCY_ID = "currencyID";
         public static final String UNIT_CODE = "unitCode";
+        public static final String SCHEME_ID = "schemeID";
 
         public static final class XMLNS {
             public static final String CAC = "xmlns:cac";
             public static final String CBC = "xmlns:cbc";
         }
+    }
+
+    public static final class DEFAULTS {
+        public static final String PROFILE_ID = "reporting:1.0";
     }
 }

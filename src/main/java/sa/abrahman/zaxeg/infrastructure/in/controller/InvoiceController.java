@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.model.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 import sa.abrahman.zaxeg.infrastructure.in.dto.InvoiceRequest;
 

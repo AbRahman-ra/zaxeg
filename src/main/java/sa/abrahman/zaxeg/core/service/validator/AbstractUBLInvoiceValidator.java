@@ -7,9 +7,9 @@ import sa.abrahman.zaxeg.core.helper.CollectionValueValidator;
 import sa.abrahman.zaxeg.core.helper.DateValueValidator;
 import sa.abrahman.zaxeg.core.helper.ObjectValueValidator;
 import sa.abrahman.zaxeg.core.helper.StringValueValidator;
-import sa.abrahman.zaxeg.core.model.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 
-public abstract class AbstractUBLInvoiceValidatior implements InvoiceValidator {
+public abstract class AbstractUBLInvoiceValidator implements InvoiceValidator {
 
     @Override
     public void validate(Invoice invoice) {
@@ -65,19 +65,26 @@ public abstract class AbstractUBLInvoiceValidatior implements InvoiceValidator {
                 .allMatch((l) -> l.getName() != null && !l.getName().isBlank(), rule25)
                 .allMatch((l) -> l.getNetPrice() != null, rule26);
 
-        // BR-31: Each Document level allowance shall have a Document level allowance amount
-        // BR-32: Each Document level allowance shall have a Document level allowance VAT category code
+        // BR-31: Each Document level allowance shall have a Document level allowance
+        // amount
+        // BR-32: Each Document level allowance shall have a Document level allowance
+        // VAT category code
         // BR-36: Each Document level charge shall have a Document level charge amount
-        // BR-37: Each Document level charge shall have a Document level charge VAT category code
-        // BR-41: Each Invoice line allowance shall have an Invoice line allowance amount
+        // BR-37: Each Document level charge shall have a Document level charge VAT
+        // category code
+        // BR-41: Each Invoice line allowance shall have an Invoice line allowance
+        // amount
         // BR-43: Each Invoice line charge shall have an Invoice line charge amount
         // BR-45: Each VAT breakdown shall have a VAT category taxable amount
         // BR-46: Each VAT breakdown shall have a VAT category tax amount
         // BR-47: Each VAT breakdown shall be defined through a VAT category code
-        // BR-48: Each VAT breakdown shall have a VAT category rate, except if the Invoice is not subject to VAT
+        // BR-48: Each VAT breakdown shall have a VAT category rate, except if the
+        // Invoice is not subject to VAT
         // BR-49: A Payment instruction shall specify the Payment means type code
-        // BR-53: If the VAT accounting currency code is present, then the Invoice total VAT amount in accounting currency shall be provided
-        // BR-55: Each Preceding Invoice reference shall contain a Preceding Invoice reference
+        // BR-53: If the VAT accounting currency code is present, then the Invoice total
+        // VAT amount in accounting currency shall be provided
+        // BR-55: Each Preceding Invoice reference shall contain a Preceding Invoice
+        // reference
 
         validateAdditionalBusinessRules(invoice);
     }

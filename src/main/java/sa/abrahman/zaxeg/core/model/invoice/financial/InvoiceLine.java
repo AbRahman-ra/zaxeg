@@ -1,10 +1,11 @@
-package sa.abrahman.zaxeg.core.model;
+package sa.abrahman.zaxeg.core.model.invoice.financial;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -15,6 +16,9 @@ public class InvoiceLine {
 
     @Builder.Default
     private TaxCategory taxCategory = TaxCategory.STANDARD;
+    // We will use setter methods when instantiating the specific exemption reason
+    @Setter private String exemptionReasonCode; // e.g., "VATEX-SA-32"
+    @Setter private String exemptionReasonText; // e.g., "Export of goods"
 
     // Base Values
     private BigDecimal quantity;
@@ -30,8 +34,16 @@ public class InvoiceLine {
     private BigDecimal taxAmount; // netPrice * (taxCategory.rate / 100)
     private BigDecimal lineTotalInclusive; // netPrice + taxAmount
 
-    public static InvoiceLine create(String identifier, String name, TaxCategory taxCategory, BigDecimal quantity,
-            MeasuringUnit measuringUnit, BigDecimal unitPrice, BigDecimal lineDiscount) {
+    public static InvoiceLine create(
+            String identifier,
+            String name,
+            TaxCategory taxCategory,
+            String exemptionReasonCode,
+            String exemptionReasonText,
+            BigDecimal quantity,
+            MeasuringUnit measuringUnit,
+            BigDecimal unitPrice,
+            BigDecimal lineDiscount) {
         if (taxCategory == null) taxCategory = TaxCategory.STANDARD;
 
         BigDecimal rawNetPrice = quantity.multiply(unitPrice).subtract(lineDiscount);
@@ -51,6 +63,8 @@ public class InvoiceLine {
                 .unitPrice(unitPrice)
                 .lineDiscount(lineDiscount)
                 .taxCategory(taxCategory)
+                .exemptionReasonCode(exemptionReasonCode)
+                .exemptionReasonText(exemptionReasonText)
                 .netPrice(netPrice)
                 .taxAmount(taxAmount)
                 .lineTotalInclusive(lineTotalInclusive)

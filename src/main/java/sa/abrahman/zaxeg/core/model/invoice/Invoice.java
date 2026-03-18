@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model;
+package sa.abrahman.zaxeg.core.model.invoice;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,6 +11,9 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import sa.abrahman.zaxeg.core.model.invoice.meta.*;
+import sa.abrahman.zaxeg.core.model.invoice.party.*;
+import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 
 @Getter
 @Builder
@@ -19,7 +22,8 @@ public class Invoice {
 
     // Metadata
     private String invoiceNumber;
-    private UUID invoiceUuid;
+    @Builder.Default
+    private UUID invoiceUuid = UUID.randomUUID();
     private LocalDate issueDate;
     private LocalTime issueTime;
     private LocalDate supplyDate;

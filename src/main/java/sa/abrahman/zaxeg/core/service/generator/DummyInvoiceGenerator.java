@@ -5,8 +5,8 @@ import java.util.Optional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.model.BusinessParty;
-import sa.abrahman.zaxeg.core.model.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 
 @Service

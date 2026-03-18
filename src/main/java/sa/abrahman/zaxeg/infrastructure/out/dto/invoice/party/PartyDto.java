@@ -12,7 +12,7 @@ public class PartyDto {
 
     // VAT or CRN
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CBC.ENDPOINT_ID, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
-    private String endpointId;
+    private EndPointIdDto endpointId;
 
     @JacksonXmlProperty(localName = UBLandZATCAConstants.TAGS.CAC.POSTAL_ADDRESS, namespace = UBLandZATCAConstants.NAMESPACES.ROOT)
     private PostalAddressDto postalAddress;

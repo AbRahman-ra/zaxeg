@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model;
+package sa.abrahman.zaxeg.core.model.invoice.financial;
 
 public enum MeasuringUnit {
     PCE, // piece

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
@@ -13,14 +16,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
-import sa.abrahman.zaxeg.core.model.Address;
-import sa.abrahman.zaxeg.core.model.BusinessParty;
-import sa.abrahman.zaxeg.core.model.Invoice;
-import sa.abrahman.zaxeg.core.model.InvoiceDocumentType;
-import sa.abrahman.zaxeg.core.model.InvoiceLine;
-import sa.abrahman.zaxeg.core.model.InvoiceSubtype;
-import sa.abrahman.zaxeg.core.model.MeasuringUnit;
-import sa.abrahman.zaxeg.core.model.TaxCategory;
+import sa.abrahman.zaxeg.core.model.invoice.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.financial.*;
+import sa.abrahman.zaxeg.core.model.invoice.meta.*;
+import sa.abrahman.zaxeg.core.model.invoice.party.Address;
+import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
 
 @Data
 public class InvoiceRequest {
@@ -28,11 +28,15 @@ public class InvoiceRequest {
     @NotBlank(message = "Invoice number is required")
     private String invoiceNumber;
 
+    private UUID invoiceUuid;
+
     @NotNull(message = "Issue date is required")
     private LocalDate issueDate;
 
     @NotNull(message = "Issue time is required")
     private LocalTime issueTime;
+
+    private LocalDate supplyDate;
 
     @NotNull(message = "Invoice subtype is required")
     private InvoiceSubtype subtype;
@@ -40,13 +44,21 @@ public class InvoiceRequest {
     @NotNull(message = "Document type is required")
     private InvoiceDocumentType documentType;
 
+    private PaymentMethod paymentMethod;
+    /**
+     * Validated in Domain if documentType == CREDIT_NOTE
+     */
+    private String issuanceReason;
+
+    @Valid
+    private BillingReferenceRequest billingReference;
+
     @Valid
     @NotNull(message = "Supplier information is required")
     private PartyRequest supplier;
 
     /**
-     * Structurally optional. The Strategy layer will validate if it's mandatory
-     * based on subtype.
+     * Mandatory for standard notes.
      */
     @Valid
     private PartyRequest buyer;
@@ -55,26 +67,33 @@ public class InvoiceRequest {
     @NotEmpty(message = "At least one invoice line is required")
     private List<InvoiceLineRequest> lines;
 
-    private BigDecimal prepaidAmount; // Optional
+    private BigDecimal prepaidAmount;
 
     public Invoice toDomainModel() {
+        // mapper
+        Function<InvoiceLineRequest, InvoiceLine> domainLineMapper = (l) -> InvoiceLine.create(
+                l.getIdentifier(),
+                l.getName(),
+                l.getTaxCategory(),
+                l.getExemptionReasonCode(),
+                l.getExemptionReasonText(),
+                l.getQuantity(),
+                l.getMeasuringUnit(),
+                l.getUnitPrice(),
+                Optional.ofNullable(l.getLineDiscount()).orElse(BigDecimal.ZERO));
+
         // lines
         List<InvoiceLine> domainLines = this.lines.stream()
-                .map(line -> InvoiceLine.create(
-                        line.getIdentifier(),
-                        line.getName(),
-                        line.getTaxCategory(),
-                        line.getQuantity(),
-                        line.getMeasuringUnit(),
-                        line.getUnitPrice(),
-                        line.getLineDiscount() != null ? line.getLineDiscount() : BigDecimal.ZERO))
+                .map(domainLineMapper)
                 .collect(Collectors.toList());
 
-        // invoice
+        // assemble invoice
         Invoice invoice = Invoice.builder()
                 .invoiceNumber(this.invoiceNumber)
                 .issueDate(this.issueDate)
                 .issueTime(this.issueTime)
+                .supplyDate(this.supplyDate)
+                .paymentMethod(this.paymentMethod)
                 .invoiceSubtype(this.subtype)
                 .invoiceDocumentType(this.documentType)
                 .supplier(this.supplier.toDomainModel())
@@ -88,6 +107,18 @@ public class InvoiceRequest {
     }
 
     // ============ NESTED CLASSES ============
+    @Data
+    public static class BillingReferenceRequest {
+        @NotBlank(message = "Original invoice number is mandatory for billing references")
+        private String originalInvoiceNumber;
+
+        public BillingReference toDomainModel() {
+            return BillingReference.builder()
+                    .originalInvoiceNumber(this.originalInvoiceNumber)
+                    .build();
+        }
+    }
+
     @Data
     public static class PartyRequest {
         @NotBlank
@@ -141,7 +172,7 @@ public class InvoiceRequest {
         @Positive(message = "Quantity must be strictly greater than zero")
         private BigDecimal quantity;
 
-        @NotBlank(message = "Measuring Unit is required")
+        @NotNull(message = "Measuring Unit is required")
         private MeasuringUnit measuringUnit;
 
         @NotNull(message = "Unit price is required")
@@ -152,5 +183,7 @@ public class InvoiceRequest {
         private BigDecimal lineDiscount;
 
         private TaxCategory taxCategory;
+        private String exemptionReasonCode;
+        private String exemptionReasonText;
     }
 }

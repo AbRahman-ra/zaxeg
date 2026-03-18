@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.model.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.model.invoice.meta.InvoiceSubtype;
 
 @Component
 @RequiredArgsConstructor

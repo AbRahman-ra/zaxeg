@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model;
+package sa.abrahman.zaxeg.core.model.invoice.financial;
 
 import java.math.BigDecimal;
 
@@ -17,6 +17,11 @@ public class DocumentFinancials {
      * Total VAT amount across the entire invoice
      */
     private BigDecimal totalTaxAmount;
+
+    /**
+     * Required by BR-53 if taxCurrency != documentCurrency
+     */
+    private BigDecimal totalTaxAmountInAccountingCurrency;
 
     /**
      * totalLineExtensionAmount + totalTaxAmount
