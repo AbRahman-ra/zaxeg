@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.CollectionValueValidator;
-import sa.abrahman.zaxeg.core.helper.DateValueValidator;
 import sa.abrahman.zaxeg.core.helper.ObjectValueValidator;
 import sa.abrahman.zaxeg.core.helper.StringValueValidator;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
@@ -18,65 +17,7 @@ public abstract class AbstractUBLInvoiceValidator implements InvoiceValidator {
     }
 
     protected void validateBusinessRules(Invoice invoice) {
-        /**
-         * TODO: Since we haven't built Document-Level Allowances/Charges into {@link sa.abrahman.core.model.Invoice}
-         * domain model yet, we will skip BR-31, 32, 36, and 37 for now.
-         */
         Function<String, RuntimeException> f = InvoiceRuleViolationException::new;
-
-        String rule02 = "BR-02: An Invoice shall have an Invoice number";
-        StringValueValidator.check(invoice.getInvoiceNumber(), f).exists(rule02);
-
-        String rule03 = "BR-03: An Invoice shall have an Invoice issue date";
-        DateValueValidator.check(invoice.getIssueDate(), f).exists(rule03);
-
-        String rule04 = "BR-04: An Invoice shall have an Invoice type code";
-        ObjectValueValidator.check(invoice.getInvoiceSubtype(), f).exists(rule04);
-        ObjectValueValidator.check(invoice.getInvoiceDocumentType(), f).exists(rule04);
-
-        String rule05 = "BR-05: An Invoice shall have an Invoice currency code";
-        ObjectValueValidator.check(invoice.getDocumentCurrency(), f).exists(rule05);
-
-        String rule06 = "BR-06: An Invoice shall contain the Seller name";
-        ObjectValueValidator.check(invoice.getSupplier(), f).exists(rule06);
-        StringValueValidator.check(invoice.getSupplier().getRegistrationName(), f).exists(rule06);
-
-        String rule08 = "BR-08: An Invoice shall contain the Seller postal address";
-        ObjectValueValidator.check(invoice.getSupplier().getAddress(), f).exists(rule08);
-
-        String rule09 = "BR-09: The Seller postal address shall contain a Seller country code";
-        ObjectValueValidator.check(invoice.getSupplier().getAddress().getCountry(), f).exists(rule09);
-
-        /**
-         * Rules 13 & 14 are always valid since we implemented sum calculator on the
-         * {@link sa.abrahman.zaxeg.core.model.Invoice} domain model level
-         */
-
-        String rule15 = "BR-15: An Invoice shall have the Amount due for payment";
-        StringValueValidator.check(invoice.getFinancials().getPayableAmount().toString(), f).exists(rule15);
-
-        String rule16 = "BR-16: An Invoice must have at least one line item";
-        String rule21 = "BR-21: Each Invoice line shall have an Invoice line identifier";
-        String rule22 = "BR-22: Each Invoice line shall have an Invoiced quantity";
-        String rule24 = "BR-24: Each Invoice line shall have an Invoiced line net amount";
-        String rule25 = "BR-25: Each Invoice line shall contain the Item name";
-        String rule26 = "BR-26: Each Invoice line shall contain the Item net price";
-        String rule41Or43 = "BR-41/BR-43: Each Invoice line allowance/charge shall have an Invoice line allowance/charge amount";
-        String rules45To48 = """
-        BR-45: Each VAT breakdown shall have a VAT category taxable amount"
-        BR-46: Each VAT breakdown shall have a VAT category tax amount
-        BR-47: Each VAT breakdown shall be defined through a VAT category code
-        BR-48: Each VAT breakdown shall have a VAT category rate, except if the Invoice is not subject to VAT
-        """;
-        CollectionValueValidator.check(invoice.getLines(), f)
-                .hasAtleast(1, rule16)
-                .allMatch((l) -> l.getIdentifier() != null && !l.getIdentifier().isBlank(), rule21)
-                .allMatch((l) -> l.getQuantity() != null, rule22)
-                .allMatch((l) -> l.getUnitPrice() != null, rule24)
-                .allMatch((l) -> l.getName() != null && !l.getName().isBlank(), rule25)
-                .allMatch((l) -> l.getNetPrice() != null, rule26)
-                .allMatch((l) -> l.getLineDiscount() != null, rule41Or43)
-                .allMatch((l) -> l.getTaxCategory() != null, rules45To48);
 
         if (invoice.getDocumentAllowanceCharges() != null) {
             String rule31Or36 = "BR-31/BR-36: Each Document level allowance/charge shall have a Document level allowance/charge amount";
@@ -86,11 +27,8 @@ public abstract class AbstractUBLInvoiceValidator implements InvoiceValidator {
                 .allMatch((ac) -> ac.getTaxCategory() != null, rule32Or37);
         }
 
-        String rule49 = "BR-49: A Payment instruction shall specify the Payment means type code";
-        ObjectValueValidator.check(invoice.getPaymentMethod(), f).exists(rule49);
-
-        String rule53 = "BR-53: If the VAT accounting currency code is present, then the Invoice total VAT amount in accounting currency shall be provided";
         if (invoice.getTaxCurrency() != null) {
+            String rule53 = "BR-53: If the VAT accounting currency code is present, then the Invoice total VAT amount in accounting currency shall be provided";
             ObjectValueValidator.check(invoice.getTaxCurrency(), f).matches((c) -> c.equals(invoice.getFinancials().getTotalTaxAmountInAccountingCurrency()), rule53);
         }
 

@@ -3,6 +3,7 @@ package sa.abrahman.zaxeg.infrastructure.in.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Currency;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,12 +26,12 @@ import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
 @Data
 public class InvoiceRequest {
 
-    @NotBlank(message = "Invoice number is required")
+    @NotBlank(message = "BR-02: An Invoice shall have an Invoice number")
     private String invoiceNumber;
 
     private UUID invoiceUuid;
 
-    @NotNull(message = "Issue date is required")
+    @NotNull(message = "BR-03: An Invoice shall have an Invoice issue date")
     private LocalDate issueDate;
 
     @NotNull(message = "Issue time is required")
@@ -38,13 +39,35 @@ public class InvoiceRequest {
 
     private LocalDate supplyDate;
 
-    @NotNull(message = "Invoice subtype is required")
+    @NotNull(message = "[INVOICE_SUBTYPE_ERROR] BR-04: An Invoice shall have an Invoice type code")
     private InvoiceSubtype subtype;
 
-    @NotNull(message = "Document type is required")
+    @NotNull(message = "[DOCUMENT_TYPE_ERROR] BR-04: An Invoice shall have an Invoice type code")
     private InvoiceDocumentType documentType;
 
+    @NotNull(message = "BR-05: An Invoice shall have an Invoice currency code")
+    private Currency documentCurrency;
+
     @Valid
+    @NotNull(message = """
+            BR-06: An Invoice shall contain the Seller name,
+            BR-08: An Invoice shall contain the Seller postal address,
+            BR-09: The Seller postal address shall contain a Seller country code
+            """)
+    private PartyRequest supplier;
+
+     /**
+     * Mandatory for standard notes.
+     */
+    @Valid
+    private PartyRequest buyer;
+
+    @Valid
+    @NotEmpty(message = "BR-16: An Invoice must have at least one line item")
+    private List<InvoiceLineRequest> lines;
+
+    @Valid
+    @NotNull(message = "BR-49: A Payment instruction shall specify the Payment means type code")
     private PaymentMethod paymentMethod;
 
     @Valid
@@ -57,20 +80,6 @@ public class InvoiceRequest {
 
     @Valid
     private BillingReferenceRequest billingReference;
-
-    @Valid
-    @NotNull(message = "Supplier information is required")
-    private PartyRequest supplier;
-
-    /**
-     * Mandatory for standard notes.
-     */
-    @Valid
-    private PartyRequest buyer;
-
-    @Valid
-    @NotEmpty(message = "At least one invoice line is required")
-    private List<InvoiceLineRequest> lines;
 
     private BigDecimal prepaidAmount;
 
@@ -189,26 +198,28 @@ public class InvoiceRequest {
     @Data
     public static class InvoiceLineRequest {
 
-        @NotBlank(message = "Line identifier is required")
+        @NotBlank(message = "BR-21: Each Invoice line shall have an Invoice line identifier")
         private String identifier;
 
-        @NotBlank(message = "Line name is required")
+        @NotBlank(message = "BR-25: Each Invoice line shall contain the Item name")
         private String name;
 
-        @NotNull(message = "Quantity is required")
+        @NotNull(message = "BR-22: Each Invoice line shall have an Invoiced quantity")
         @Positive(message = "Quantity must be strictly greater than zero")
         private BigDecimal quantity;
 
         @NotNull(message = "Measuring Unit is required")
         private MeasuringUnit measuringUnit;
 
-        @NotNull(message = "Unit price is required")
+        @NotNull(message = "BR-24: Each Invoice line shall have an Invoiced line net amount")
         @PositiveOrZero(message = "Unit price cannot be negative")
         private BigDecimal unitPrice;
 
         @PositiveOrZero(message = "Discount cannot be negative")
         private BigDecimal lineDiscount;
 
+        @Valid
+        @NotNull(message = "BR-47: Each VAT breakdown shall be defined through a VAT category code")
         private TaxCategory taxCategory;
         private String exemptionReasonCode;
         private String exemptionReasonText;
@@ -218,7 +229,14 @@ public class InvoiceRequest {
     static class AllowanceChargeRequest {
         private boolean isDiscount; // is dicount is easier than isCharge for developers
         private String reason; // e.g., "VIP Discount" or "Delivery Fee"
+
+        @NotNull(message = "BR-41/BR-43: Each Invoice line allowance/charge shall have an Invoice line allowance/charge amount")
         private BigDecimal amount; // The base amount of the discount/fee
+
+
+        private BigDecimal tax; // The tax amount of the discount/fee
+
+        @NotNull(message = "BR-47: Each VAT breakdown shall be defined through a VAT category code")
         private TaxCategory taxCategory; // The tax rate applied to this discount/fee
 
         /**
