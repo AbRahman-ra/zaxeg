@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -17,14 +16,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
-import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 import sa.abrahman.zaxeg.core.model.invoice.meta.*;
-import sa.abrahman.zaxeg.core.model.invoice.party.Address;
-import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand.*;
+import sa.abrahman.zaxeg.infrastructure.in.contract.Commandable;
 
 @Data
-public class InvoiceRequest {
+public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
 
     @NotBlank(message = "BR-02: An Invoice shall have an Invoice number")
     private String invoiceNumber;
@@ -56,7 +55,7 @@ public class InvoiceRequest {
             """)
     private PartyRequest supplier;
 
-     /**
+    /**
      * Mandatory for standard notes.
      */
     @Valid
@@ -71,7 +70,7 @@ public class InvoiceRequest {
     private PaymentMethod paymentMethod;
 
     @Valid
-    private List<AllowanceChargeRequest> discountsOrFees;
+    private List<AllowanceChargeRequest> discountsAndOrFees;
 
     /**
      * Validated in Domain if documentType == CREDIT_NOTE
@@ -81,21 +80,25 @@ public class InvoiceRequest {
     @Valid
     private BillingReferenceRequest billingReference;
 
-    private BigDecimal prepaidAmount;
+    @Valid
+    private DocumentFinancialsRequest financials;
 
-    public Invoice toDomainModel() {
+    @Override
+    public InvoiceGenerationCommand toCommand() {
         // mapper
-        Function<InvoiceLineRequest, InvoiceLine> domainLineMapper = (l) -> InvoiceLine.create(
-                l.getIdentifier(),
-                l.getName(),
-                l.getTaxCategory(),
-                l.getExemptionReasonCode(),
-                l.getExemptionReasonText(),
-                l.getQuantity(),
-                l.getMeasuringUnit(),
-                l.getUnitPrice(),
-                Optional.ofNullable(l.getLineDiscount()).orElse(BigDecimal.ZERO));
-        Function<AllowanceChargeRequest, InvoiceGlobalPayable> allowanceChargeMapper = (ac) -> InvoiceGlobalPayable
+        Function<InvoiceLineRequest, LineCommand> domainLineMapper = l -> LineCommand.builder()
+                .identifier(l.getIdentifier())
+                .taxCategory(l.getTaxCategory())
+                .name(l.getName())
+                .exemptionReasonCode(l.getExemptionReasonCode())
+                .exemptionReasonText(l.getExemptionReasonText())
+                .quantity(l.getQuantity())
+                .measuringUnit(l.getMeasuringUnit())
+                .unitPrice(l.getUnitPrice())
+                .lineDiscount(l.getLineDiscount())
+                .build();
+
+        Function<AllowanceChargeRequest, InvoiceGlobalPayableCommand> allowanceChargeMapper = ac -> InvoiceGlobalPayableCommand
                 .builder()
                 .isCharge(!ac.isDiscount())
                 .amount(ac.getAmount())
@@ -106,57 +109,62 @@ public class InvoiceRequest {
                 .build();
 
         // lines
-        List<InvoiceLine> domainLines = this.lines.stream()
+        List<LineCommand> domainLines = this.lines.stream()
                 .map(domainLineMapper)
-                .collect(Collectors.toList());
+                .toList();
 
         // allowance charges
-        List<InvoiceGlobalPayable> invoiceGlobalPayables = discountsOrFees == null
+        List<InvoiceGlobalPayableCommand> invoiceGlobalPayables = discountsAndOrFees == null
                 ? null
-                : discountsOrFees.stream()
+                : discountsAndOrFees.stream()
                         .map(allowanceChargeMapper)
-                        .collect(Collectors.toList());
+                        .toList();
 
-        BillingReference breference = Optional.ofNullable(billingReference)
-                .map(BillingReferenceRequest::toDomainModel)
+        BillingReferenceCommand breference = Optional.ofNullable(billingReference)
+                .map(BillingReferenceRequest::toCommand)
+                .orElse(null);
+
+        FinancialsCommand financialsRequest = Optional.ofNullable(this.financials)
+                .map(DocumentFinancialsRequest::toCommand)
                 .orElse(null);
 
         // assemble invoice
-        Invoice invoice = Invoice.builder()
+        return InvoiceGenerationCommand.builder()
                 .invoiceNumber(this.invoiceNumber)
+                .invoiceUuid(this.invoiceUuid)
                 .issueDate(this.issueDate)
                 .issueTime(this.issueTime)
                 .supplyDate(this.supplyDate)
-                .paymentMethod(this.paymentMethod)
                 .invoiceSubtype(this.subtype)
                 .invoiceDocumentType(this.documentType)
-                .supplier(this.supplier.toDomainModel())
-                .buyer(this.buyer != null ? this.buyer.toDomainModel() : null)
+                .documentCurrency(this.documentCurrency)
+                .supplier(this.supplier.toCommand())
+                .buyer(this.buyer != null ? this.buyer.toCommand() : null)
                 .lines(domainLines)
+                .paymentMethod(this.paymentMethod)
+                .documentAllowancesAndOrCharges(invoiceGlobalPayables)
+                .issuanceReason(this.issuanceReason)
                 .billingReference(breference)
-                .documentAllowanceCharges(invoiceGlobalPayables)
+                .financials(financialsRequest)
                 .build();
-
-        // calculate financials
-        invoice.calculateFinancials(this.prepaidAmount);
-        return invoice;
     }
 
     // ============ NESTED CLASSES ============
     @Data
-    public static class BillingReferenceRequest {
+    public static class BillingReferenceRequest implements Commandable<BillingReferenceCommand> {
         @NotBlank(message = "Original invoice number is mandatory for billing references")
         private String originalInvoiceNumber;
 
-        public BillingReference toDomainModel() {
-            return BillingReference.builder()
+        @Override
+        public BillingReferenceCommand toCommand() {
+            return BillingReferenceCommand.builder()
                     .originalInvoiceNumber(this.originalInvoiceNumber)
                     .build();
         }
     }
 
     @Data
-    public static class PartyRequest {
+    public static class PartyRequest implements Commandable<PartyCommand> {
         @NotBlank
         private String registrationName;
         private String vatNumber;
@@ -164,18 +172,19 @@ public class InvoiceRequest {
         @Valid
         private AddressRequest address;
 
-        public BusinessParty toDomainModel() {
-            return BusinessParty.builder()
+        @Override
+        public PartyCommand toCommand() {
+            return PartyCommand.builder()
                     .registrationName(this.registrationName)
                     .vatNumber(this.vatNumber)
                     .commercialRegistrationNumber(this.commercialRegistrationNumber)
-                    .address(this.address != null ? this.address.toDomainModel() : null)
+                    .address(this.address != null ? this.address.toCommand() : null)
                     .build();
         }
     }
 
     @Data
-    public static class AddressRequest {
+    public static class AddressRequest implements Commandable<AddressCommand> {
         private String buildingNumber;
         private String streetName;
         private String district;
@@ -183,8 +192,9 @@ public class InvoiceRequest {
         private String postalCode;
         private String additionalNumber;
 
-        public Address toDomainModel() {
-            return Address.builder()
+        @Override
+        public AddressCommand toCommand() {
+            return AddressCommand.builder()
                     .buildingNumber(this.buildingNumber)
                     .streetName(this.streetName)
                     .district(this.district)
@@ -233,7 +243,6 @@ public class InvoiceRequest {
         @NotNull(message = "BR-41/BR-43: Each Invoice line allowance/charge shall have an Invoice line allowance/charge amount")
         private BigDecimal amount; // The base amount of the discount/fee
 
-
         private BigDecimal tax; // The tax amount of the discount/fee
 
         @NotNull(message = "BR-47: Each VAT breakdown shall be defined through a VAT category code")
@@ -245,5 +254,29 @@ public class InvoiceRequest {
          */
         private String vatExemptionReasonCode;
         private String vatExemptionReasonText;
+    }
+
+    @Data
+    static class DocumentFinancialsRequest implements Commandable<FinancialsCommand> {
+        private BigDecimal totalLineExtensionAmount;
+        private BigDecimal totalTaxAmount;
+        private BigDecimal totalTaxAmountInAccountingCurrency;
+        private BigDecimal totalAmountInclusive;
+        private BigDecimal prepaidAmount;
+        private BigDecimal payableAmount;
+        private BigDecimal taxExclusiveAmount;
+
+        @Override
+        public FinancialsCommand toCommand() {
+            return FinancialsCommand.builder()
+                    .autoGenerated(false)
+                    .totalLineExtensionAmount(totalLineExtensionAmount)
+                    .totalTaxAmount(totalTaxAmount)
+                    .totalTaxAmountInAccountingCurrency(totalTaxAmountInAccountingCurrency)
+                    .totalAmountInclusive(totalAmountInclusive)
+                    .prepaidAmount(prepaidAmount)
+                    .payableAmount(payableAmount)
+                    .build();
+        }
     }
 }

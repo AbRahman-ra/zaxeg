@@ -10,9 +10,15 @@ import lombok.Setter;
 @Getter
 @Builder
 public class InvoiceLine {
-    // meta data
-    private String identifier; // e.g., "SKU-12345"
-    private String name; // e.g., "Spring Boot Consulting"
+    // metadata
+    /**
+     * Example: SKU-12345
+     */
+    private String identifier;
+    /**
+     * Example: Legal Consultiation
+     */
+    private String name;
 
     @Builder.Default
     private TaxCategory taxCategory = TaxCategory.STANDARD;
@@ -26,13 +32,31 @@ public class InvoiceLine {
     @Builder.Default
     private MeasuringUnit measuringUnit = MeasuringUnit.PCE;
 
-    private BigDecimal unitPrice; // Price strictly BEFORE tax and discounts
-    private BigDecimal lineDiscount; // Discount applied to this specific line
+    /**
+     * Price strictly BEFORE tax and discounts
+     */
+    private BigDecimal unitPrice;
+
+    /**
+     * Discount applied to this specific line
+     */
+    private BigDecimal lineDiscount;
 
     // Calculated Values (Validated by ZATCA BR-KSA-51 & BR-KSA-52)
-    private BigDecimal netPrice; // (quantity * unitPrice) - lineDiscount
-    private BigDecimal taxAmount; // netPrice * (taxCategory.rate / 100)
-    private BigDecimal lineTotalInclusive; // netPrice + taxAmount
+    /**
+     * (quantity * unitPrice) - lineDiscount
+     */
+    private BigDecimal netPrice;
+
+    /**
+     * netPrice * (taxCategory.rate / 100)
+     */
+    private BigDecimal taxAmount;
+
+    /**
+     * netPrice + taxAmount
+     */
+    private BigDecimal lineTotalInclusive;
 
     public static InvoiceLine create(
             String identifier,

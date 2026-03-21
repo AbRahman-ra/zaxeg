@@ -1,0 +1,91 @@
+package sa.abrahman.zaxeg.core.service.processor;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import sa.abrahman.zaxeg.core.model.invoice.financial.MeasuringUnit;
+import sa.abrahman.zaxeg.core.model.invoice.financial.TaxCategory;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand.FinancialsCommand;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand.InvoiceGlobalPayableCommand;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand.LineCommand;
+
+@Component
+public class FinancialsCommandCalculator {
+    public FinancialsCommand calculate(List<LineCommand> lines,
+            List<InvoiceGlobalPayableCommand> allowancesAndOrCharges,
+            BigDecimal prepaidAmount) {
+        if (lines == null || lines.isEmpty()) {
+            throw new IllegalStateException("Cannot calculate financials without invoice lines.");
+        }
+
+        BigDecimal totalExtension = BigDecimal.ZERO;
+        BigDecimal totalLineTax = BigDecimal.ZERO;
+
+        // Add lines
+        for (LineCommand line : lines) {
+            BigDecimal netPrice = getNetPrice(line);
+
+            BigDecimal taxMultiplier = line.getTaxCategory().getRate().divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+            BigDecimal taxAmount = netPrice.multiply(taxMultiplier).setScale(2, RoundingMode.HALF_UP);
+
+            totalExtension = totalExtension.add(netPrice);
+            totalLineTax = totalLineTax.add(taxAmount);
+        }
+
+        // document allowances and charges
+        BigDecimal totalDocAllowances = BigDecimal.ZERO;
+        BigDecimal totalDocCharges = BigDecimal.ZERO;
+        BigDecimal totalDocAllowanceTax = BigDecimal.ZERO;
+        BigDecimal totalDocChargeTax = BigDecimal.ZERO;
+
+        if (allowancesAndOrCharges != null) {
+            for (InvoiceGlobalPayableCommand ac : allowancesAndOrCharges) {
+                if (ac.isCharge()) {
+                    totalDocCharges = totalDocCharges.add(ac.getAmount());
+                    totalDocChargeTax = totalDocChargeTax.add(getTaxAmount(ac.getAmount(), ac.getTaxCategory()));
+                } else {
+                    totalDocAllowances = totalDocAllowances.add(ac.getAmount());
+                    totalDocAllowanceTax = totalDocAllowanceTax.add(getTaxAmount(ac.getAmount(), ac.getTaxCategory()));
+                }
+            }
+        }
+
+        // Tax Exclusive = Lines - Allowances + Charges
+        BigDecimal taxExclusiveAmount = totalExtension.subtract(totalDocAllowances).add(totalDocCharges);
+
+        // Total Tax = Line Taxes - Allowance Taxes + Charge Taxes
+        BigDecimal totalTaxAmount = totalLineTax.subtract(totalDocAllowanceTax).add(totalDocChargeTax);
+
+        // Total Inclusive = Exclusive + Tax
+        BigDecimal totalInclusive = taxExclusiveAmount.add(totalTaxAmount).setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal safePrepaid = (prepaidAmount != null) ? prepaidAmount : BigDecimal.ZERO;
+        BigDecimal payableAmount = totalInclusive.subtract(safePrepaid).setScale(2, RoundingMode.HALF_UP);
+
+        return FinancialsCommand.builder()
+                .totalLineExtensionAmount(totalExtension)
+                .taxExclusiveAmount(taxExclusiveAmount)
+                .totalTaxAmount(totalTaxAmount)
+                .totalAmountInclusive(totalInclusive)
+                .prepaidAmount(safePrepaid)
+                .payableAmount(payableAmount)
+                .build();
+    }
+
+    public static BigDecimal getTaxAmount(BigDecimal amount, TaxCategory taxCategory) {
+        if (amount == null || taxCategory == null) return BigDecimal.ZERO;
+        // tax = amount * (rate / 100)
+        return amount.multiply(taxCategory.getRate()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getNetPrice(LineCommand line) {
+        return line.getQuantity().multiply(line.getUnitPrice()).subtract(line.getLineDiscount()).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public static BigDecimal getNetPrice(BigDecimal unitPrice, BigDecimal quantity, BigDecimal lineDiscount) {
+        return quantity.multiply(unitPrice).subtract(lineDiscount).setScale(2, RoundingMode.HALF_UP);
+    }
+}

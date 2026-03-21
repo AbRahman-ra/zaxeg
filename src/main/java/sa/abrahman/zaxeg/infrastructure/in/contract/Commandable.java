@@ -1,0 +1,10 @@
+package sa.abrahman.zaxeg.infrastructure.in.contract;
+
+/**
+ * Intentionally created in the infrastructure, the purpose of this interface to
+ * handle the possibility of changing the request body overtime, since it's
+ * concerned with the request dto, it's kept in the infrastructure
+ */
+public interface Commandable<C> {
+    C toCommand();
+}

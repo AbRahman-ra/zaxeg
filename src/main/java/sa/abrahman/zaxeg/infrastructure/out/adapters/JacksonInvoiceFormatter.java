@@ -16,6 +16,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import lombok.experimental.UtilityClass;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 import sa.abrahman.zaxeg.core.model.invoice.meta.*;
@@ -99,8 +100,9 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
     }
 
     // ============ DEV HELPER CLASS ============
+    @UtilityClass
     static class Extractor {
-        static LegalMonetaryTotalDto legalMonetaryTotal(DocumentFinancials df, String currency) {
+        LegalMonetaryTotalDto legalMonetaryTotal(DocumentFinancials df, String currency) {
             String lineExtension = df.getTotalLineExtensionAmount().toString();
             String taxExclusive = df.getTaxExclusiveAmount().toString();
             String inclusive = df.getTotalAmountInclusive().toString();
@@ -115,12 +117,12 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                     .build();
         }
 
-        static List<TaxTotalDto> taxTotals(List<InvoiceLine> l, DocumentFinancials df, String docCurrency,
+        List<TaxTotalDto> taxTotals(List<InvoiceLine> l, DocumentFinancials df, String docCurrency,
                 String taxCurrency) {
             // Create a composite key to group by Category AND Exemption Reason
-            record TaxGroupKey(TaxCategory category, String exemptionCode, String exemptionText) {};
+            record TaxGroupKey(TaxCategory category, String exemptionCode, String exemptionText) {}
 
-            Function<InvoiceLine, TaxGroupKey> compositeKey = (line) -> new TaxGroupKey(
+            Function<InvoiceLine, TaxGroupKey> compositeKey = line -> new TaxGroupKey(
                     line.getTaxCategory(),
                     line.getExemptionReasonCode(),
                     line.getExemptionReasonText());
@@ -181,7 +183,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
             return taxTotalsList;
         }
 
-        static List<InvoiceLineDto> invoiceLines(List<InvoiceLine> lines, String currency) {
+        List<InvoiceLineDto> invoiceLines(List<InvoiceLine> lines, String currency) {
             if (lines == null || lines.isEmpty())
                 return new ArrayList<>();
 
@@ -222,10 +224,10 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                                         .value(line.getUnitPrice().toString()).build())
                                 .build())
                         .build();
-            }).collect(Collectors.toList());
+            }).toList();
         }
 
-        static AccountingPartyDto party(BusinessParty businessParty) {
+        AccountingPartyDto party(BusinessParty businessParty) {
             if (businessParty == null)
                 return null;
 
@@ -281,7 +283,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
             return AccountingPartyDto.builder().party(party).build();
         }
 
-        static BillingReferenceDto billingReference(BillingReference ref) {
+        BillingReferenceDto billingReference(BillingReference ref) {
             if (ref == null || ref.getOriginalInvoiceNumber() == null)
                 return null;
             return BillingReferenceDto.builder()
@@ -291,8 +293,8 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                     .build();
         }
 
-        static DeliveryDto delivery(LocalDate date) {
-            Function<LocalDate, DeliveryDto> mapper = (d) -> DeliveryDto.builder()
+        DeliveryDto delivery(LocalDate date) {
+            Function<LocalDate, DeliveryDto> mapper = d -> DeliveryDto.builder()
                     .actualDeliveryDate(d.toString())
                     .build();
             return Optional.ofNullable(date)
@@ -300,7 +302,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                     .orElse(null);
         }
 
-        static PaymentMeansDto paymentMeans(PaymentMethod method, String reason) {
+        PaymentMeansDto paymentMeans(PaymentMethod method, String reason) {
             String r = reason == null || reason.isBlank() ? null : reason;
             String code = method != null ? method.code().toString() : PaymentMethod.IN_CASH.code().toString();
             return r == null && method == null
@@ -311,8 +313,8 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                             .build();
         }
 
-        static List<InvoiceGlobalPayableDto> allowanceCharges(List<InvoiceGlobalPayable> acList, String currency) {
-            if (acList == null || acList.isEmpty()) return null;
+        List<InvoiceGlobalPayableDto> allowanceCharges(List<InvoiceGlobalPayable> acList, String currency) {
+            if (acList == null || acList.isEmpty()) return new ArrayList<>();
 
             return acList.stream().map(ac -> InvoiceGlobalPayableDto.builder()
                     .chargeIndicator(ac.isCharge())
@@ -325,7 +327,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                             .taxExemptionReason(ac.getExemptionReasonText())
                             .taxScheme(TaxCategoryDto.TaxSchemeDto.builder().build())
                             .build())
-                    .build()).collect(Collectors.toList());
+                    .build()).toList();
         }
-    };
+    }
 }

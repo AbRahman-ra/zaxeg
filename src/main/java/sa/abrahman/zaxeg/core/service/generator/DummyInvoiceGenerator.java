@@ -5,8 +5,7 @@ import java.util.Optional;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.model.invoice.Invoice;
-import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 
 @Service
@@ -14,7 +13,7 @@ import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 public class DummyInvoiceGenerator implements InvoiceGenerator {
 
     @Override
-    public String toXML(Invoice invoice) {
+    public String handle(InvoiceGenerationCommand command) {
         String template = """
                 <Invoice>
                     <ID>%s</ID>
@@ -22,14 +21,12 @@ public class DummyInvoiceGenerator implements InvoiceGenerator {
                     <Total>%s</Total>
                 </Invoice>
                 """;
-        String buyer = Optional.ofNullable(invoice.getBuyer())
-                .map(BusinessParty::getRegistrationName)
+        String buyer = Optional.ofNullable(command.getBuyer())
+                .map(InvoiceGenerationCommand.PartyCommand::getRegistrationName)
                 .orElse("N/A");
-        String totalAmount = Optional.ofNullable(invoice.getFinancials())
-                .map(f -> f.getTotalAmountInclusive().toString())
-                .orElse("0.00");
+        String totalAmount = "0.00";
 
-        return template.formatted(invoice.getInvoiceNumber(), buyer, totalAmount);
+        return template.formatted(command.getInvoiceNumber(), buyer, totalAmount);
     }
 
 }

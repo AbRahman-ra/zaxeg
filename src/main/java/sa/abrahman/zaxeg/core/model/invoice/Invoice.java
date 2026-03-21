@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 import sa.abrahman.zaxeg.core.model.invoice.meta.*;
 import sa.abrahman.zaxeg.core.model.invoice.party.*;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
+import sa.abrahman.zaxeg.core.service.generator.InvoiceFactory;
 import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 
 @Getter
@@ -56,6 +58,15 @@ public class Invoice {
     @Setter private DocumentFinancials financials;
     private List<InvoiceGlobalPayable> documentAllowanceCharges;
 
+    public static Invoice from(InvoiceGenerationCommand command) {
+        return InvoiceFactory.from(command);
+    }
+
+    /**
+     * @deprecated will be moved to validation or processing service layers
+     * @param prepaidAmount
+    */
+    @Deprecated(forRemoval = true)
     public void calculateFinancials(BigDecimal prepaidAmount) {
         if (this.lines == null || this.lines.isEmpty()) {
             throw new IllegalStateException("Cannot calculate financials without invoice lines.");

@@ -21,6 +21,11 @@ public class InvoiceGlobalPayable {
     private String exemptionReasonCode;
     private String exemptionReasonText;
 
+    @Deprecated(forRemoval = true)
+    /**
+     * @deprecated
+     * @return
+     */
     public BigDecimal getTaxAmount() {
         if (amount == null || taxCategory == null) return BigDecimal.ZERO;
         // tax = amount * (rate / 100)

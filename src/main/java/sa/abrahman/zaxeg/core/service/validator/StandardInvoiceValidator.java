@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.ObjectValueValidator;
-import sa.abrahman.zaxeg.core.model.invoice.Invoice;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
 
 @Component("STANDARD_INVOICE_VALIDATOR")
 public class StandardInvoiceValidator extends AbstractZATCAInvoiceValidator {
     @Override
-    protected void validateAdditionalBusinessRules(Invoice invoice) {
+    protected void validateAdditionalBusinessRules(InvoiceGenerationCommand invoice) {
         Function<String, RuntimeException> f = InvoiceRuleViolationException::new;
 
         String rule10 = "BR-10: An Invoice shall contain the Buyer postal address. Not applicable for simplified tax invoices and associated credit notes and debit notes";
