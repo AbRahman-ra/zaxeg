@@ -7,13 +7,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 import sa.abrahman.zaxeg.infrastructure.in.dto.APIResponse;
 import sa.abrahman.zaxeg.infrastructure.in.dto.InvoiceRequest;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class InvoiceController {
     private final InvoiceGenerator service;
 
-    @PostMapping(value = "/generate", produces = MediaType.APPLICATION_XML_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/generate")
     @Operation(summary = "Generate UBL 2.1 XML from JSON payload")
     public ResponseEntity<APIResponse<String>> generate(@Valid @RequestBody InvoiceRequest request) {
-        InvoiceGenerationCommand command = request.toCommand();
-        String invoice = service.handle(command);
+        InvoiceGenerationPayload payload = request.toPayload();
+        String invoice = service.handle(payload);
         return ResponseEntity.ok(APIResponse.from(HttpStatus.OK.value(), "", invoice));
     }
 

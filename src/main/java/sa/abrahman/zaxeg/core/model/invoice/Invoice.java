@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import sa.abrahman.zaxeg.core.model.invoice.meta.*;
 import sa.abrahman.zaxeg.core.model.invoice.party.*;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.generator.InvoiceFactory;
 import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 
@@ -44,10 +44,14 @@ public class Invoice {
     private Currency taxCurrency = Currency.getInstance(DEFAULT_CURRENCY);
 
     // Phase 2 Cryptographic & Sequential Data
-    @Setter private int invoiceCounterValue; // ICV
-    @Setter private String previousInvoiceHash; // base64(PIH)
-    @Setter private String cryptographicStamp; // base64(ECDSA Signature)
-    @Setter private String generatedQrCode; // TLV base64
+    @Setter
+    private int invoiceCounterValue; // ICV
+    @Setter
+    private String previousInvoiceHash; // base64(PIH)
+    @Setter
+    private String cryptographicStamp; // base64(ECDSA Signature)
+    @Setter
+    private String generatedQrCode; // TLV base64
 
     // Business Entities
     private BusinessParty supplier;
@@ -55,17 +59,18 @@ public class Invoice {
 
     // Line Items & Financials
     private List<InvoiceLine> lines;
-    @Setter private DocumentFinancials financials;
+    @Setter
+    private DocumentFinancials financials;
     private List<InvoiceGlobalPayable> documentAllowanceCharges;
 
-    public static Invoice from(InvoiceGenerationCommand command) {
+    public static Invoice from(InvoiceGenerationPayload command) {
         return InvoiceFactory.from(command);
     }
 
     /**
      * @deprecated will be moved to validation or processing service layers
      * @param prepaidAmount
-    */
+     */
     @Deprecated(forRemoval = true)
     public void calculateFinancials(BigDecimal prepaidAmount) {
         if (this.lines == null || this.lines.isEmpty()) {

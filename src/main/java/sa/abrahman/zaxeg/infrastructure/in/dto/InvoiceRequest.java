@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -18,75 +19,84 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 import sa.abrahman.zaxeg.core.model.invoice.meta.*;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand.*;
-import sa.abrahman.zaxeg.infrastructure.in.contract.Commandable;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.*;
+import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;
+import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Data
-public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
+public class InvoiceRequest implements Payloadable<InvoiceGenerationPayload> {
 
-    @NotBlank(message = "BR-02: An Invoice shall have an Invoice number")
+    @Schema(description = "Invoice ID / Sequential Number", example = "INV0023")
+    @NotBlank(message = BusinessIntegrityConstraintRule.BR_02)
     private String invoiceNumber;
 
+    @Schema(description = "Optional; If not provided, the system will automatically generate a UUIDv4 for the invoice", example = "8f480da0-70f9-4674-8b63-8a3d6ebef9e6")
     private UUID invoiceUuid;
 
-    @NotNull(message = "BR-03: An Invoice shall have an Invoice issue date")
+    @Schema(description = "Required; The date of invoice issuance (yyyy-MM-dd), cannot be in the future", example = "2026-01-01")
+    @NotNull(message = BusinessIntegrityConstraintRule.BR_03)
     private LocalDate issueDate;
 
+    @Schema(description = "Required; The time of invoice issuance (HH:mm:ss)", example = "19:48:21")
     @NotNull(message = "Issue time is required")
     private LocalTime issueTime;
 
+    @Schema(description = "Optional; The date the supply was performed (yyyy-MM-dd)", example = "2026-01-05")
     private LocalDate supplyDate;
 
-    @NotNull(message = "[INVOICE_SUBTYPE_ERROR] BR-04: An Invoice shall have an Invoice type code")
+    @Schema(description = "Required; Determines the complexity of the invoice (`STANDARD` for B2B, `SIMPLIFIED` for B2C)", example = "STANDARD")
+    @NotNull(message = "[INVOICE_SUBTYPE_ERROR]" + BusinessIntegrityConstraintRule.BR_04)
     private InvoiceSubtype subtype;
 
-    @NotNull(message = "[DOCUMENT_TYPE_ERROR] BR-04: An Invoice shall have an Invoice type code")
+    @Schema(description = "Required; The type of document being issued (e.g., TAX_INVOICE, CREDIT_NOTE, DEBIT_NOTE)", example = "TAX_INVOICE")
+    @NotNull(message = "[DOCUMENT_TYPE_ERROR]" + BusinessIntegrityConstraintRule.BR_04)
     private InvoiceDocumentType documentType;
 
-    @NotNull(message = "BR-05: An Invoice shall have an Invoice currency code")
+    @Schema(description = "Required; 3-letter ISO 4217 Currency Code", example = "SAR")
+    @NotNull(message = BusinessIntegrityConstraintRule.BR_05)
     private Currency documentCurrency;
 
+    @Schema(description = "Required; Details of the supplier issuing the invoice")
     @Valid
-    @NotNull(message = """
-            BR-06: An Invoice shall contain the Seller name,
-            BR-08: An Invoice shall contain the Seller postal address,
-            BR-09: The Seller postal address shall contain a Seller country code
-            """)
+    @NotNull(message = BusinessIntegrityConstraintRule.BR_06 + ", " +
+            BusinessIntegrityConstraintRule.BR_08 + ", " +
+            BusinessIntegrityConstraintRule.BR_09)
     private PartyRequest supplier;
 
-    /**
-     * Mandatory for standard notes.
-     */
+    @Schema(description = "Conditional; Details of the buyer. Mandatory for Standard (B2B) invoices.")
     @Valid
     private PartyRequest buyer;
 
+    @Schema(description = "Required; The goods or services being billed")
     @Valid
-    @NotEmpty(message = "BR-16: An Invoice must have at least one line item")
+    @NotEmpty(message = BusinessIntegrityConstraintRule.BR_16)
     private List<InvoiceLineRequest> lines;
 
+    @Schema(description = "Required; The means of payment (e.g., CASH, BANK_ACCOUNT, CREDIT_CARD)")
     @Valid
-    @NotNull(message = "BR-49: A Payment instruction shall specify the Payment means type code")
+    @NotNull(message = BusinessIntegrityConstraintRule.BR_49)
     private PaymentMethod paymentMethod;
 
+    @Schema(description = "Optional; Document-level discounts or charges applied to the total invoice amount")
     @Valid
-    private List<AllowanceChargeRequest> discountsAndOrFees;
+    private List<AllowanceOrChargeRequest> discountsAndOrFees;
 
-    /**
-     * Validated in Domain if documentType == CREDIT_NOTE
-     */
+    @Schema(description = "Conditional; Mandatory if the document type is a CREDIT_NOTE or DEBIT_NOTE", example = "Customer returned damaged goods")
     private String issuanceReason;
 
+    @Schema(description = "Conditional; Must be provided if issuing a Credit or Debit Note to link it to the original invoice")
     @Valid
     private BillingReferenceRequest billingReference;
 
+    @Schema(description = "Optional; Provide pre-calculated financials to strictly validate against the engine's math to prevent rounding discrepancies, if not provided it will be automatically calulated and embedded in the invoice")
     @Valid
     private DocumentFinancialsRequest financials;
 
     @Override
-    public InvoiceGenerationCommand toCommand() {
+    public InvoiceGenerationPayload toPayload() {
         // mapper
-        Function<InvoiceLineRequest, LineCommand> domainLineMapper = l -> LineCommand.builder()
+        Function<InvoiceLineRequest, LinePayload> domainLineMapper = l -> LinePayload.builder()
                 .identifier(l.getIdentifier())
                 .taxCategory(l.getTaxCategory())
                 .name(l.getName())
@@ -98,7 +108,7 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
                 .lineDiscount(l.getLineDiscount())
                 .build();
 
-        Function<AllowanceChargeRequest, InvoiceGlobalPayableCommand> allowanceChargeMapper = ac -> InvoiceGlobalPayableCommand
+        Function<AllowanceOrChargeRequest, InvoiceGlobalPayablePayload> allowanceChargeMapper = ac -> InvoiceGlobalPayablePayload
                 .builder()
                 .isCharge(!ac.isDiscount())
                 .amount(ac.getAmount())
@@ -109,27 +119,27 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
                 .build();
 
         // lines
-        List<LineCommand> domainLines = this.lines.stream()
+        List<LinePayload> domainLines = this.lines.stream()
                 .map(domainLineMapper)
                 .toList();
 
         // allowance charges
-        List<InvoiceGlobalPayableCommand> invoiceGlobalPayables = discountsAndOrFees == null
+        List<InvoiceGlobalPayablePayload> invoiceGlobalPayables = discountsAndOrFees == null
                 ? null
                 : discountsAndOrFees.stream()
                         .map(allowanceChargeMapper)
                         .toList();
 
-        BillingReferenceCommand breference = Optional.ofNullable(billingReference)
-                .map(BillingReferenceRequest::toCommand)
+        BillingReferencePayload breference = Optional.ofNullable(billingReference)
+                .map(BillingReferenceRequest::toPayload)
                 .orElse(null);
 
-        FinancialsCommand financialsRequest = Optional.ofNullable(this.financials)
-                .map(DocumentFinancialsRequest::toCommand)
+        FinancialsPayload financialsRequest = Optional.ofNullable(this.financials)
+                .map(DocumentFinancialsRequest::toPayload)
                 .orElse(null);
 
         // assemble invoice
-        return InvoiceGenerationCommand.builder()
+        return InvoiceGenerationPayload.builder()
                 .invoiceNumber(this.invoiceNumber)
                 .invoiceUuid(this.invoiceUuid)
                 .issueDate(this.issueDate)
@@ -138,8 +148,8 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
                 .invoiceSubtype(this.subtype)
                 .invoiceDocumentType(this.documentType)
                 .documentCurrency(this.documentCurrency)
-                .supplier(this.supplier.toCommand())
-                .buyer(this.buyer != null ? this.buyer.toCommand() : null)
+                .supplier(this.supplier.toPayload())
+                .buyer(this.buyer != null ? this.buyer.toPayload() : null)
                 .lines(domainLines)
                 .paymentMethod(this.paymentMethod)
                 .documentAllowancesAndOrCharges(invoiceGlobalPayables)
@@ -151,20 +161,20 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
 
     // ============ NESTED CLASSES ============
     @Data
-    public static class BillingReferenceRequest implements Commandable<BillingReferenceCommand> {
+    public static class BillingReferenceRequest implements Payloadable<BillingReferencePayload> {
         @NotBlank(message = "Original invoice number is mandatory for billing references")
         private String originalInvoiceNumber;
 
         @Override
-        public BillingReferenceCommand toCommand() {
-            return BillingReferenceCommand.builder()
+        public BillingReferencePayload toPayload() {
+            return BillingReferencePayload.builder()
                     .originalInvoiceNumber(this.originalInvoiceNumber)
                     .build();
         }
     }
 
     @Data
-    public static class PartyRequest implements Commandable<PartyCommand> {
+    public static class PartyRequest implements Payloadable<PartyPayload> {
         @NotBlank
         private String registrationName;
         private String vatNumber;
@@ -173,18 +183,18 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
         private AddressRequest address;
 
         @Override
-        public PartyCommand toCommand() {
-            return PartyCommand.builder()
+        public PartyPayload toPayload() {
+            return PartyPayload.builder()
                     .registrationName(this.registrationName)
                     .vatNumber(this.vatNumber)
                     .commercialRegistrationNumber(this.commercialRegistrationNumber)
-                    .address(this.address != null ? this.address.toCommand() : null)
+                    .address(this.address != null ? this.address.toPayload() : null)
                     .build();
         }
     }
 
     @Data
-    public static class AddressRequest implements Commandable<AddressCommand> {
+    public static class AddressRequest implements Payloadable<AddressPayload> {
         private String buildingNumber;
         private String streetName;
         private String district;
@@ -193,8 +203,8 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
         private String additionalNumber;
 
         @Override
-        public AddressCommand toCommand() {
-            return AddressCommand.builder()
+        public AddressPayload toPayload() {
+            return AddressPayload.builder()
                     .buildingNumber(this.buildingNumber)
                     .streetName(this.streetName)
                     .district(this.district)
@@ -208,20 +218,20 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
     @Data
     public static class InvoiceLineRequest {
 
-        @NotBlank(message = "BR-21: Each Invoice line shall have an Invoice line identifier")
+        @NotBlank(message = BusinessIntegrityConstraintRule.BR_21)
         private String identifier;
 
-        @NotBlank(message = "BR-25: Each Invoice line shall contain the Item name")
-        private String name;
-
-        @NotNull(message = "BR-22: Each Invoice line shall have an Invoiced quantity")
+        @NotNull(message = BusinessIntegrityConstraintRule.BR_22)
         @Positive(message = "Quantity must be strictly greater than zero")
         private BigDecimal quantity;
+
+        @NotBlank(message = BusinessIntegrityConstraintRule.BR_25)
+        private String name;
 
         @NotNull(message = "Measuring Unit is required")
         private MeasuringUnit measuringUnit;
 
-        @NotNull(message = "BR-24: Each Invoice line shall have an Invoiced line net amount")
+        @NotNull(message = BusinessIntegrityConstraintRule.BR_26)
         @PositiveOrZero(message = "Unit price cannot be negative")
         private BigDecimal unitPrice;
 
@@ -236,11 +246,10 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
     }
 
     @Data
-    static class AllowanceChargeRequest {
+    static class AllowanceOrChargeRequest {
         private boolean isDiscount; // is dicount is easier than isCharge for developers
         private String reason; // e.g., "VIP Discount" or "Delivery Fee"
 
-        @NotNull(message = "BR-41/BR-43: Each Invoice line allowance/charge shall have an Invoice line allowance/charge amount")
         private BigDecimal amount; // The base amount of the discount/fee
 
         private BigDecimal tax; // The tax amount of the discount/fee
@@ -257,19 +266,23 @@ public class InvoiceRequest implements Commandable<InvoiceGenerationCommand> {
     }
 
     @Data
-    static class DocumentFinancialsRequest implements Commandable<FinancialsCommand> {
+    static class DocumentFinancialsRequest implements Payloadable<FinancialsPayload> {
+        @NotNull(message = BusinessIntegrityConstraintRule.BR_13)
         private BigDecimal totalLineExtensionAmount;
         private BigDecimal totalTaxAmount;
         private BigDecimal totalTaxAmountInAccountingCurrency;
+
+        @NotNull(message = BusinessIntegrityConstraintRule.BR_14)
         private BigDecimal totalAmountInclusive;
         private BigDecimal prepaidAmount;
+
+        @NotNull(message = BusinessIntegrityConstraintRule.BR_15)
         private BigDecimal payableAmount;
         private BigDecimal taxExclusiveAmount;
 
         @Override
-        public FinancialsCommand toCommand() {
-            return FinancialsCommand.builder()
-                    .autoGenerated(false)
+        public FinancialsPayload toPayload() {
+            return FinancialsPayload.builder()
                     .totalLineExtensionAmount(totalLineExtensionAmount)
                     .totalTaxAmount(totalTaxAmount)
                     .totalTaxAmountInAccountingCurrency(totalTaxAmountInAccountingCurrency)

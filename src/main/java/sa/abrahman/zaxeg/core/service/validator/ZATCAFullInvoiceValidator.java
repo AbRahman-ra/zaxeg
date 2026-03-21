@@ -3,7 +3,8 @@ package sa.abrahman.zaxeg.core.service.validator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 
 @Service(InvoiceValidatorBeanNameResolver.FULL_INVOICE_VALIDATOR)
 public class ZATCAFullInvoiceValidator implements InvoiceValidator {
@@ -18,7 +19,7 @@ public class ZATCAFullInvoiceValidator implements InvoiceValidator {
     }
 
     @Override
-    public void validate(InvoiceGenerationCommand payload) {
+    public void validate(InvoiceGenerationPayload payload) {
         business.validate(payload);
         ksa.validate(payload);
     }

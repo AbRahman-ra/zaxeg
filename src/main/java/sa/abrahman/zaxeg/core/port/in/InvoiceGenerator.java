@@ -16,5 +16,5 @@ public interface InvoiceGenerator {
      *                                          [2023-05-19]</a>
      * @throws BusinessDomainViolationException for other Business Validation Errors
      */
-    String handle(InvoiceGenerationCommand payload);
+    String handle(InvoiceGenerationPayload payload);
 }

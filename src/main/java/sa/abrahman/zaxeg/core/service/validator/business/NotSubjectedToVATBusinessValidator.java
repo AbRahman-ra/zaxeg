@@ -2,8 +2,8 @@ package sa.abrahman.zaxeg.core.service.validator.business;
 
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationCommand;
-import sa.abrahman.zaxeg.core.service.validator.InvoiceValidator;
+import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
 
 /**
@@ -14,7 +14,7 @@ import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver
 @Service(InvoiceValidatorBeanNameResolver.NOT_SUBJECTED_TO_VAT_BUSINESS_VALIDATOR)
 public class NotSubjectedToVATBusinessValidator implements InvoiceValidator {
     @Override
-    public void validate(InvoiceGenerationCommand payload) {
+    public void validate(InvoiceGenerationPayload payload) {
         // TODO Auto-generated method stub
     }
 }

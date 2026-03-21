@@ -1,16 +1,24 @@
 package sa.abrahman.zaxeg.infrastructure.out.dto.invoice;
 
 public final class UBLandZATCAConstants {
+    private UBLandZATCAConstants() {}
+
     public static final class NAMESPACES {
+        private NAMESPACES() {}
+
         public static final String ROOT = "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2";
         public static final String CAC = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
         public static final String CBC = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
-    };
+    }
 
     public static final class TAGS {
+        private TAGS() {}
+
         public static final String INVOICE = "Invoice";
 
         public static final class CAC {
+            private CAC() {}
+
             public static final String INVOICE_PERIOD = "cac:InvoicePeriod";
             public static final String ORDER_REFERENCE = "cac:OrderReference";
             public static final String BILLING_REFERENCE = "cac:BillingReference";
@@ -53,9 +61,11 @@ public final class UBLandZATCAConstants {
             public static final String PARTY_TAX_SCHEME = "cac:PartyTaxScheme";
             public static final String PARTY_LEGAL_ENTITY = "cac:PartyLegalEntity";
             public static final String INVOICE_DOCUMENT_REFERENCE = "cac:InvoiceDocumentReference";
-        };
+        }
 
         public static final class CBC {
+            private CBC() {}
+
             public static final String UBL_VERSION_ID = "cbc:UBLVersionID";
             public static final String CUSTOMIZATION_ID = "cbc:CustomizationID";
             public static final String PROFILE_ID = "cbc:ProfileID";
@@ -107,27 +117,34 @@ public final class UBLandZATCAConstants {
             public static final String CHARGE_INDICATOR = "cbc:ChargeIndicator";
             public static final String ALLOWANCE_CHARGE_REASON = "cbc:AllowanceChargeReason";
             public static final String AMOUNT = "cbc:Amount";
-        };
+        }
 
         public static final class EXT {
-            public static final String UBL_EXTENSIONS = "ext:UBLExtensions";
-        };
+            private EXT() {}
 
-    };
+            public static final String UBL_EXTENSIONS = "ext:UBLExtensions";
+        }
+    }
 
     public static final class ATTRIBUTES {
+        private ATTRIBUTES() {}
+
         public static final String NAME = "name";
         public static final String CURRENCY_ID = "currencyID";
         public static final String UNIT_CODE = "unitCode";
         public static final String SCHEME_ID = "schemeID";
 
         public static final class XMLNS {
+            private XMLNS() {}
+
             public static final String CAC = "xmlns:cac";
             public static final String CBC = "xmlns:cbc";
         }
     }
 
     public static final class DEFAULTS {
+        private DEFAULTS() {}
+
         public static final String PROFILE_ID = "reporting:1.0";
     }
 }
