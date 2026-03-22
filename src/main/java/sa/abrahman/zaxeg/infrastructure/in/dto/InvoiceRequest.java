@@ -20,6 +20,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 import sa.abrahman.zaxeg.core.model.invoice.meta.*;
+import sa.abrahman.zaxeg.core.model.invoice.renewed.TaxCategory;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.*;
 import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;

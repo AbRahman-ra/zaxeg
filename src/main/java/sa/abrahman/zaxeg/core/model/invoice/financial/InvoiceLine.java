@@ -23,6 +23,9 @@ public class InvoiceLine {
     @Builder.Default
     private TaxCategory taxCategory = TaxCategory.STANDARD;
     // We will use setter methods when instantiating the specific exemption reason
+    /**
+     * TODO: make it enum
+     */
     @Setter private String exemptionReasonCode; // e.g., "VATEX-SA-32"
     @Setter private String exemptionReasonText; // e.g., "Export of goods"
 

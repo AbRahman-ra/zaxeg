@@ -19,17 +19,29 @@ import sa.abrahman.zaxeg.core.model.invoice.financial.*;
 
 @Getter
 @Builder
+@Deprecated(forRemoval = true)
 public class Invoice {
     private static final String DEFAULT_CURRENCY = "SAR";
 
     // Metadata
+    /** BT-01: A unique identification of the Invoice */
     private String invoiceNumber;
+
+    /** KSA-01: Globally unique reference identifying the invoice. */
     @Builder.Default
     private UUID invoiceUuid = UUID.randomUUID();
+
+    /** BT-02: The date when the Invoice was issued  as per Article 53 of the VAT Implementing Regulation */
     private LocalDate issueDate;
+
+    /** KSA-25: The time when the invoice was issued. */
     private LocalTime issueTime;
     private LocalDate supplyDate;
+
+    /** BT-03 */
     private InvoiceSubtype invoiceSubtype;
+
+    /** BT-03: A code specifying the functional type of the Invoice. */
     private InvoiceDocumentType invoiceDocumentType;
 
     // Payments and billing

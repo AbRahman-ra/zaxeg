@@ -14,9 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 import sa.abrahman.zaxeg.core.model.invoice.financial.MeasuringUnit;
 import sa.abrahman.zaxeg.core.model.invoice.financial.PaymentMethod;
-import sa.abrahman.zaxeg.core.model.invoice.financial.TaxCategory;
 import sa.abrahman.zaxeg.core.model.invoice.meta.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.model.invoice.meta.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.model.invoice.renewed.TaxCategory;
 
 @Getter
 @Builder
