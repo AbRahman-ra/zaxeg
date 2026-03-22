@@ -15,10 +15,10 @@ public class StringValueValidator<E extends RuntimeException> {
      * @param subject          The string to validate
      * @param exceptionFactory A method reference to the exception you want to throw
      *                         (e.g., MyCustomException::new)
+     * @param <E> Unchecked Exception
      */
     public static <E extends RuntimeException> StringValueValidator<E> check(String subject,
             Function<String, E> exceptionFactory) {
-        if (subject == null) throw new NullPointerException("Subject must be NonNull String");
         return new StringValueValidator<>(subject, exceptionFactory);
     }
 

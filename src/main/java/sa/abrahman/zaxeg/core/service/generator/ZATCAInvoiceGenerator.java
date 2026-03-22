@@ -1,5 +1,7 @@
 package sa.abrahman.zaxeg.core.service.generator;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,13 @@ public class ZATCAInvoiceGenerator implements InvoiceGenerator {
                     payload.getDocumentAllowancesAndOrCharges(),
                     payload.getPrepaidAmount());
             payload.setFinancials(financials);
+        }
+
+        for (InvoiceGenerationPayload.LinePayload l : payload.getLines()) {
+            if (l.getNetAmount() == null){
+                BigDecimal netAmount = calculator.calculateNetAmountForLine(l);
+                l.setNetAmount(netAmount);
+            }
         }
 
         validator.validate(payload);

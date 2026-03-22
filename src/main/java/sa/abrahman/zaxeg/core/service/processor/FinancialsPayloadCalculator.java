@@ -25,7 +25,7 @@ public class FinancialsPayloadCalculator {
 
         // Add lines
         for (LinePayload line : lines) {
-            BigDecimal netPrice = getNetPrice(line);
+            BigDecimal netPrice = calculateNetAmount(line.getQuantity(), line.getUnitPrice(), line.getLineDiscount());
 
             BigDecimal taxMultiplier = line.getTaxCategory().getRate().divide(new BigDecimal("100"), 2,
                     RoundingMode.HALF_UP);
@@ -76,19 +76,23 @@ public class FinancialsPayloadCalculator {
                 .build();
     }
 
+    public BigDecimal calculateNetAmountForLine(LinePayload line) {
+        return calculateNetAmount(line.getQuantity(), line.getUnitPrice(), line.getLineDiscount());
+    }
+
+    public static BigDecimal calculateNetAmount(BigDecimal quantity, BigDecimal unitPrice, BigDecimal lineDiscount) {
+        if (quantity == null || unitPrice == null) return null;
+        BigDecimal discount = lineDiscount == null ? BigDecimal.ZERO : lineDiscount;
+        return quantity
+                .multiply(unitPrice)
+                .subtract(discount)
+                .setScale(2, RoundingMode.HALF_UP);
+    }
+
     public static BigDecimal getTaxAmount(BigDecimal amount, TaxCategory taxCategory) {
         if (amount == null || taxCategory == null)
             return BigDecimal.ZERO;
         // tax = amount * (rate / 100)
         return amount.multiply(taxCategory.getRate()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-    }
-
-    public BigDecimal getNetPrice(LinePayload line) {
-        return line.getQuantity().multiply(line.getUnitPrice()).subtract(line.getLineDiscount()).setScale(2,
-                RoundingMode.HALF_UP);
-    }
-
-    public static BigDecimal getNetPrice(BigDecimal unitPrice, BigDecimal quantity, BigDecimal lineDiscount) {
-        return quantity.multiply(unitPrice).subtract(lineDiscount).setScale(2, RoundingMode.HALF_UP);
     }
 }

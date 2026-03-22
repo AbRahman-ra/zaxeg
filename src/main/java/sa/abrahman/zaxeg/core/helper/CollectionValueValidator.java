@@ -13,8 +13,13 @@ public class CollectionValueValidator<C, E extends RuntimeException> {
 
     public static <C, E extends RuntimeException> CollectionValueValidator<C, E> check(Collection<C> subject,
             Function<String, E> exceptionFactory) {
-        if (subject == null) throw new NullPointerException("Subject must be NonNull Collection");
         return new CollectionValueValidator<>(subject, exceptionFactory);
+    }
+
+    public CollectionValueValidator<C, E> exists(String errMsg) {
+        if (subject == null)
+            throw exceptionFactory.apply(errMsg);
+        return this;
     }
 
     public CollectionValueValidator<C, E> hasAtleast(int length, String errMsg) {

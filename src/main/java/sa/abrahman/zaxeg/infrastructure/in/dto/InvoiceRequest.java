@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
@@ -105,6 +106,7 @@ public class InvoiceRequest implements Payloadable<InvoiceGenerationPayload> {
                 .quantity(l.getQuantity())
                 .measuringUnit(l.getMeasuringUnit())
                 .unitPrice(l.getUnitPrice())
+                .netAmount(l.getNetAmount()) // if not provided calculated automatically
                 .lineDiscount(l.getLineDiscount())
                 .build();
 
@@ -125,7 +127,7 @@ public class InvoiceRequest implements Payloadable<InvoiceGenerationPayload> {
 
         // allowance charges
         List<InvoiceGlobalPayablePayload> invoiceGlobalPayables = discountsAndOrFees == null
-                ? null
+                ? List.of()
                 : discountsAndOrFees.stream()
                         .map(allowanceChargeMapper)
                         .toList();
@@ -201,6 +203,7 @@ public class InvoiceRequest implements Payloadable<InvoiceGenerationPayload> {
         private String city;
         private String postalCode;
         private String additionalNumber;
+        private Locale country;
 
         @Override
         public AddressPayload toPayload() {
@@ -211,6 +214,7 @@ public class InvoiceRequest implements Payloadable<InvoiceGenerationPayload> {
                     .city(this.city)
                     .postalCode(this.postalCode)
                     .additionalNumber(this.additionalNumber)
+                    .country(this.country)
                     .build();
         }
     }
@@ -241,6 +245,8 @@ public class InvoiceRequest implements Payloadable<InvoiceGenerationPayload> {
         @Valid
         @NotNull(message = "BR-47: Each VAT breakdown shall be defined through a VAT category code")
         private TaxCategory taxCategory;
+
+        private BigDecimal netAmount;
         private String exemptionReasonCode;
         private String exemptionReasonText;
     }

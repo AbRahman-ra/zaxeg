@@ -1,14 +1,17 @@
 package sa.abrahman.zaxeg.core.port.in;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import sa.abrahman.zaxeg.core.model.invoice.financial.MeasuringUnit;
 import sa.abrahman.zaxeg.core.model.invoice.financial.PaymentMethod;
 import sa.abrahman.zaxeg.core.model.invoice.financial.TaxCategory;
@@ -65,6 +68,7 @@ public class InvoiceGenerationPayload {
         private final String city;
         private final String postalCode;
         private final String additionalNumber;
+        private final Locale country;
     }
 
     @Getter
@@ -75,7 +79,9 @@ public class InvoiceGenerationPayload {
         private final BigDecimal quantity;
         private final MeasuringUnit measuringUnit;
         private final BigDecimal unitPrice;
-        private final BigDecimal lineDiscount;
+        @Builder.Default
+        private final BigDecimal lineDiscount = BigDecimal.ZERO;
+        @Setter private BigDecimal netAmount;
         private final TaxCategory taxCategory;
         private final String exemptionReasonCode;
         private final String exemptionReasonText;

@@ -58,6 +58,20 @@ public class InvoiceLine {
      */
     private BigDecimal lineTotalInclusive;
 
+    /**
+     * @deprecated
+     * @param identifier
+     * @param name
+     * @param taxCategory
+     * @param exemptionReasonCode
+     * @param exemptionReasonText
+     * @param quantity
+     * @param measuringUnit
+     * @param unitPrice
+     * @param lineDiscount
+     * @return
+     */
+    @Deprecated(forRemoval = true)
     public static InvoiceLine create(
             String identifier,
             String name,

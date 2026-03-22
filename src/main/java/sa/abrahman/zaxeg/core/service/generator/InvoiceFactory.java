@@ -47,7 +47,7 @@ public class InvoiceFactory {
                 .build();
 
         Function<LinePayload, InvoiceLine> lineMapper = l -> {
-            BigDecimal netPrice = FinancialsPayloadCalculator.getNetPrice(l.getUnitPrice(), l.getQuantity(),
+            BigDecimal netPrice = FinancialsPayloadCalculator.calculateNetAmount(l.getUnitPrice(), l.getQuantity(),
                     l.getLineDiscount());
             BigDecimal taxAmount = FinancialsPayloadCalculator.getTaxAmount(netPrice, l.getTaxCategory());
             return InvoiceLine.builder()
