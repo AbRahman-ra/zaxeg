@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.financial;
+package sa.abrahman.zaxeg.core.model.invoice.old.financial;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -26,8 +26,10 @@ public class InvoiceLine {
     /**
      * TODO: make it enum
      */
-    @Setter private String exemptionReasonCode; // e.g., "VATEX-SA-32"
-    @Setter private String exemptionReasonText; // e.g., "Export of goods"
+    @Setter
+    private String exemptionReasonCode; // e.g., "VATEX-SA-32"
+    @Setter
+    private String exemptionReasonText; // e.g., "Export of goods"
 
     // Base Values
     private BigDecimal quantity;
@@ -85,7 +87,8 @@ public class InvoiceLine {
             MeasuringUnit measuringUnit,
             BigDecimal unitPrice,
             BigDecimal lineDiscount) {
-        if (taxCategory == null) taxCategory = TaxCategory.STANDARD;
+        if (taxCategory == null)
+            taxCategory = TaxCategory.STANDARD;
 
         BigDecimal rawNetPrice = quantity.multiply(unitPrice).subtract(lineDiscount);
         BigDecimal netPrice = rawNetPrice.setScale(2, RoundingMode.HALF_UP);

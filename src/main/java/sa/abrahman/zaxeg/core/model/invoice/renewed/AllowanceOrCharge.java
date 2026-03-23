@@ -45,8 +45,11 @@ public class AllowanceOrCharge {
     private Currency baseAmountCurrency;
 
     /**
-     * BG-20, BT-95: A coded identification of what VAT category applies to the
-     * document level allowance.
+     * <ul>
+     * <li>BG-20, BT-95: A coded identification of what VAT category applies to the document level allowance.</li>
+     * <li>BG-20, BT-96: The VAT rate, represented as percentage that applies to the document level allowance.</li>
+     * <li>KSA-21: Mandatory element. Use {@code VAT}</li>
+     * </ul>
      */
     private TaxCategory taxCategory;
 }

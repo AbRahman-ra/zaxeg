@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.financial;
+package sa.abrahman.zaxeg.core.model.invoice.old.financial;
 
 import java.math.BigDecimal;
 

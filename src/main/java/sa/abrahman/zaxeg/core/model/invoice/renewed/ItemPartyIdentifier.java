@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TaxScheme {
-    private Scheme id;
+public class ItemPartyIdentifier {
+    private String id;
 }

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.model.invoice.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.old.Invoice;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.FinancialsPayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;

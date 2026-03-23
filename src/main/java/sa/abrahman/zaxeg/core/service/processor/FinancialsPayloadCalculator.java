@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import sa.abrahman.zaxeg.core.model.invoice.renewed.TaxCategory;
+import sa.abrahman.zaxeg.core.model.invoice.old.financial.TaxCategory;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.FinancialsPayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.InvoiceGlobalPayablePayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.LinePayload;
@@ -81,7 +81,8 @@ public class FinancialsPayloadCalculator {
     }
 
     public static BigDecimal calculateNetAmount(BigDecimal quantity, BigDecimal unitPrice, BigDecimal lineDiscount) {
-        if (quantity == null || unitPrice == null) return null;
+        if (quantity == null || unitPrice == null)
+            return null;
         BigDecimal discount = lineDiscount == null ? BigDecimal.ZERO : lineDiscount;
         return quantity
                 .multiply(unitPrice)

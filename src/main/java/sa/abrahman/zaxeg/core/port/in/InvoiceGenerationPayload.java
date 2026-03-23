@@ -12,11 +12,11 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import sa.abrahman.zaxeg.core.model.invoice.financial.MeasuringUnit;
-import sa.abrahman.zaxeg.core.model.invoice.financial.PaymentMethod;
-import sa.abrahman.zaxeg.core.model.invoice.meta.InvoiceDocumentType;
-import sa.abrahman.zaxeg.core.model.invoice.meta.InvoiceSubtype;
-import sa.abrahman.zaxeg.core.model.invoice.renewed.TaxCategory;
+import sa.abrahman.zaxeg.core.model.invoice.old.financial.MeasuringUnit;
+import sa.abrahman.zaxeg.core.model.invoice.old.financial.PaymentMethod;
+import sa.abrahman.zaxeg.core.model.invoice.old.meta.InvoiceDocumentType;
+import sa.abrahman.zaxeg.core.model.invoice.old.meta.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.model.invoice.old.financial.TaxCategory;
 
 @Getter
 @Builder
@@ -41,6 +41,7 @@ public class InvoiceGenerationPayload {
 
     /**
      * immutable setter
+     *
      * @throws IllegalStateException if the financials has been mutated before
      */
     public void setFinancials(FinancialsPayload financials) {
@@ -81,7 +82,8 @@ public class InvoiceGenerationPayload {
         private final BigDecimal unitPrice;
         @Builder.Default
         private final BigDecimal lineDiscount = BigDecimal.ZERO;
-        @Setter private BigDecimal netAmount;
+        @Setter
+        private BigDecimal netAmount;
         private final TaxCategory taxCategory;
         private final String exemptionReasonCode;
         private final String exemptionReasonText;

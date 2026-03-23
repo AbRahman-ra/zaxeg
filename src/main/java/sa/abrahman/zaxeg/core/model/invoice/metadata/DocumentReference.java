@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.renewed;
+package sa.abrahman.zaxeg.core.model.invoice.metadata;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

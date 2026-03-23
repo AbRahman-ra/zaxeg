@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.*;
-import sa.abrahman.zaxeg.core.model.invoice.meta.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.model.invoice.old.meta.InvoiceSubtype;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
@@ -37,24 +37,29 @@ public class IntegrityConstraintsBusinessValidator implements InvoiceValidator {
         String seller = Optional.ofNullable(payload.getSupplier()).map(s -> s.getRegistrationName()).orElse(null);
         StringValueValidator.check(seller, h).exists(BR_06);
 
-        InvoiceGenerationPayload.AddressPayload sellerAddress = Optional.ofNullable(payload.getSupplier()).map(s -> s.getAddress()).orElse(null);
+        InvoiceGenerationPayload.AddressPayload sellerAddress = Optional.ofNullable(payload.getSupplier())
+                .map(s -> s.getAddress()).orElse(null);
         ObjectValueValidator.check(sellerAddress, h).exists(BR_08);
 
         Locale sellerCountry = Optional.ofNullable(sellerAddress).map(a -> a.getCountry()).orElse(null);
         ObjectValueValidator.check(sellerCountry, h).exists(BR_09);
 
         if (payload.getInvoiceSubtype() != InvoiceSubtype.SIMPLIFIED) {
-            InvoiceGenerationPayload.AddressPayload buyerAddress = Optional.ofNullable(payload.getBuyer()).map(b -> b.getAddress()).orElse(null);
+            InvoiceGenerationPayload.AddressPayload buyerAddress = Optional.ofNullable(payload.getBuyer())
+                    .map(b -> b.getAddress()).orElse(null);
             ObjectValueValidator.check(buyerAddress, h).exists(BR_10);
         }
 
-        BigDecimal totalAmountWithoutVat = Optional.ofNullable(payload.getFinancials()).map(f -> f.getTaxExclusiveAmount()).orElse(null);
+        BigDecimal totalAmountWithoutVat = Optional.ofNullable(payload.getFinancials())
+                .map(f -> f.getTaxExclusiveAmount()).orElse(null);
         ObjectValueValidator.check(totalAmountWithoutVat, h).exists(BR_13);
 
-        BigDecimal totalAmountWithVat = Optional.ofNullable(payload.getFinancials()).map(f -> f.getTotalAmountInclusive()).orElse(null);
+        BigDecimal totalAmountWithVat = Optional.ofNullable(payload.getFinancials())
+                .map(f -> f.getTotalAmountInclusive()).orElse(null);
         ObjectValueValidator.check(totalAmountWithVat, h).exists(BR_14);
 
-        BigDecimal totalAmountDue = Optional.ofNullable(payload.getFinancials()).map(f -> f.getPayableAmount()).orElse(null);
+        BigDecimal totalAmountDue = Optional.ofNullable(payload.getFinancials()).map(f -> f.getPayableAmount())
+                .orElse(null);
         ObjectValueValidator.check(totalAmountDue, h).exists(BR_15);
 
         CollectionValueValidator.check(payload.getLines(), h)
@@ -65,14 +70,13 @@ public class IntegrityConstraintsBusinessValidator implements InvoiceValidator {
                 .allMatch(l -> l.getNetAmount() != null, BR_24)
                 .allMatch(l -> l.getName() != null && !l.getName().isBlank(), BR_25)
                 .allMatch(l -> l.getUnitPrice() != null, BR_26)
-                // .allMatch(l -> l.get, seller)
-                ;
+        // .allMatch(l -> l.get, seller)
+        ;
 
         if (payload.getDocumentAllowancesAndOrCharges() != null) {
             CollectionValueValidator.check(payload.getDocumentAllowancesAndOrCharges(), h)
                     .allMatch(ac -> ac.getAmount() != null, String.format("%s | %s", BR_31, BR_36))
-                    .allMatch(ac -> ac.getTaxCategory() != null, String.format("%s | %s", BR_32, BR_37))
-                    ;
+                    .allMatch(ac -> ac.getTaxCategory() != null, String.format("%s | %s", BR_32, BR_37));
         }
     }
 }

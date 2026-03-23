@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.meta;
+package sa.abrahman.zaxeg.core.model.invoice.metadata;
 
 public enum InvoiceSubtype {
     STANDARD, SIMPLIFIED;

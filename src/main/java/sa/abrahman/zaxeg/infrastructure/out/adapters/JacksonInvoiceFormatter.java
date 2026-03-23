@@ -17,10 +17,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import lombok.experimental.UtilityClass;
-import sa.abrahman.zaxeg.core.model.invoice.Invoice;
-import sa.abrahman.zaxeg.core.model.invoice.financial.*;
-import sa.abrahman.zaxeg.core.model.invoice.meta.*;
-import sa.abrahman.zaxeg.core.model.invoice.party.BusinessParty;
+import sa.abrahman.zaxeg.core.model.invoice.old.financial.*;
+import sa.abrahman.zaxeg.core.model.invoice.old.meta.*;
+import sa.abrahman.zaxeg.core.model.invoice.old.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.old.party.BusinessParty;
 import sa.abrahman.zaxeg.core.port.out.InvoiceFormatter;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.ZATCAInvoiceDto;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.financial.*;
@@ -65,7 +65,8 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         List<TaxTotalDto> taxtotals = Extractor.taxTotals(invoice.getLines(), invoice.getFinancials(), docCurrency,
                 taxCurrency);
         List<InvoiceLineDto> invoiceLines = Extractor.invoiceLines(invoice.getLines(), docCurrency);
-        List<InvoiceGlobalPayableDto> allowanceCharges = Extractor.allowanceCharges(invoice.getDocumentAllowanceCharges(), docCurrency);
+        List<InvoiceGlobalPayableDto> allowanceCharges = Extractor
+                .allowanceCharges(invoice.getDocumentAllowanceCharges(), docCurrency);
 
         // assemble
         ZATCAInvoiceDto ublDto = ZATCAInvoiceDto.builder()
@@ -120,7 +121,8 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         List<TaxTotalDto> taxTotals(List<InvoiceLine> l, DocumentFinancials df, String docCurrency,
                 String taxCurrency) {
             // Create a composite key to group by Category AND Exemption Reason
-            record TaxGroupKey(TaxCategory category, String exemptionCode, String exemptionText) {}
+            record TaxGroupKey(TaxCategory category, String exemptionCode, String exemptionText) {
+            }
 
             Function<InvoiceLine, TaxGroupKey> compositeKey = line -> new TaxGroupKey(
                     line.getTaxCategory(),
@@ -314,7 +316,8 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         }
 
         List<InvoiceGlobalPayableDto> allowanceCharges(List<InvoiceGlobalPayable> acList, String currency) {
-            if (acList == null || acList.isEmpty()) return new ArrayList<>();
+            if (acList == null || acList.isEmpty())
+                return new ArrayList<>();
 
             return acList.stream().map(ac -> InvoiceGlobalPayableDto.builder()
                     .chargeIndicator(ac.isCharge())

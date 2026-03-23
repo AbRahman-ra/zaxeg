@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.party;
+package sa.abrahman.zaxeg.core.model.invoice.old.party;
 
 import lombok.Builder;
 import lombok.Getter;
