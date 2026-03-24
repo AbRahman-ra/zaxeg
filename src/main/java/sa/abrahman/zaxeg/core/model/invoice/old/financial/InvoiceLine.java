@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * @deprecated
+ */
+@Deprecated(forRemoval = true)
 @Getter
 @Builder
 public class InvoiceLine {

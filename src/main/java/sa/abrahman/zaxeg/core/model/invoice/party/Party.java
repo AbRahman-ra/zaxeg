@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class Party {
     private String name;
-    private List<PartyIdentification> otherSellerIds;
+    private PartyTaxScheme identification;
+    private List<PartyIdentification> otherIds;
     private Address address;
-    
 }

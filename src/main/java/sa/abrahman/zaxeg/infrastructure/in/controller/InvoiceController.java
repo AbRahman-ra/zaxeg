@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 import sa.abrahman.zaxeg.infrastructure.in.dto.APIResponse;
-import sa.abrahman.zaxeg.infrastructure.in.dto.InvoiceRequest;
+import sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.InvoiceGenerationRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class InvoiceController {
 
     @PostMapping(value = "/generate")
     @Operation(summary = "Generate UBL 2.1 XML from JSON payload")
-    public ResponseEntity<APIResponse<String>> generate(@Valid @RequestBody InvoiceRequest request) {
-        InvoiceGenerationPayload payload = request.toPayload();
+    public ResponseEntity<APIResponse<String>> generate(@Valid @RequestBody InvoiceGenerationRequest request) {
+        InvoiceGenerationPayload payload = request.toPayload(null);
         String invoice = service.handle(payload);
         return ResponseEntity.ok(APIResponse.from(HttpStatus.OK.value(), "", invoice));
     }

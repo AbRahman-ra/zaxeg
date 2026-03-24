@@ -17,9 +17,12 @@ import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.generator.InvoiceFactory;
 import sa.abrahman.zaxeg.core.model.invoice.old.financial.*;
 
+/**
+ * @deprecated
+ */
+@Deprecated(forRemoval = true)
 @Getter
 @Builder
-@Deprecated(forRemoval = true)
 public class Invoice {
     private static final String DEFAULT_CURRENCY = "SAR";
 

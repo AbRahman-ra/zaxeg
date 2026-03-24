@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.renewed;
+package sa.abrahman.zaxeg.core.model.invoice.common;
 
 import java.math.BigDecimal;
 import java.util.Currency;

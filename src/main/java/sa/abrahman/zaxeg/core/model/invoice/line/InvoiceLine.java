@@ -1,10 +1,13 @@
-package sa.abrahman.zaxeg.core.model.invoice.renewed;
+package sa.abrahman.zaxeg.core.model.invoice.line;
 
 
 import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
+import sa.abrahman.zaxeg.core.model.invoice.common.AllowanceOrCharge;
+import sa.abrahman.zaxeg.core.model.invoice.common.Amount;
+import sa.abrahman.zaxeg.core.model.invoice.common.TaxTotal;
 
 @Getter
 @Builder

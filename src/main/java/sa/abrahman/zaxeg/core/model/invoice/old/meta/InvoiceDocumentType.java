@@ -1,9 +1,9 @@
 package sa.abrahman.zaxeg.core.model.invoice.old.meta;
 
 /**
- * @deprecated use sa.abrahman.zaxeg.core.model.invoice.metadata.InvoiceDocumentType
+ * @deprecated
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public enum InvoiceDocumentType {
     TAX_INVOICE, DEBIT_NOTE, CREDIT_NOTE, PREPAYMENT_INVOICE;
 

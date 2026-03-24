@@ -5,6 +5,10 @@ import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * @deprecated
+ */
+@Deprecated(forRemoval = true)
 @Getter
 @Builder
 public class DocumentFinancials {

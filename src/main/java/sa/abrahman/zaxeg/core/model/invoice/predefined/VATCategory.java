@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.renewed;
+package sa.abrahman.zaxeg.core.model.invoice.predefined;
 
 import java.math.BigDecimal;
 

@@ -1,9 +1,5 @@
-package sa.abrahman.zaxeg.core.model.invoice.old.financial;
+package sa.abrahman.zaxeg.core.model.invoice.predefined;
 
-/**
- * @deprecated
- */
-@Deprecated(forRemoval = true)
 /**
  * UN/EDIFACT 4461 Payment Methods
  */

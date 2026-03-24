@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.model.invoice.party;
+package sa.abrahman.zaxeg.core.model.invoice.predefined;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

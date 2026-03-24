@@ -3,6 +3,7 @@ package sa.abrahman.zaxeg.core.service.validator.rules;
 public class BusinessIntegrityConstraintRule {
     private BusinessIntegrityConstraintRule() {}
 
+    // BR - Integrity Constraints
     public static final String BR_02 = "[BR-02]: An Invoice shall have an Invoice number (BT-1).";
     public static final String BR_03 = "[BR-03]: An Invoice shall have an Invoice issue date (BT-2).";
     public static final String BR_04 = "[BR-04]: An Invoice shall have an Invoice type code (BT-3).";
@@ -33,4 +34,12 @@ public class BusinessIntegrityConstraintRule {
     public static final String BR_49 = "[BR_49]: A Payment instruction (BG-16) shall specify the Payment means type code (BT-81).";
     public static final String BR_53 = "[BR_53]: If the VAT accounting currency code (BT-6) is present, then the Invoice total VAT amount in accounting currency (BT-111) shall be provided.";
     public static final String BR_55 = "[BR_55]: Each Preceding Invoice reference (BG-3) shall contain a Preceding Invoice reference (BT-25).";
+
+    // KSA - Business Rules
+    public static final String BR_KSA_27 = "[BR-KSA-27]: The document must contain a QR code (KSA-14), and this code must be base64 encoded.";
+    public static final String BR_KSA_33 = "[BR-KSA-33]: Each invoice must have an invoice counter value";
+    public static final String BR_KSA_34 = "[BR-KSA-34]: The invoice counter value (KSA-16) contains only digits";
+    public static final String BR_KSA_60 = "[BR-KSA-60]: Cryptographic stamp (KSA-15) must exist in simplified tax invoices and associated credit notes and debit notes (KSA-2, position 1 and 2 = 02)";
+    public static final String BR_KSA_61 = "[BR-KSA-61]: Previous invoice hash (KSA-13) must exist in an invoice";
+    public static final String BR_KSA_68 = "[BR-KSA-68]: Tax currency code (BT-6) must exist in an invoice";
 }

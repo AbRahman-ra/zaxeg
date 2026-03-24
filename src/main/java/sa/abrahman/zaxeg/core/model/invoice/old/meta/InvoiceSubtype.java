@@ -3,7 +3,7 @@ package sa.abrahman.zaxeg.core.model.invoice.old.meta;
 /**
  * @deprecated
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public enum InvoiceSubtype {
     STANDARD, SIMPLIFIED;
 

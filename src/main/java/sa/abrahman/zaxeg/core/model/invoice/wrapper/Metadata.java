@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.metadata.*;
+import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceDocumentType;
 
 /**
  * <p>Invoice Metadata, any invoice stateful information that is neither related to the items nor the amounts directlu will be stored here</p>
@@ -42,7 +43,7 @@ public class Metadata {
     private InvoiceDocumentType invoiceDocumentType;
 
     /** BT-03, KSA-02: A code of the invoice subtype and invoices transactions. */
-    private InvoiceSubtype invoiceSubtype;
+    private InvoiceTypeTransactions invoiceTypeTransactions;
 
     /** BG-01, BT-22: A textual note that gives unstructured information that is relevant to the Invoice as a whole. */
     private List<String> notes;
@@ -108,4 +109,33 @@ public class Metadata {
      * </p>
      */
     private CryptographicStamp cryptographicStamp;
+
+    /**
+     * BG-13, KSA-05:
+     * <ul>
+     * <li>The date when the supply is performed</li>
+     * <li>For credit and debit notes , it acts as the original supply date.</li>
+     * </ul>
+     */
+    private LocalDate supplyDate;
+
+    /**
+     * KSA-24: Calendar field "End Date" for Continuous Supplies.
+     */
+    private LocalDate supplyEndDate;
+
+    /**
+     * <ul>
+     * <li>KSA-10: Reasons for issuance of credit / debit note as per Article 40 (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit Note is issued for these 5 instances: </li>
+     *
+     * <ul>
+     * <li>Cancellation or suspension of the supplies after its occurrence either wholly or partially</li>
+     * <li>In case of essential change or amendment in the supply, which leads to the change of the VAT due;</li>
+     * <li>Amendment of the supply value which is pre-agreed upon between the supplier and consumer;</li>
+     * <li>In case of goods or services refund.</li>
+     * <li>In case of change in Seller's or Buyer's information</li>
+     * </ul>
+     * </ul>
+     */
+    private List<String> creditOrDebitNoteIssuanceReasons;
 }

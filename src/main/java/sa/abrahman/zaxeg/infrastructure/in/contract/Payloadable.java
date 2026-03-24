@@ -5,6 +5,6 @@ package sa.abrahman.zaxeg.infrastructure.in.contract;
  * handle the possibility of changing the request body overtime, since it's
  * concerned with the request dto, it's kept in the infrastructure
  */
-public interface Payloadable<C> {
-    C toPayload();
+public interface Payloadable<C, D> {
+    C toPayload(D additionalData);
 }

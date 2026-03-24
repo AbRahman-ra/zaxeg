@@ -1,9 +1,5 @@
-package sa.abrahman.zaxeg.core.model.invoice.old.financial;
+package sa.abrahman.zaxeg.core.model.invoice.predefined;
 
-/**
- * @deprecated
- */
-@Deprecated(forRemoval = true)
 public enum MeasuringUnit {
     PCE, // piece
     SET, // set

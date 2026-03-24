@@ -1,7 +1,9 @@
-package sa.abrahman.zaxeg.core.model.invoice.renewed;
+package sa.abrahman.zaxeg.core.model.invoice.line;
 
 import lombok.Builder;
 import lombok.Getter;
+import sa.abrahman.zaxeg.core.model.invoice.common.AllowanceOrCharge;
+import sa.abrahman.zaxeg.core.model.invoice.common.Amount;
 
 @Getter
 @Builder
@@ -26,7 +28,7 @@ public class InvoiceLinePrice {
      * <li>BG-29, BT-150: Item price base quantity unit code</li>
      * </ul>
      */
-    private Quantity baseQualtity;
+    private Quantity baseQuantity;
 
     /**
      * <ul>

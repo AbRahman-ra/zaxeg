@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
+ * @deprecated
+ */
+@Deprecated(forRemoval = true)
+/**
  * A container for document allowances or charges
  */
 @Data

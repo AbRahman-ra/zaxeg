@@ -5,6 +5,10 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * @deprecated
+ */
+@Deprecated(forRemoval = true)
 @Getter
 @RequiredArgsConstructor
 public enum TaxCategory {
