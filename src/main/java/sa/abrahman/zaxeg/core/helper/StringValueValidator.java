@@ -1,5 +1,6 @@
 package sa.abrahman.zaxeg.core.helper;
 
+import java.util.Set;
 import java.util.function.Function;
 
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ public class StringValueValidator<E extends RuntimeException> {
      * @param subject          The string to validate
      * @param exceptionFactory A method reference to the exception you want to throw
      *                         (e.g., MyCustomException::new)
-     * @param <E> Unchecked Exception
+     * @param <E>              Unchecked Exception
      */
     public static <E extends RuntimeException> StringValueValidator<E> check(String subject,
             Function<String, E> exceptionFactory) {
@@ -53,6 +54,16 @@ public class StringValueValidator<E extends RuntimeException> {
     public StringValueValidator<E> exists(String errMsg) {
         if (this.subject == null || this.subject.isBlank()) {
             throw exceptionFactory.apply(errMsg);
+        }
+        return this;
+    }
+
+    public StringValueValidator<E> numeric(String errMsg) {
+        Set<Character> numbers = Set.of('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+        for (int i = 0; i < this.subject.length(); i++) {
+            if (!numbers.contains(this.subject.charAt(i))) {
+                throw exceptionFactory.apply(errMsg);
+            }
         }
         return this;
     }
