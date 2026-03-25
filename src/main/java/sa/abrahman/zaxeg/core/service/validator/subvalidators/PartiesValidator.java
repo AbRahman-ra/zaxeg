@@ -33,11 +33,11 @@ public class PartiesValidator implements InvoiceValidator {
         PartiesPayload.Address sellerAddress = seller.getAddress();
         PartiesPayload.Party buyer = parties.getBuyer();
         PartiesPayload.Address buyerAddress = Optional.ofNullable(buyer).map(PartiesPayload.Party::getAddress).orElse(null);
-        String buyerName = Optional.ofNullable(buyer).map(PartiesPayload.Party::getName).orElse(null);
-        String buyerCountry = Optional.ofNullable(buyerAddress).map(PartiesPayload.Address::getCountry).map(Locale::getCountry).orElse(null);
+        String buyerName = Optional.ofNullable(buyer).map(PartiesPayload.Party::getName).orElse("");
+        String buyerCountry = Optional.ofNullable(buyerAddress).map(PartiesPayload.Address::getCountry).map(Locale::getCountry).orElse("");
         MetadataPayload.InvoiceTypeTransactions invoiceTypeTransactions = Optional.ofNullable(payload.getMetadata().getInvoiceTypeTransactions()).orElse(null);
         InvoiceSubtype invoiceSubtype = Optional.ofNullable(invoiceTypeTransactions).map(MetadataPayload.InvoiceTypeTransactions::getSubtype).orElse(null);
-        String buyerVat = Optional.ofNullable(buyer).map(PartiesPayload.Party::getIdentification).map(id -> id.getCompanyId()).orElse(null);
+        String buyerVat = Optional.ofNullable(buyer).map(PartiesPayload.Party::getIdentification).map(id -> id.getCompanyId()).orElse("");
         Predicate<PartiesPayload.Address> addressChecker = a -> {
             StringValueValidator.check(a.getStreet(), f).exists(InvoiceValidationRule.BR_KSA_09);
             StringValueValidator.check(a.getBuildingNumber(), f).exists(InvoiceValidationRule.BR_KSA_09);
@@ -84,13 +84,13 @@ public class PartiesValidator implements InvoiceValidator {
             StringValueValidator.check(buyerName, f).exists(InvoiceValidationRule.BR_KSA_71);
         }
 
-        if (buyer != null && "sa".equalsIgnoreCase(buyerCountry)) {
+        if ("sa".equalsIgnoreCase(buyerCountry)) {
             ObjectValueValidator.check(buyerAddress, f).exists(InvoiceValidationRule.BR_KSA_63).matches(addressChecker, InvoiceValidationRule.BR_KSA_63);
             // exists will eliminate possibilities for NullPointerException, so if IDE is shouting because of buyerAddress.getPostalCode() just don't listen to it
             StringValueValidator.check(buyerAddress.getPostalCode(), f).hasLength(5, InvoiceValidationRule.BR_KSA_67).numeric(InvoiceValidationRule.BR_KSA_67);
         }
 
-        if (buyerVat != null && invoiceTypeTransactions != null && !invoiceTypeTransactions.isExports()) {
+        if (invoiceTypeTransactions != null && !invoiceTypeTransactions.isExports()) {
             StringValueValidator.check(buyerVat, f).hasLength(15, InvoiceValidationRule.BR_KSA_44).startsAndEndsWith("3", InvoiceValidationRule.BR_KSA_44);
         }
 
