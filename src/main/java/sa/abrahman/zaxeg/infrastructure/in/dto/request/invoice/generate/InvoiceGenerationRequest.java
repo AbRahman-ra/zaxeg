@@ -25,11 +25,11 @@ public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPa
 
     @Override
     public InvoiceGenerationPayload toPayload(Void d) {
-        MetadataPayload metap = metadata.toPayload(null);
-        PartiesPayload partiesp = parties.toPayload(null);
-        LinesPayload linesp = lines.toPayload(metap.getInvoiceCurrency());
-        CheckoutDetailsPayload checkoutp = checkout.toPayload(List.of(metap.getInvoiceCurrency(), metap.getTaxCurrency()));
+        MetadataPayload metapay = metadata.toPayload(null);
+        PartiesPayload partiespay = parties.toPayload(null);
+        LinesPayload linespay = lines.toPayload(metapay.getInvoiceCurrency());
+        CheckoutDetailsPayload checkoutpay = checkout.toPayload(List.of(metapay.getInvoiceCurrency(), metapay.getTaxCurrency()));
 
-        return new InvoiceGenerationPayload(metap, partiesp, linesp, checkoutp);
+        return new InvoiceGenerationPayload(metapay, partiespay, linespay, checkoutpay);
     }
 }

@@ -16,25 +16,25 @@ import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceSubtype;
 import sa.abrahman.zaxeg.core.port.in.payload.MetadataPayload;
-import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;
+import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Data
 @Schema(title = "Document Metadata", description = "Document-level configurations and metadata", requiredMode = RequiredMode.REQUIRED)
 class Metadata implements Payloadable<MetadataPayload, Void> {
-    @NotBlank(message = BusinessIntegrityConstraintRule.BR_02)
+    @NotBlank(message = InvoiceValidationRule.BR_02)
     @Schema(title = "Invoice number", description = "A unique identification of the Invoice", requiredMode = RequiredMode.REQUIRED, example = "1234567")
     private String invoiceNumber;
 
     @Schema(title = "Unique invoice identifier", description = "Globally unique reference identifying the invoice. Note: the system will generate an automatic UUID if there is no provided UUID, However, it's STRINGLY RECOMMENDED to provide a UUID", example = "8f480da0-70f9-4674-8b63-8a3d6ebef9e6")
     private UUID invoiceUuid = UUID.randomUUID();
 
-    @NotNull(message = BusinessIntegrityConstraintRule.BR_03)
+    @NotNull(message = InvoiceValidationRule.BR_03)
     @Schema(title = "Invoice issue date (gregorian calendar)", description = "The date when the Invoice was issued as per Article 53 of the VAT Implementing Regulation", requiredMode = RequiredMode.REQUIRED, example = "2026-01-01")
     private LocalDate issueDate;
 
     @NotNull(message = "Issue time is required")
-    @Schema(title = "Invoice issue time", description = "The time when the invoice was issued.", requiredMode = RequiredMode.REQUIRED, example = "19:48:21")
+    @Schema(title = "Invoice issue time", description = "The time when the invoice was issued. Provided in hh:mm:ss for time in AST, and hh:mm:ssZ for UTC time zone", requiredMode = RequiredMode.REQUIRED, example = "19:48:21")
     private LocalTime issueTime;
 
     @Schema(title = "Supply date (gregorian calendar)", description = "The date when the supply is performed. For credit and debit notes, it acts as the original supply date.", requiredMode = RequiredMode.NOT_REQUIRED, example = "2026-01-01")
@@ -43,12 +43,12 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
     @Schema(title = "Supply end date (gregorian calendar)", description = "Calendar field \"End Date\" for Continuous Supplies.", requiredMode = RequiredMode.NOT_REQUIRED, example = "2026-01-01")
     private LocalDate supplyEndDate;
 
-    @NotNull(message = BusinessIntegrityConstraintRule.BR_04)
+    @NotNull(message = InvoiceValidationRule.BR_04)
     @Schema(title = "Invoice type code", description = "A code specifying the functional type of the Invoice.", requiredMode = RequiredMode.REQUIRED, example = "TAX_INVOICE")
     private InvoiceDocumentType invoiceDocumentType;
 
     @Valid
-    @NotNull(message = BusinessIntegrityConstraintRule.BR_04)
+    @NotNull(message = InvoiceValidationRule.BR_04)
     @Schema(title = "Invoice type transactions", description = "A code of the invoice subtype and invoices transactions.", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"subtype\": \"STANDARD\"\n}")
     private InvoiceTypeTransactions invoiceTypeTransactions;
 

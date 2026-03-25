@@ -10,8 +10,8 @@ public class DateValueValidator<E extends RuntimeException> {
     private final LocalDate subject;
     private final Function<String, E> exceptionFactory;
 
-    public static <E extends RuntimeException> DateValueValidator<E> check(LocalDate subject, Function<String, E> exceptionFactory) {
-        if (subject == null) throw new NullPointerException("Subject must be NonNull Date");
+    public static <E extends RuntimeException> DateValueValidator<E> check(LocalDate subject,
+            Function<String, E> exceptionFactory) {
         return new DateValueValidator<>(subject, exceptionFactory);
     }
 
@@ -19,6 +19,11 @@ public class DateValueValidator<E extends RuntimeException> {
         if (this.subject.isAfter(LocalDate.now())) {
             throw exceptionFactory.apply(errMsg);
         }
+        return this;
+    }
+
+    public DateValueValidator<E> before(LocalDate future, String errMsg) {
+        if (this.subject.isAfter(future)) throw exceptionFactory.apply(errMsg);
         return this;
     }
 

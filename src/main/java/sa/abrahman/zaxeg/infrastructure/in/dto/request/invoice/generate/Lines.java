@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.MeasuringUnit;
 import sa.abrahman.zaxeg.core.port.in.payload.LinesPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons;
-import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;
+import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Getter
 @RequiredArgsConstructor
 class Lines implements Payloadable<LinesPayload, Currency> {
     @Valid
-    @NotEmpty(message = BusinessIntegrityConstraintRule.BR_16)
+    @NotEmpty(message = InvoiceValidationRule.BR_16)
     @Schema(title = "Invoice Lines", requiredMode = RequiredMode.REQUIRED)
     private final List<InvoiceLine> invoiceLines;
 
@@ -36,17 +36,17 @@ class Lines implements Payloadable<LinesPayload, Currency> {
     @Data
     private static class InvoiceLine implements Payloadable<LinesPayload.InvoiceLine, Currency> {
 
-        @NotBlank(message = BusinessIntegrityConstraintRule.BR_21)
+        @NotBlank(message = InvoiceValidationRule.BR_21)
         @Schema(title = "Invoice Line ID", description = "A unique identifier for the individual line within the Invoice. Usually a sequential number (1, 2, 3...).", requiredMode = RequiredMode.REQUIRED, example = "INV0023")
         private String id;
 
         @Valid
-        @NotNull(message = BusinessIntegrityConstraintRule.BR_22)
+        @NotNull(message = InvoiceValidationRule.BR_22)
         @Schema(title = "The invoice line quantity (unit, value)", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"unit\": \"PCE\", \"count\": 4.0\n}")
         private Quantity quantity;
 
         @Valid
-        @NotNull(message = BusinessIntegrityConstraintRule.BR_24)
+        @NotNull(message = InvoiceValidationRule.BR_24)
         @Schema(title = "Invoice line net amount", description = "The total amount of the Invoice line, including allowances (discounts). It is the item net price multiplied with the quantity. The amount is “net” without VAT. Note: the currency must natch the document level currency", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"value\": 100.0,\n    \"currency\":\"SAR\"\n}")
         private BigDecimal netAmount;
 
@@ -95,7 +95,7 @@ class Lines implements Payloadable<LinesPayload, Currency> {
         @Getter
         @Builder
         static class InvoiceLineItem implements Payloadable<LinesPayload.InvoiceLineItem, Void> {
-            @NotBlank(message = BusinessIntegrityConstraintRule.BR_25)
+            @NotBlank(message = InvoiceValidationRule.BR_25)
             @Schema(title = "Item name", description = "The description of goods or services as per Article 53 of the VAT Implementing Regulation.")
             private String name;
 
@@ -139,7 +139,7 @@ class Lines implements Payloadable<LinesPayload, Currency> {
         @Getter
         @Builder
         static class InvoiceLinePrice implements Payloadable<LinesPayload.InvoiceLinePrice, Currency> {
-            @NotNull(message = BusinessIntegrityConstraintRule.BR_26)
+            @NotNull(message = InvoiceValidationRule.BR_26)
             @Schema(title = "Item net price", description = "The price of an item, exclusive of VAT, after subtracting item price discount. The Item net price has to be equal with the Item gross price (allowance/charge amount) minus the Item price discount.")
             private BigDecimal amount;
 
@@ -151,10 +151,10 @@ class Lines implements Payloadable<LinesPayload, Currency> {
             @Override
             public LinesPayload.InvoiceLinePrice toPayload(Currency currency) {
                 return LinesPayload.InvoiceLinePrice.builder()
-                .amount(new PayloadCommons.Amount(amount, currency))
-                .quantity(quantity.toPayload(null))
-                .allowanceOrCharge(allowanceOrCharge.toPayload(currency))
-                .build();
+                        .amount(new PayloadCommons.Amount(amount, currency))
+                        .quantity(quantity.toPayload(null))
+                        .allowanceOrCharge(allowanceOrCharge.toPayload(currency))
+                        .build();
             }
         }
     }

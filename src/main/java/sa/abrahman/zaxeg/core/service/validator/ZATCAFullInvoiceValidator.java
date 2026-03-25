@@ -8,19 +8,28 @@ import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 
 @Service(InvoiceValidatorBeanNameResolver.FULL_INVOICE_VALIDATOR)
 public class ZATCAFullInvoiceValidator implements InvoiceValidator {
-    private final InvoiceValidator business;
-    private final InvoiceValidator ksa;
+    private final InvoiceValidator metadata;
+    private final InvoiceValidator parties;
+    private final InvoiceValidator lines;
+    private final InvoiceValidator checkout;
 
     public ZATCAFullInvoiceValidator(
-            @Qualifier(InvoiceValidatorBeanNameResolver.GENERIC_BUSINESS_VALIDATOR) InvoiceValidator business,
-            @Qualifier(InvoiceValidatorBeanNameResolver.GENERIC_KSA_VALIDATOR) InvoiceValidator ksa) {
-        this.business = business;
-        this.ksa = ksa;
+            @Qualifier(InvoiceValidatorBeanNameResolver.METADATA_VALIDATOR) InvoiceValidator metadata,
+            @Qualifier(InvoiceValidatorBeanNameResolver.PARTIES_VALIDATOR) InvoiceValidator parties,
+            @Qualifier(InvoiceValidatorBeanNameResolver.LINES_VALIDATOR) InvoiceValidator lines,
+            @Qualifier(InvoiceValidatorBeanNameResolver.CHECKOUT_VALIDATOR) InvoiceValidator checkout) {
+
+        this.metadata = metadata;
+        this.parties = parties;
+        this.lines = lines;
+        this.checkout = checkout;
     }
 
     @Override
     public void validate(InvoiceGenerationPayload payload) {
-        business.validate(payload);
-        ksa.validate(payload);
+        metadata.validate(payload);
+        parties.validate(payload);
+        lines.validate(payload);
+        checkout.validate(payload);
     }
 }

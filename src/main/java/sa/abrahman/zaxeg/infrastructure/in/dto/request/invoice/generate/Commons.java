@@ -16,7 +16,7 @@ import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxExemptionCode;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxScheme;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.VATCategory;
 import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons;
-import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;
+import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @UtilityClass
@@ -42,7 +42,7 @@ class Commons {
         @Schema(title = "Allowance/Charge Percentage", requiredMode = RequiredMode.REQUIRED, example = "17.5")
         private BigDecimal percentage;
 
-        @NotNull(message = BusinessIntegrityConstraintRule.BR_41)
+        @NotNull(message = InvoiceValidationRule.BR_41)
         @Schema(title = "Allowance/Charge Amount (in invoice currency)", requiredMode = RequiredMode.REQUIRED, example = "5.40")
         private BigDecimal amount;
 

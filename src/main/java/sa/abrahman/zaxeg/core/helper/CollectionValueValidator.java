@@ -23,10 +23,14 @@ public class CollectionValueValidator<C, E extends RuntimeException> {
     }
 
     public CollectionValueValidator<C, E> hasAtleast(int length, String errMsg) {
-        if (subject.size() < length) {
+        if (subject == null || subject.size() < length) {
             throw exceptionFactory.apply(errMsg);
         }
         return this;
+    }
+
+    public CollectionValueValidator<C, E> notEmpty(String errMsg) {
+        return hasAtleast(1, errMsg);
     }
 
     public CollectionValueValidator<C, E> allMatch(Predicate<C> p, String errMsg) {

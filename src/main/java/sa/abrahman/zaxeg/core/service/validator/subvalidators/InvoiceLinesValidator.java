@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.service.validator.business;
+package sa.abrahman.zaxeg.core.service.validator.subvalidators;
 
 import org.springframework.stereotype.Service;
 
@@ -6,12 +6,8 @@ import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
 
-/**
- * Business Rules - Exempted from VAT (BR-E): Rules for the invoicing fields
- * that must hold true when line items are exempt from VAT
- */
-@Service(InvoiceValidatorBeanNameResolver.EXEMPTED_FROM_VAT_BUSINESS_VALIDATOR)
-public class ExemptedFromVATRateBusinessValidator implements InvoiceValidator {
+@Service(InvoiceValidatorBeanNameResolver.LINES_VALIDATOR)
+public class InvoiceLinesValidator implements InvoiceValidator {
     @Override
     public void validate(InvoiceGenerationPayload payload) {
         // TODO Auto-generated method stub

@@ -31,6 +31,12 @@ public class ObjectValueValidator<C, E extends RuntimeException> {
         return this;
     }
 
+    /**
+     * Throws {@code errMsg} if the predicate yields to false
+     * @param predicate
+     * @param errMsg
+     * @return
+     */
     public ObjectValueValidator<C, E> matches(Predicate<C> predicate, String errMsg) {
         if (!predicate.test(this.subject))
             throw exceptionFactory.apply(errMsg);
