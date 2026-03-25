@@ -3,7 +3,7 @@ package sa.abrahman.zaxeg.core.service.validator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 
 @Service(InvoiceValidatorBeanNameResolver.FULL_INVOICE_VALIDATOR)

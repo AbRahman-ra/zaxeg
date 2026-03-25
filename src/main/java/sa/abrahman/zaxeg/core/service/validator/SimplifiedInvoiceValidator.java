@@ -2,7 +2,7 @@ package sa.abrahman.zaxeg.core.service.validator;
 
 import org.springframework.stereotype.Component;
 
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 
 @Component("SIMPLIFIED_INVOICE_VALIDATOR")

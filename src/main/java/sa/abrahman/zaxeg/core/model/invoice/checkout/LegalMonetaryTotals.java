@@ -13,7 +13,7 @@ public class LegalMonetaryTotals {
      * <li>BG-22, BT-05: Currency for invoicetotal amount</li>
      * </ul>
      */
-    private Amount invoiceLineTotalAmount;
+    private Amount lineExtensionAmount;
 
     /**
      * <li>BG-22, BT-107:
@@ -28,6 +28,7 @@ public class LegalMonetaryTotals {
     private Amount documentLevelAllowanceChargeTotalAmount;
 
     /**
+     * Also Known As {@code TaxExclusiveAmount}
      * <ul>
      * <li>BG-22, BT-109: The total amount of the Invoice without VAT.</li>
      * <li>BG-22, BT-05: Currency for invoice total amount without VAT.</li>
@@ -47,7 +48,7 @@ public class LegalMonetaryTotals {
      * <li>BG-22, BT-05: Currency for invoice total amount with VAT</li>
      * </ul>
      */
-    private Amount taxInclusiveAmount;
+    private Amount totalInclusiveAmount;
 
     /**
      * <ul>

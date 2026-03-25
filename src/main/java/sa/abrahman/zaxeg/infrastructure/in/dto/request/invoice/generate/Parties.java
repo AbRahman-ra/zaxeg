@@ -14,11 +14,11 @@ import lombok.RequiredArgsConstructor;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.Scheme;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxScheme;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.PartiesPayload;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Data
-class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
+class Parties implements Payloadable<PartiesPayload, Void> {
 
     @Valid
     @NotNull(message = "Seller Information is required")
@@ -30,12 +30,12 @@ class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
     private Party buyer;
 
     @Override
-    public InvoiceGenerationPayload.Parties toPayload(Void d) {
-        return new InvoiceGenerationPayload.Parties(seller.toPayload(null), buyer.toPayload(null));
+    public PartiesPayload toPayload(Void additionalData) {
+        return new PartiesPayload(seller.toPayload(null), buyer.toPayload(null));
     }
 
     @Data
-    private static class Party implements Payloadable<InvoiceGenerationPayload.Parties.Party, Void> {
+    private static class Party implements Payloadable<PartiesPayload.Party, Void> {
 
         @Schema(title = "Seller/Buyer Name")
         private String name = "";
@@ -53,8 +53,8 @@ class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
         private Address address;
 
         @Override
-        public InvoiceGenerationPayload.Parties.Party toPayload(Void d) {
-            return InvoiceGenerationPayload.Parties.Party.builder()
+        public PartiesPayload.Party toPayload(Void d) {
+            return PartiesPayload.Party.builder()
                     .name(name)
                     .identification(identification.toPayload(null))
                     .otherIds(otherIds.stream().map(oid -> oid.toPayload(null)).toList())
@@ -63,7 +63,7 @@ class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
         }
 
         @Data
-        private static class PartyTaxScheme implements Payloadable<InvoiceGenerationPayload.Parties.Party.PartyTaxScheme, Void> {
+        private static class PartyTaxScheme implements Payloadable<PartiesPayload.PartyTaxScheme, Void> {
 
             @NotBlank(message = "Party VAT number must be provided")
             @Schema(title = "Party VAT number value", requiredMode = RequiredMode.REQUIRED, example = "300000000000003")
@@ -74,14 +74,15 @@ class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
             private final TaxScheme taxScheme;
 
             @Override
-            public InvoiceGenerationPayload.Parties.Party.PartyTaxScheme toPayload(Void d) {
-                return new InvoiceGenerationPayload.Parties.Party.PartyTaxScheme(companyId, taxScheme);
+            public PartiesPayload.PartyTaxScheme toPayload(Void d) {
+                return new PartiesPayload.PartyTaxScheme(companyId, taxScheme);
             }
         }
 
         @Getter
         @RequiredArgsConstructor
-        private static class PartyIdentification implements Payloadable<InvoiceGenerationPayload.Parties.Party.PartyIdentification, Void> {
+        private static class PartyIdentification
+                implements Payloadable<PartiesPayload.PartyIdentification, Void> {
             @Valid
             @Schema(title = "Party Identification Key", requiredMode = RequiredMode.REQUIRED, example = "IQAMA")
             private final Scheme schemeId;
@@ -91,13 +92,13 @@ class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
             private final String value;
 
             @Override
-            public InvoiceGenerationPayload.Parties.Party.PartyIdentification toPayload(Void d) {
-                return new InvoiceGenerationPayload.Parties.Party.PartyIdentification(schemeId, value);
+            public PartiesPayload.PartyIdentification toPayload(Void d) {
+                return new PartiesPayload.PartyIdentification(schemeId, value);
             }
         }
 
         @Data
-        private static class Address implements Payloadable<InvoiceGenerationPayload.Parties.Party.Address, Void> {
+        private static class Address implements Payloadable<PartiesPayload.Address, Void> {
             @Schema(title = "Address - Street", description = "Address line 1 - the main address line in an address", requiredMode = RequiredMode.NOT_REQUIRED, example = "Main Street 1")
             private String street = "";
 
@@ -123,11 +124,11 @@ class Parties implements Payloadable<InvoiceGenerationPayload.Parties, Void> {
             private String district = "";
 
             @Schema(title = "Address - Country", description = "ISO Country Code, if not provided, the system will fallback to Saudi Arabia (SA)", requiredMode = RequiredMode.NOT_REQUIRED, example = "SA")
-            private Locale country = Locale.of("", Invoice.DEFAULT_CURRENCY);
+            private Locale country = Locale.of("", Invoice.DEFAULT_LOCALE_CODE);
 
             @Override
-            public InvoiceGenerationPayload.Parties.Party.Address toPayload(Void d) {
-                return InvoiceGenerationPayload.Parties.Party.Address.builder()
+            public PartiesPayload.Address toPayload(Void d) {
+                return PartiesPayload.Address.builder()
                         .street(street)
                         .additionalStreet(additionalStreet)
                         .buildingNumber(buildingNumber)

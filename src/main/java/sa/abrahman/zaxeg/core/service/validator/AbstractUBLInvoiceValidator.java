@@ -1,7 +1,7 @@
 package sa.abrahman.zaxeg.core.service.validator;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 
 /**

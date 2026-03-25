@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.*;
 import sa.abrahman.zaxeg.core.model.invoice.old.meta.InvoiceSubtype;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
 import static sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule.*;

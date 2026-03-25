@@ -8,10 +8,10 @@ import sa.abrahman.zaxeg.core.model.invoice.line.InvoiceLine;
 
 @Getter
 @RequiredArgsConstructor
-public class InvoiceLines {
+public class InvoiceLineWrapper {
     private final List<InvoiceLine> lines;
 
-    public static InvoiceLines of(List<InvoiceLine> lines) {
-        return new InvoiceLines(lines);
+    public static InvoiceLineWrapper of(List<InvoiceLine> lines) {
+        return new InvoiceLineWrapper(lines);
     }
 }

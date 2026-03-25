@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class ItemPartyIdentifier {
-    private String id;
+    private final String id;
 }

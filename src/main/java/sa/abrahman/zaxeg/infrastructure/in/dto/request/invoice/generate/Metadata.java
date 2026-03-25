@@ -1,7 +1,6 @@
 package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Currency;
 import java.util.List;
@@ -12,16 +11,17 @@ import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
+import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceSubtype;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.MetadataPayload;
 import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Data
-class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
+@Schema(title = "Document Metadata", description = "Document-level configurations and metadata", requiredMode = RequiredMode.REQUIRED)
+class Metadata implements Payloadable<MetadataPayload, Void> {
     @NotBlank(message = BusinessIntegrityConstraintRule.BR_02)
     @Schema(title = "Invoice number", description = "A unique identification of the Invoice", requiredMode = RequiredMode.REQUIRED, example = "1234567")
     private String invoiceNumber;
@@ -50,7 +50,7 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
     @Valid
     @NotNull(message = BusinessIntegrityConstraintRule.BR_04)
     @Schema(title = "Invoice type transactions", description = "A code of the invoice subtype and invoices transactions.", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"subtype\": \"STANDARD\"\n}")
-    private InvoiceTypeTranasctions invoiceTypeTransactions;
+    private InvoiceTypeTransactions invoiceTypeTransactions;
 
     @Schema(title = "Reasons for issuance of credit / debit note", description = """
             Reasons for issuance of credit / debit note as per Article 40 (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit Note is issued for these 5 instances:
@@ -68,10 +68,6 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
     @Schema(title = "Invoice currency code (ISO 4217 alpha-3)", description = "The currency in which all Invoice amounts are given, except for the Total VAT amount in accounting currency. If no code is given, the system will fallback to SAR", requiredMode = RequiredMode.NOT_REQUIRED, example = "SAR")
     private Currency invoiceCurrency;
 
-    @NotNull(message = BusinessIntegrityConstraintRule.BR_KSA_68)
-    @Schema(title = "Tax currency code (ISO 4217 alpha-3)", description = "The currency used for VAT accounting and reporting purposes as accepted or required in the country of the Seller", requiredMode = RequiredMode.NOT_REQUIRED, example = "SAR")
-    private Currency taxCurrency;
-
     @Schema(title = "Billing reference ID", description = "The sequential number (Invoice number BT-1) of the original invoice(s) that the credit/debit note is related to.", requiredMode = RequiredMode.NOT_REQUIRED, example = "{\n    \"id\": \"123456\"\n}")
     private DocumentReference billingReference;
 
@@ -81,27 +77,11 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
     @Schema(title = "Contract ID", description = "The identification of a contract.", requiredMode = RequiredMode.NOT_REQUIRED, example = "{\n    \"id\": \"1234567890\"\n}")
     private DocumentReference contract;
 
-    @NotNull(message = BusinessIntegrityConstraintRule.BR_KSA_33)
-    @Positive(message = BusinessIntegrityConstraintRule.BR_KSA_34)
-    @Schema(title = "Invoice counter value", description = "Invoice counter value", requiredMode = RequiredMode.REQUIRED, example = "1")
-    private Long icv;
-
-    @NotBlank(message = BusinessIntegrityConstraintRule.BR_KSA_61)
-    @Schema(title = "Previous invoice hash", description = "The base64 encoded SHA256 hash of the previous invoice. For the first invoice, the previous invoice hash is \"NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==\", the equivalent for base64 encoded SHA256 of \"0\" (zero) character.", requiredMode = RequiredMode.REQUIRED, example = "NWZlY2ViNjZmZmM4NmYzOGQ5NTI3ODZjNmQ2OTZjNzljMmRiYzIzOWRkNGU5MWI0NjcyOWQ3M2EyN2ZiNTdlOQ==")
-    private String pih;
-
-    @NotBlank(message = BusinessIntegrityConstraintRule.BR_KSA_27)
-    @Schema(title = "Invoice QR code", requiredMode = RequiredMode.REQUIRED, example = "AQkxMjM0NTY3ODkCCjEyLzEyLzIwMjADBDEwMDADAzE1MPaIn2Z2jg6VqWvWV6IrZZNzLF7xvZrWXW5xRV5yFY2xFu0ycXOiyqV0k7Wsh6b1IcE2Tfzap1AQAQVsktmsv1FFQ1MxIAAAAGKblFMh9nFRSn8tvftXqo9zRSz2VEAPITSZ3W7UDHKhUx+7yXGijLtJSZGXMOc+jpKwARzDl68GmmRd75NWdOs=")
-    private String qr;
-
-    @Valid
-    @NotNull(message = BusinessIntegrityConstraintRule.BR_KSA_60)
-    @Schema(title = "Cryptographic stamp", description = "Invoice cryptographic stamp", requiredMode = RequiredMode.REQUIRED)
-    private CryptographicStamp cryptographicStamp;
-
     @Override
-    public InvoiceGenerationPayload.Metadata toPayload(Void d) {
-        return InvoiceGenerationPayload.Metadata.builder()
+    public MetadataPayload toPayload(Void additionalData) {
+        // nullables
+
+        return MetadataPayload.builder()
                 .invoiceNumber(invoiceNumber)
                 .invoiceUuid(invoiceUuid)
                 .issueDate(issueDate)
@@ -113,14 +93,10 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
                 .creditOrDebitNoteIssuanceReasons(creditOrDebitNoteIssuanceReasons)
                 .notes(notes)
                 .invoiceCurrency(invoiceCurrency)
-                .taxCurrency(taxCurrency)
+                .taxCurrency(Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE))
                 .billingReference(billingReference == null ? null : billingReference.toPayload(null))
                 .purchaseOrder(purchaseOrder == null ? null : purchaseOrder.toPayload(null))
                 .contract(contract == null ? null : contract.toPayload(null))
-                .icv(icv)
-                .pih(pih)
-                .qr(qr)
-                .cryptographicStamp(cryptographicStamp.toPayload(null))
                 .build();
     }
 
@@ -128,8 +104,8 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
     // ============================= NESTED CLASSES =============================
     // ==========================================================================
     @Data
-    private static class InvoiceTypeTranasctions
-            implements Payloadable<InvoiceGenerationPayload.Metadata.InvoiceTypeTranasctions, Void> {
+    private static class InvoiceTypeTransactions
+            implements Payloadable<MetadataPayload.InvoiceTypeTransactions, Void> {
 
         @Schema(title = "Invoice subtype", requiredMode = RequiredMode.REQUIRED, example = "STANDARD")
         private InvoiceSubtype subtype;
@@ -150,11 +126,11 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
         private boolean selfBilled = false;
 
         @Override
-        public InvoiceGenerationPayload.Metadata.InvoiceTypeTranasctions toPayload(Void d) {
+        public MetadataPayload.InvoiceTypeTransactions toPayload(Void d) {
             if (!thirdParty && !nominal && !exports && !summary && !selfBilled)
-                return InvoiceGenerationPayload.Metadata.InvoiceTypeTranasctions.of(subtype);
+                return MetadataPayload.InvoiceTypeTransactions.of(subtype);
 
-            return InvoiceGenerationPayload.Metadata.InvoiceTypeTranasctions.builder()
+            return MetadataPayload.InvoiceTypeTransactions.builder()
                     .subtype(subtype)
                     .thirdParty(thirdParty)
                     .nominal(nominal)
@@ -166,47 +142,12 @@ class Metadata implements Payloadable<InvoiceGenerationPayload.Metadata, Void> {
     }
 
     @Data
-    private static class DocumentReference implements Payloadable<InvoiceGenerationPayload.Metadata.DocumentReference, Void> {
+    private static class DocumentReference implements Payloadable<MetadataPayload.DocumentReference, Void> {
         private final String id;
 
         @Override
-        public InvoiceGenerationPayload.Metadata.DocumentReference toPayload(Void d) {
-            return new InvoiceGenerationPayload.Metadata.DocumentReference(id);
-        }
-    }
-
-    @Data
-    private static class CryptographicStamp
-            implements Payloadable<InvoiceGenerationPayload.Metadata.CryptographicStamp, Void> {
-
-        @Schema(description = "The actual ECDSA digital signature of the Invoice Hash. Encoded in Base64.")
-        private String signatureValue;
-
-        @Schema(description = "The Taxpayer's X.509 Public Certificate (CSID) provided by ZATCA. Encoded in Base64.")
-        private String certificate;
-
-        @Schema(description = "The Base64 encoded SHA-256 hash of the X.509 Certificate. Required for the <xades:CertDigest> element.")
-        private String certificateHash;
-
-        @Schema(description = "The exact time the signature was generated. Required for the <xades:SigningTime> element.")
-        private LocalDateTime signatureTime;
-
-        @Schema(description = "The Issuer Name extracted from the X.509 Certificate. Required for the <xades:IssuerSerial> element.")
-        private String certificateIssuer;
-
-        @Schema(description = "The Serial Number extracted from the X.509 Certificate. Required for the <xades:IssuerSerial> element.")
-        private String certificateSerialNumber;
-
-        @Override
-        public InvoiceGenerationPayload.Metadata.CryptographicStamp toPayload(Void d) {
-            return InvoiceGenerationPayload.Metadata.CryptographicStamp.builder()
-                    .signatureValue(signatureValue)
-                    .certificate(certificate)
-                    .certificateHash(certificateHash)
-                    .signatureTime(signatureTime)
-                    .certificateIssuer(certificateIssuer)
-                    .certificateSerialNumber(certificateSerialNumber)
-                    .build();
+        public MetadataPayload.DocumentReference toPayload(Void d) {
+            return new MetadataPayload.DocumentReference(id);
         }
     }
 }

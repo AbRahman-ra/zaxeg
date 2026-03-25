@@ -39,7 +39,7 @@ public class CheckoutDetails {
     /**
      * BG-22: Invoice total amounts as mentioned in LegalMonetaryTotal XML tag
      */
-    private LegalMonetaryTotals documentTotals;
+    private LegalMonetaryTotals legalMonetaryTotals;
 
     /**
      * <ul>

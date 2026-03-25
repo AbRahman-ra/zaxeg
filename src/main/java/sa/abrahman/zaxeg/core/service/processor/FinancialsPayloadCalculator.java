@@ -7,9 +7,9 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 import sa.abrahman.zaxeg.core.model.invoice.old.financial.TaxCategory;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.FinancialsPayload;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.InvoiceGlobalPayablePayload;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload.LinePayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload.FinancialsPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload.InvoiceGlobalPayablePayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload.LinePayload;
 
 @Component
 public class FinancialsPayloadCalculator {

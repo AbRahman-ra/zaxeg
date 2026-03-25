@@ -1,6 +1,7 @@
 package sa.abrahman.zaxeg.core.port.in;
 
 import sa.abrahman.zaxeg.core.exception.*;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 
 public interface InvoiceGenerator {
     /**

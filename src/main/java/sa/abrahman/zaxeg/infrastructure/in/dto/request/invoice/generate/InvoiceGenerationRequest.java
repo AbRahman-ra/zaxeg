@@ -1,8 +1,11 @@
 package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
 import lombok.Data;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.*;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Data
@@ -22,12 +25,11 @@ public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPa
 
     @Override
     public InvoiceGenerationPayload toPayload(Void d) {
-        InvoiceGenerationPayload.Metadata meta = metadata.toPayload(null);
-        return new InvoiceGenerationPayload(meta, parties.toPayload(null), lines.toPayload(meta.getInvoiceCurrency()));
-    }
+        MetadataPayload metap = metadata.toPayload(null);
+        PartiesPayload partiesp = parties.toPayload(null);
+        LinesPayload linesp = lines.toPayload(metap.getInvoiceCurrency());
+        CheckoutDetailsPayload checkoutp = checkout.toPayload(List.of(metap.getInvoiceCurrency(), metap.getTaxCurrency()));
 
-    @Data
-    static class CheckoutDetails {
+        return new InvoiceGenerationPayload(metap, partiesp, linesp, checkoutp);
     }
-
 }

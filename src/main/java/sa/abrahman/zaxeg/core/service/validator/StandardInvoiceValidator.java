@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.ObjectValueValidator;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 
 @Component("STANDARD_INVOICE_VALIDATOR")
 public class StandardInvoiceValidator extends AbstractZATCAInvoiceValidator {

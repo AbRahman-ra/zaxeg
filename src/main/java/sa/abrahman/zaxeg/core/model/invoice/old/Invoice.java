@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import sa.abrahman.zaxeg.core.model.invoice.old.meta.*;
 import sa.abrahman.zaxeg.core.model.invoice.old.party.*;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.generator.InvoiceFactory;
 import sa.abrahman.zaxeg.core.model.invoice.old.financial.*;
 
@@ -24,7 +24,7 @@ import sa.abrahman.zaxeg.core.model.invoice.old.financial.*;
 @Getter
 @Builder
 public class Invoice {
-    private static final String DEFAULT_CURRENCY = "SAR";
+    private static final String DEFAULT_LOCALE_CODE = "SAR";
 
     // Metadata
     /** BT-01: A unique identification of the Invoice */
@@ -34,7 +34,10 @@ public class Invoice {
     @Builder.Default
     private UUID invoiceUuid = UUID.randomUUID();
 
-    /** BT-02: The date when the Invoice was issued  as per Article 53 of the VAT Implementing Regulation */
+    /**
+     * BT-02: The date when the Invoice was issued as per Article 53 of the VAT
+     * Implementing Regulation
+     */
     private LocalDate issueDate;
 
     /** KSA-25: The time when the invoice was issued. */
@@ -53,10 +56,10 @@ public class Invoice {
     private PaymentMethod paymentMethod;
 
     @Builder.Default
-    private Currency documentCurrency = Currency.getInstance(DEFAULT_CURRENCY);
+    private Currency documentCurrency = Currency.getInstance(DEFAULT_LOCALE_CODE);
 
     @Builder.Default
-    private Currency taxCurrency = Currency.getInstance(DEFAULT_CURRENCY);
+    private Currency taxCurrency = Currency.getInstance(DEFAULT_LOCALE_CODE);
 
     // Phase 2 Cryptographic & Sequential Data
     @Setter

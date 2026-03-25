@@ -14,14 +14,19 @@ import sa.abrahman.zaxeg.core.model.invoice.wrapper.*;
  * @implNote {@code BG}: Business Group
  */
 @Getter
-@Builder
+@Builder(toBuilder = true)
 public class Invoice {
-    public static final String DEFAULT_CURRENCY = "SAR";
+    public static final String DEFAULT_LOCALE_CODE = "SAR";
 
     /**
-     * <p>Invoice Metadata, any invoice stateful information that is neither related to the items nor the amounts directlu will be stored here</p>
+     * <p>
+     * Invoice Metadata, any invoice stateful information that is neither related to
+     * the items nor the amounts directlu will be stored here
+     * </p>
      *
-     * <p><b>Example</b></p>
+     * <p>
+     * <b>Example</b>
+     * </p>
      * <ul>
      * <li>Invoice Document Subtype</li>
      * <li>Invoice Issue Date</li>
@@ -39,7 +44,9 @@ public class Invoice {
 
     /**
      * Document Level Checkout information
-     * <p><b>Example</b></p>
+     * <p>
+     * <b>Example</b>
+     * </p>
      * <ul>
      * <li>Document level totals</li>
      * <li>Document level charges and/or fees</li>
@@ -53,5 +60,5 @@ public class Invoice {
     /**
      * Invocie lines information
      */
-    private InvoiceLines lines;
+    private InvoiceLineWrapper lines;
 }

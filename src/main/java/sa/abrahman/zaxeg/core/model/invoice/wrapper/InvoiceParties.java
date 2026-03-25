@@ -4,9 +4,10 @@ import sa.abrahman.zaxeg.core.model.invoice.party.*;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@Builder
+@RequiredArgsConstructor
 public class InvoiceParties {
     /**
      * <h2>Seller Information</h2>
@@ -54,7 +55,7 @@ public class InvoiceParties {
      * the sequence specified above
      * </p>
      */
-    private Party seller;
+    private final Party seller;
 
     /**
      * <h2>Buyer Information</h2>
@@ -102,5 +103,5 @@ public class InvoiceParties {
      * the sequence specified above
      * </p>
      */
-    private Party buyer;
+    private final Party buyer;
 }

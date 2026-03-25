@@ -15,25 +15,26 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.MeasuringUnit;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.LinesPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons;
 import sa.abrahman.zaxeg.core.service.validator.rules.BusinessIntegrityConstraintRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Getter
 @RequiredArgsConstructor
-class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
+class Lines implements Payloadable<LinesPayload, Currency> {
     @Valid
     @NotEmpty(message = BusinessIntegrityConstraintRule.BR_16)
     @Schema(title = "Invoice Lines", requiredMode = RequiredMode.REQUIRED)
     private final List<InvoiceLine> invoiceLines;
 
     @Override
-    public InvoiceGenerationPayload.Lines toPayload(Currency data) {
-        return new InvoiceGenerationPayload.Lines(invoiceLines.stream().map(l -> l.toPayload(data)).toList());
+    public LinesPayload toPayload(Currency data) {
+        return new LinesPayload(invoiceLines.stream().map(l -> l.toPayload(data)).toList());
     }
 
     @Data
-    private static class InvoiceLine implements Payloadable<InvoiceGenerationPayload.InvoiceLine, Currency> {
+    private static class InvoiceLine implements Payloadable<LinesPayload.InvoiceLine, Currency> {
 
         @NotBlank(message = BusinessIntegrityConstraintRule.BR_21)
         @Schema(title = "Invoice Line ID", description = "A unique identifier for the individual line within the Invoice. Usually a sequential number (1, 2, 3...).", requiredMode = RequiredMode.REQUIRED, example = "INV0023")
@@ -50,11 +51,11 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
         private BigDecimal netAmount;
 
         @Schema(title = "Invoice line net amount", description = "The total amount of the Invoice line, including allowances (discounts). It is the item net price multiplied with the quantity. The amount is “net” without VAT. Note: the currency must natch the document level currency", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"value\": 100.0,\n    \"currency\":\"SAR\"\n}")
-        private List<AllowanceOrCharge> allowanceCharges = List.of();
+        private List<Commons.AllowanceOrCharge> allowanceCharges = List.of();
 
         @Valid
         @Schema(title = "Total amounts", description = "VAT amount (taxAmount), Line amount invlusive VAT (roundingAmount)", requiredMode = RequiredMode.NOT_REQUIRED)
-        private TaxTotal vatLineAmount;
+        private Commons.TaxTotal vatLineAmount;
 
         @Valid
         @Schema(title = "Invoice line item data (without prices)")
@@ -64,11 +65,11 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
         private InvoiceLinePrice price;
 
         @Override
-        public InvoiceGenerationPayload.InvoiceLine toPayload(Currency data) {
-            return InvoiceGenerationPayload.InvoiceLine.builder()
+        public LinesPayload.InvoiceLine toPayload(Currency data) {
+            return LinesPayload.InvoiceLine.builder()
                     .id(id)
                     .quantity(quantity.toPayload(null))
-                    .netAmount(new InvoiceGenerationPayload.Amount(netAmount, data))
+                    .netAmount(new PayloadCommons.Amount(netAmount, data))
                     .vatLineAmount(vatLineAmount.toPayload(data))
                     .item(item.toPayload(null))
                     .price(price.toPayload(data))
@@ -77,7 +78,7 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
 
         @Getter
         @RequiredArgsConstructor
-        static class Quantity implements Payloadable<InvoiceGenerationPayload.Quantity, Void> {
+        static class Quantity implements Payloadable<LinesPayload.Quantity, Void> {
             @Schema(title = "Invoiced quantity unit of measure", description = "The unit of measure that applies to the invoiced quantity.", requiredMode = RequiredMode.NOT_REQUIRED, example = "PCE")
             private MeasuringUnit unit;
 
@@ -86,14 +87,14 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
             private BigDecimal count;
 
             @Override
-            public InvoiceGenerationPayload.Quantity toPayload(Void d) {
-                return new InvoiceGenerationPayload.Quantity(unit, count);
+            public LinesPayload.Quantity toPayload(Void d) {
+                return new LinesPayload.Quantity(unit, count);
             }
         }
 
         @Getter
         @Builder
-        static class InvoiceLineItem implements Payloadable<InvoiceGenerationPayload.InvoiceLineItem, Void> {
+        static class InvoiceLineItem implements Payloadable<LinesPayload.InvoiceLineItem, Void> {
             @NotBlank(message = BusinessIntegrityConstraintRule.BR_25)
             @Schema(title = "Item name", description = "The description of goods or services as per Article 53 of the VAT Implementing Regulation.")
             private String name;
@@ -109,11 +110,11 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
 
             @NotNull(message = "Vat Information is required")
             @Schema(title = "VAT Information", description = "The VAT category code and rate for the invoiced item")
-            private TaxCategory classifiedTaxCategory;
+            private Commons.TaxCategory classifiedTaxCategory;
 
             @Override
-            public InvoiceGenerationPayload.InvoiceLineItem toPayload(Void additionalData) {
-                return InvoiceGenerationPayload.InvoiceLineItem.builder()
+            public LinesPayload.InvoiceLineItem toPayload(Void additionalData) {
+                return LinesPayload.InvoiceLineItem.builder()
                         .name(name)
                         .itemBuyerIdentifier(itemBuyerIdentifier.toPayload(null))
                         .itemSellerIdentifier(itemSellerIdentifier.toPayload(null))
@@ -125,19 +126,19 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
 
             @Getter
             @RequiredArgsConstructor
-            private static class ItemPartyIdentifier implements Payloadable<InvoiceGenerationPayload.ItemPartyIdentifier, Void> {
+            private static class ItemPartyIdentifier implements Payloadable<LinesPayload.ItemPartyIdentifier, Void> {
                 private final String id;
 
                 @Override
-                public InvoiceGenerationPayload.ItemPartyIdentifier toPayload(Void d) {
-                    return new InvoiceGenerationPayload.ItemPartyIdentifier(id);
+                public LinesPayload.ItemPartyIdentifier toPayload(Void d) {
+                    return new LinesPayload.ItemPartyIdentifier(id);
                 }
             }
         }
 
         @Getter
         @Builder
-        static class InvoiceLinePrice implements Payloadable<InvoiceGenerationPayload.InvoiceLinePrice, Currency> {
+        static class InvoiceLinePrice implements Payloadable<LinesPayload.InvoiceLinePrice, Currency> {
             @NotNull(message = BusinessIntegrityConstraintRule.BR_26)
             @Schema(title = "Item net price", description = "The price of an item, exclusive of VAT, after subtracting item price discount. The Item net price has to be equal with the Item gross price (allowance/charge amount) minus the Item price discount.")
             private BigDecimal amount;
@@ -145,12 +146,12 @@ class Lines implements Payloadable<InvoiceGenerationPayload.Lines, Currency> {
             @Schema(title = "Item price base quantity", description = "The number of item units to which the price applies.")
             private Quantity quantity;
 
-            private AllowanceOrCharge allowanceOrCharge;
+            private Commons.AllowanceOrCharge allowanceOrCharge;
 
             @Override
-            public InvoiceGenerationPayload.InvoiceLinePrice toPayload(Currency currency) {
-                return InvoiceGenerationPayload.InvoiceLinePrice.builder()
-                .amount(new InvoiceGenerationPayload.Amount(amount, currency))
+            public LinesPayload.InvoiceLinePrice toPayload(Currency currency) {
+                return LinesPayload.InvoiceLinePrice.builder()
+                .amount(new PayloadCommons.Amount(amount, currency))
                 .quantity(quantity.toPayload(null))
                 .allowanceOrCharge(allowanceOrCharge.toPayload(currency))
                 .build();

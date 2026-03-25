@@ -1,0 +1,64 @@
+package sa.abrahman.zaxeg.core.port.in.payload;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Currency;
+import java.util.List;
+import java.util.UUID;
+
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceDocumentType;
+import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceSubtype;
+
+@Getter
+@Builder
+public class MetadataPayload {
+    private String invoiceNumber;
+    private UUID invoiceUuid;
+    private LocalDate issueDate;
+    private LocalTime issueTime;
+    private LocalDate supplyDate;
+    private LocalDate supplyEndDate;
+    private InvoiceDocumentType invoiceDocumentType;
+    private InvoiceTypeTransactions invoiceTypeTransactions;
+    private List<String> creditOrDebitNoteIssuanceReasons;
+    private List<String> notes;
+    private Currency invoiceCurrency;
+
+    private Currency taxCurrency;
+    private DocumentReference billingReference;
+    private DocumentReference purchaseOrder;
+    private DocumentReference contract;
+
+    @Getter
+    @Builder
+    public static class InvoiceTypeTransactions {
+        private InvoiceSubtype subtype;
+
+        @Builder.Default
+        private boolean thirdParty = false;
+
+        @Builder.Default
+        private boolean nominal = false;
+
+        @Builder.Default
+        private boolean exports = false;
+
+        @Builder.Default
+        private boolean summary = false;
+
+        @Builder.Default
+        private boolean selfBilled = false;
+
+        public static InvoiceTypeTransactions of(InvoiceSubtype subtype) {
+            return builder().subtype(subtype).build();
+        }
+    }
+
+    @Data
+    public static class DocumentReference {
+        private final String id;
+    }
+}

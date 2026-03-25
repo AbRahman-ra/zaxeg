@@ -1,7 +1,6 @@
 package sa.abrahman.zaxeg.core.model.invoice.common;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,30 +18,25 @@ public class AllowanceOrCharge {
      * BG-20, BT-94: The percentage that may be used, in conjunction with the
      * document level allowance base amount, to calculate the document level
      * allowance amount.
+     * @implNote Used {@code BigDecimal} instead of {@code Double} to avoid floating point errors
      */
-    private Double percentage;
+    private BigDecimal percentage;
 
     /**
-     * BG-20, BT-92: The amount of an allowance, without VAT.
+     * <ul>
+     * <li>BG-20, BT-92: The amount of an allowance, without VAT.</li>
+     * <li>BG-20, BT-5: Currency for line allowance amount</li>
+     * </ul>
      */
-    private BigDecimal amount;
+    private Amount amount;
 
     /**
-     * BG-20, BT-5: Currency for line allowance amount
+     * <ul>
+     * <li>BG-20, BT-93: The base amount that may be used, in conjunction with the Invoice line allowance percentage, to calculate the Invoice line allowance amount.</li>
+     * <li>BG-20, BT-5: Currency for invoice line allowance base amount</li>
+     * </ul>
      */
-    private Currency amountCurrency;
-
-    /**
-     * BG-20, BT-93: The base amount that may be used, in conjunction with the
-     * Invoice line allowance percentage, to calculate the Invoice line allowance
-     * amount.
-     */
-    private BigDecimal baseAmount;
-
-    /**
-     * BG-20, BT-5: Currency for invoice line allowance base amount
-     */
-    private Currency baseAmountCurrency;
+    private Amount baseAmount;
 
     /**
      * <ul>

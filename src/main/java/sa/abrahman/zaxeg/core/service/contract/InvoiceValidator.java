@@ -1,7 +1,7 @@
 package sa.abrahman.zaxeg.core.service.contract;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
-import sa.abrahman.zaxeg.core.port.in.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 
 /**
  * Invoice validator is not a port, but an internal abstraction layer between

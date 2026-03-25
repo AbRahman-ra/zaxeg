@@ -1,9 +1,7 @@
-package sa.abrahman.zaxeg.core.model.invoice.checkout;
+package sa.abrahman.zaxeg.core.model.invoice.common;
 
 import lombok.Builder;
 import lombok.Getter;
-import sa.abrahman.zaxeg.core.model.invoice.common.Amount;
-import sa.abrahman.zaxeg.core.model.invoice.common.TaxCategory;
 
 @Getter
 @Builder
