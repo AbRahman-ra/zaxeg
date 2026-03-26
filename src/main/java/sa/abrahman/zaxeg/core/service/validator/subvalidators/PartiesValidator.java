@@ -1,6 +1,8 @@
 package sa.abrahman.zaxeg.core.service.validator.subvalidators;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -10,10 +12,14 @@ import org.springframework.stereotype.Service;
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.helper.*;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.model.invoice.predefined.Scheme;
+import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxExemptionCode;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxScheme;
 import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.LinesPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.MetadataPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.PartiesPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
@@ -24,20 +30,29 @@ public class PartiesValidator implements InvoiceValidator {
     public void validate(InvoiceGenerationPayload payload) {
         // initialization & sanity check
         Function<String, InvoiceRuleViolationException> f = InvoiceRuleViolationException::new;
-        PartiesPayload parties = Optional.ofNullable(payload).map(p -> p.getParties()).orElse(null);
+        PartiesPayload parties = Optional.ofNullable(payload).map(InvoiceGenerationPayload::getParties).orElse(null);
+        LinesPayload lines = Optional.ofNullable(payload).map(InvoiceGenerationPayload::getLines).orElse(null);
         if (parties == null)
             throw f.apply("Error Parsing Invoice Parties");
 
         // helpers
+        // seller info
         PartiesPayload.Party seller = parties.getSeller();
         PartiesPayload.Address sellerAddress = seller.getAddress();
+
+        // buyer info
         PartiesPayload.Party buyer = parties.getBuyer();
         PartiesPayload.Address buyerAddress = Optional.ofNullable(buyer).map(PartiesPayload.Party::getAddress).orElse(null);
         String buyerName = Optional.ofNullable(buyer).map(PartiesPayload.Party::getName).orElse("");
         String buyerCountry = Optional.ofNullable(buyerAddress).map(PartiesPayload.Address::getCountry).map(Locale::getCountry).orElse("");
+        List<PartiesPayload.PartyIdentification> otherBuyerIds = Optional.ofNullable(buyer).map(PartiesPayload.Party::getOtherIds).orElse(List.of());
+        String buyerVat = Optional.ofNullable(buyer).map(PartiesPayload.Party::getIdentification).map(id -> id.getCompanyId()).orElse("");
+
+        // metada
         MetadataPayload.InvoiceTypeTransactions invoiceTypeTransactions = Optional.ofNullable(payload.getMetadata().getInvoiceTypeTransactions()).orElse(null);
         InvoiceSubtype invoiceSubtype = Optional.ofNullable(invoiceTypeTransactions).map(MetadataPayload.InvoiceTypeTransactions::getSubtype).orElse(null);
-        String buyerVat = Optional.ofNullable(buyer).map(PartiesPayload.Party::getIdentification).map(id -> id.getCompanyId()).orElse("");
+
+        // predicates & booleans
         Predicate<PartiesPayload.Address> addressChecker = a -> {
             StringValueValidator.check(a.getStreet(), f).exists(InvoiceValidationRule.BR_KSA_09);
             StringValueValidator.check(a.getBuildingNumber(), f).exists(InvoiceValidationRule.BR_KSA_09);
@@ -46,6 +61,18 @@ public class PartiesValidator implements InvoiceValidator {
             ObjectValueValidator.check(a.getCountry(), f).exists(InvoiceValidationRule.BR_KSA_09);
             return true;
         };
+        Predicate<PayloadCommons.TaxCategory> isHealthCareOrEducationToCitizen = t -> t
+                .getTaxExemptionReasonCode() == TaxExemptionCode.PRIVATE_EDUCATION_TO_CITIZEN
+                || t.getTaxExemptionReasonCode() == TaxExemptionCode.PRIVATE_HEALTHCARE_TO_CITIZEN;
+
+        boolean anyItemHasHealthcareOrEducationExemption = Optional.ofNullable(lines.getInvoiceLines())
+                .orElse(List.of())
+                .stream()
+                .map(LinesPayload.InvoiceLine::getItem)
+                .filter(Objects::nonNull)
+                .map(LinesPayload.InvoiceLineItem::getClassifiedTaxCategory)
+                .anyMatch(isHealthCareOrEducationToCitizen);
+        Predicate<PartiesPayload.PartyIdentification> hasNationalId = pid -> pid.getSchemeId() == Scheme.NATIONAL_ID;
 
         // rules
         ObjectValueValidator.check(seller, f).exists(InvoiceValidationRule.BR_06);
@@ -86,7 +113,6 @@ public class PartiesValidator implements InvoiceValidator {
 
         if ("sa".equalsIgnoreCase(buyerCountry)) {
             ObjectValueValidator.check(buyerAddress, f).exists(InvoiceValidationRule.BR_KSA_63).matches(addressChecker, InvoiceValidationRule.BR_KSA_63);
-            // exists will eliminate possibilities for NullPointerException, so if IDE is shouting because of buyerAddress.getPostalCode() just don't listen to it
             StringValueValidator.check(buyerAddress.getPostalCode(), f).hasLength(5, InvoiceValidationRule.BR_KSA_67).numeric(InvoiceValidationRule.BR_KSA_67);
         }
 
@@ -95,7 +121,12 @@ public class PartiesValidator implements InvoiceValidator {
         }
 
         if (invoiceTypeTransactions != null && invoiceTypeTransactions.isExports()) {
-            ObjectValueValidator.check(buyerVat, f).matches(v -> v == null || v.isBlank(), InvoiceValidationRule.BR_KSA_46);
+            ObjectValueValidator.check(buyerVat, f).matches(String::isBlank, InvoiceValidationRule.BR_KSA_46);
+        }
+
+        if (invoiceSubtype == InvoiceSubtype.SIMPLIFIED && anyItemHasHealthcareOrEducationExemption) {
+            StringValueValidator.check(buyerName, f).exists(InvoiceValidationRule.BR_KSA_25);
+            CollectionValueValidator.check(otherBuyerIds, f).notEmpty(InvoiceValidationRule.BR_KSA_49).anyMatch(hasNationalId, InvoiceValidationRule.BR_KSA_49);
         }
     }
 }

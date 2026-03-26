@@ -7,6 +7,7 @@ import java.util.List;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -35,7 +36,7 @@ class Commons {
 
     @Data
     static class AllowanceOrCharge implements Payloadable<PayloadCommons.AllowanceOrCharge, Currency> {
-        @NotNull
+        @NotNull(message = InvoiceValidationRule.BR_KSA_F_02)
         @Schema(title = "Charge Indicator", description = "pass it as false if the object represents a discount, and true if the object represents a fee", requiredMode = RequiredMode.REQUIRED, example = "false")
         private boolean isCharge;
 
@@ -43,6 +44,7 @@ class Commons {
         private BigDecimal percentage;
 
         @NotNull(message = InvoiceValidationRule.BR_41)
+        @Positive(message = InvoiceValidationRule.BR_KSA_F_04)
         @Schema(title = "Allowance/Charge Amount (in invoice currency)", requiredMode = RequiredMode.REQUIRED, example = "5.40")
         private BigDecimal amount;
 

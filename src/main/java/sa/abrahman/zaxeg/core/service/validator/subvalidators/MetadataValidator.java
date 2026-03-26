@@ -21,7 +21,7 @@ public class MetadataValidator implements InvoiceValidator {
     public void validate(InvoiceGenerationPayload payload) {
         // initialization & sanity check
         Function<String, InvoiceRuleViolationException> f = InvoiceRuleViolationException::new;
-        MetadataPayload metadata = Optional.ofNullable(payload).map(p -> p.getMetadata()).orElse(null);
+        MetadataPayload metadata = Optional.ofNullable(payload).map(InvoiceGenerationPayload::getMetadata).orElse(null);
         if (metadata == null)
             throw f.apply("Error Parsing Invoice Metadata");
 
@@ -43,7 +43,7 @@ public class MetadataValidator implements InvoiceValidator {
                 .matches(t -> !(t.isSelfBilled() && t.isExports()), InvoiceValidationRule.BR_KSA_07);
         ObjectValueValidator.check(metadata.getInvoiceCurrency(), f).exists(InvoiceValidationRule.BR_05);
         ObjectValueValidator.check(metadata.getTaxCurrency(), f).exists(InvoiceValidationRule.BR_KSA_68)
-                .matches(c -> "sar".equalsIgnoreCase(c.getCurrencyCode()), InvoiceValidationRule.BR_KSA_EN16391_03);
+                .matches(c -> "sar".equalsIgnoreCase(c.getCurrencyCode()), InvoiceValidationRule.BR_KSA_EN16391_02);
         if (isCreditNote || isDebitNote) {
             ObjectValueValidator.check(metadata.getBillingReference(), f).exists(InvoiceValidationRule.BR_KSA_56)
                     .matches(ref -> ref.getId() != null, InvoiceValidationRule.BR_KSA_56);

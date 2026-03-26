@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -42,6 +43,7 @@ class Lines implements Payloadable<LinesPayload, Currency> {
 
         @Valid
         @NotNull(message = InvoiceValidationRule.BR_22)
+        @Positive(message = InvoiceValidationRule.BR_KSA_F_04)
         @Schema(title = "The invoice line quantity (unit, value)", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"unit\": \"PCE\", \"count\": 4.0\n}")
         private Quantity quantity;
 

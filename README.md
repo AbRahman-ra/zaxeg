@@ -32,4 +32,5 @@ The project is currently in the system design phase. I am actively evaluating th
 
 ## Changelog
 
+- Validation is done in metadata (except for phase ii items) and on parties
 - I am trying to understand the basic elements of a UBL 2.1 e-invoice, thinking out lout in [this md file](docs/01-iterating.md)

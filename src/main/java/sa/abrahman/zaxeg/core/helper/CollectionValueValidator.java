@@ -1,6 +1,9 @@
 package sa.abrahman.zaxeg.core.helper;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -33,8 +36,25 @@ public class CollectionValueValidator<C, E extends RuntimeException> {
         return hasAtleast(1, errMsg);
     }
 
+    /**
+     * Check if all non-null elements match a predicate
+     *
+     * @implNote this method filters out any null values in the collection before validating the predicate
+     * @param p
+     * @param errMsg
+     * @return
+     */
     public CollectionValueValidator<C, E> allMatch(Predicate<C> p, String errMsg) {
-        if (subject.stream().filter(p).count() != subject.size()) {
+        boolean notNullAndSatisfies = Optional.ofNullable(this.subject).orElse(List.of()).stream().filter(Objects::nonNull).allMatch(p);
+        if (!notNullAndSatisfies) {
+            throw exceptionFactory.apply(errMsg);
+        }
+        return this;
+    }
+
+    public CollectionValueValidator<C, E> anyMatch(Predicate<C> p, String errMsg) {
+        boolean notNullAndSatisfies = Optional.ofNullable(this.subject).orElse(List.of()).stream().filter(Objects::nonNull).anyMatch(p);
+        if (!notNullAndSatisfies) {
             throw exceptionFactory.apply(errMsg);
         }
         return this;
