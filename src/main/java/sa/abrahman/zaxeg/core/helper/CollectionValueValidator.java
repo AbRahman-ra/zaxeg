@@ -52,6 +52,14 @@ public class CollectionValueValidator<C, E extends RuntimeException> {
         return this;
     }
 
+    /**
+     * Check if any non-null element match a predicate
+     *
+     * @implNote this method filters out any null values in the collection before validating the predicate
+     * @param p
+     * @param errMsg
+     * @return
+     */
     public CollectionValueValidator<C, E> anyMatch(Predicate<C> p, String errMsg) {
         boolean notNullAndSatisfies = Optional.ofNullable(this.subject).orElse(List.of()).stream().filter(Objects::nonNull).anyMatch(p);
         if (!notNullAndSatisfies) {
