@@ -1,5 +1,7 @@
 package sa.abrahman.zaxeg.core.model.invoice;
 
+import org.jspecify.annotations.NullMarked;
+
 import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.core.model.invoice.wrapper.*;
@@ -15,6 +17,7 @@ import sa.abrahman.zaxeg.core.model.invoice.wrapper.*;
  */
 @Getter
 @Builder(toBuilder = true)
+@NullMarked
 public class Invoice {
     public static final String DEFAULT_LOCALE_CODE = "SAR";
 

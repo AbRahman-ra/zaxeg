@@ -1,11 +1,14 @@
 package sa.abrahman.zaxeg.core.model.invoice.checkout;
 
+import org.jspecify.annotations.NullMarked;
+
 import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.core.model.invoice.common.Amount;
 
 @Getter
 @Builder
+@NullMarked
 public class LegalMonetaryTotals {
     /**
      * <ul>

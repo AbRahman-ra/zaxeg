@@ -6,6 +6,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
@@ -31,6 +34,7 @@ import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceDocumentType;
  */
 @Getter
 @Builder(toBuilder = true)
+@NullMarked
 public class Metadata {
     /** BT-01: A unique identification of the Invoice */
     private String invoiceNumber;
@@ -76,15 +80,18 @@ public class Metadata {
     private Currency taxCurrency = Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE);
 
     /** BT-13: An identifier of a referenced purchase order, issued by the Buyer. */
+    @Nullable
     private DocumentReference purchaseOrder;
 
     /**
      * BG-3, BT-25: The sequential number (Invoice number BT-1) of the original
      * invoice(s) that the credit/debit note is related to.
-     */
+    */
+    @Nullable
     private DocumentReference billingReference;
 
     /** BT-12: The identification of a contract. */
+    @Nullable
     private DocumentReference contract;
 
     /** KSA-16: Invoice counter value */
@@ -147,11 +154,13 @@ public class Metadata {
      * <li>For credit and debit notes , it acts as the original supply date.</li>
      * </ul>
      */
+    @Nullable
     private LocalDate supplyDate;
 
     /**
      * KSA-24: Calendar field "End Date" for Continuous Supplies.
-     */
+    */
+    @Nullable
     private LocalDate supplyEndDate;
 
     /**
@@ -159,18 +168,18 @@ public class Metadata {
      * <li>KSA-10: Reasons for issuance of credit / debit note as per Article 40
      * (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit
      * Note is issued for these 5 instances:</li>
-     *
-     * <ul>
-     * <li>Cancellation or suspension of the supplies after its occurrence either
-     * wholly or partially</li>
-     * <li>In case of essential change or amendment in the supply, which leads to
-     * the change of the VAT due;</li>
-     * <li>Amendment of the supply value which is pre-agreed upon between the
-     * supplier and consumer;</li>
-     * <li>In case of goods or services refund.</li>
-     * <li>In case of change in Seller's or Buyer's information</li>
-     * </ul>
-     * </ul>
-     */
+    *
+    * <ul>
+    * <li>Cancellation or suspension of the supplies after its occurrence either
+    * wholly or partially</li>
+    * <li>In case of essential change or amendment in the supply, which leads to
+    * the change of the VAT due;</li>
+    * <li>Amendment of the supply value which is pre-agreed upon between the
+    * supplier and consumer;</li>
+    * <li>In case of goods or services refund.</li>
+    * <li>In case of change in Seller's or Buyer's information</li>
+    * </ul>
+    * </ul>
+    */
     private List<String> creditOrDebitNoteIssuanceReasons;
 }

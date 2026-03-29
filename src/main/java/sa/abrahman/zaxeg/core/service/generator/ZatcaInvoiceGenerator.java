@@ -1,7 +1,5 @@
 package sa.abrahman.zaxeg.core.service.generator;
 
-import java.math.BigDecimal;
-
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +11,11 @@ import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
 
 @Service
-public class ZATCAInvoiceGenerator implements InvoiceGenerator {
+public class ZatcaInvoiceGenerator implements InvoiceGenerator {
     private final InvoiceValidator validator;
     private final InvoiceFormatter formatter;
 
-    public ZATCAInvoiceGenerator(
+    public ZatcaInvoiceGenerator(
             @Qualifier(InvoiceValidatorBeanNameResolver.FULL_INVOICE_VALIDATOR) InvoiceValidator validator,
             InvoiceFormatter formatter) {
         this.formatter = formatter;

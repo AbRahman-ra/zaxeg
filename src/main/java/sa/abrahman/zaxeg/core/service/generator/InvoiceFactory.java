@@ -57,9 +57,9 @@ public class InvoiceFactory {
                 .billingReference(docRefMapper.apply(metadataPayload.getBillingReference()))
                 .contract(docRefMapper.apply(metadataPayload.getContract()))
                 // phase ii
-                .icv(null)
-                .pih(null)
-                .qr(null)
+                .icv(0L)
+                .pih("")
+                .qr("")
                 .cryptographicStamp(null)
                 // end phase ii
                 .supplyDate(metadataPayload.getSupplyDate())

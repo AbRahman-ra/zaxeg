@@ -2,11 +2,15 @@ package sa.abrahman.zaxeg.core.model.invoice.common;
 
 import java.math.BigDecimal;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
+@NullMarked
 public class AllowanceOrCharge {
     /**
      * BG-20: An indicator that this AllowanceCharge describes a discount. The value
@@ -20,6 +24,7 @@ public class AllowanceOrCharge {
      * allowance amount.
      * @implNote Used {@code BigDecimal} instead of {@code Double} to avoid floating point errors
      */
+    @Nullable
     private BigDecimal percentage;
 
     /**

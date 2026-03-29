@@ -2,12 +2,15 @@ package sa.abrahman.zaxeg.core.model.invoice.wrapper;
 
 import sa.abrahman.zaxeg.core.model.invoice.party.*;
 
-import lombok.Builder;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@NullMarked
 public class InvoiceParties {
     /**
      * <h2>Seller Information</h2>
@@ -103,5 +106,6 @@ public class InvoiceParties {
      * the sequence specified above
      * </p>
      */
+    @Nullable
     private final Party buyer;
 }

@@ -2,6 +2,8 @@ package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
 
 import java.util.List;
 
+import org.jspecify.annotations.NullMarked;
+
 import jakarta.validation.Valid;
 import lombok.Data;
 import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
@@ -9,6 +11,7 @@ import sa.abrahman.zaxeg.core.port.in.payload.*;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Data
+@NullMarked
 public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPayload, Void> {
 
     @Valid

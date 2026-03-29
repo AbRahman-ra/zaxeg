@@ -2,6 +2,8 @@ package sa.abrahman.zaxeg.core.model.invoice.wrapper;
 
 import java.util.List;
 
+import org.jspecify.annotations.NullMarked;
+
 import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.core.model.invoice.checkout.LegalMonetaryTotals;
@@ -11,6 +13,7 @@ import sa.abrahman.zaxeg.core.model.invoice.predefined.PaymentMethod;
 
 @Getter
 @Builder
+@NullMarked
 public class CheckoutDetails {
     /**
      * BG16, BT-81: The means, expressed as code, for how a payment is expected to be or has been settled. Entries from the UNTDID 4461 code list

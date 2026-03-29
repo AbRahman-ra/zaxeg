@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -94,9 +95,9 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
                 .notes(notes)
                 .invoiceCurrency(invoiceCurrency)
                 .taxCurrency(Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE))
-                .billingReference(billingReference == null ? null : billingReference.toPayload(null))
-                .purchaseOrder(purchaseOrder == null ? null : purchaseOrder.toPayload(null))
-                .contract(contract == null ? null : contract.toPayload(null))
+                .billingReference(Optional.ofNullable(billingReference).map(b -> b.toPayload(null)).orElse(null))
+                .purchaseOrder(Optional.ofNullable(purchaseOrder).map(p -> p.toPayload(null)).orElse(null))
+                .contract(Optional.ofNullable(contract).map(c ->  c.toPayload(null)).orElse(null))
                 .build();
     }
 
