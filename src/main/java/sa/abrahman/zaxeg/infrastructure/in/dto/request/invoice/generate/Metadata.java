@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.Valid;
@@ -53,21 +56,23 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
     @Schema(title = "Invoice type transactions", description = "A code of the invoice subtype and invoices transactions.", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"subtype\": \"STANDARD\"\n}")
     private InvoiceTypeTransactions invoiceTypeTransactions;
 
+    @NonNull
     @Schema(title = "Reasons for issuance of credit / debit note", description = """
-            Reasons for issuance of credit / debit note as per Article 40 (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit Note is issued for these 5 instances:
-            - Cancellation or suspension of the supplies after its occurrence either wholly or partially
-            - In case of essential change or amendment in the supply, which leads to the change of the VAT due;
-            - Amendment of the supply value which is pre-agreed upon between the supplier and consumer;
-            - In case of goods or services refund.
-            - In case of change in Seller's or Buyer's information
-            """, requiredMode = RequiredMode.NOT_REQUIRED, example = "[\"Cancellation or suspension of the supplies after its occurrence either wholly or partially\"]")
+        Reasons for issuance of credit / debit note as per Article 40 (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit Note is issued for these 5 instances:
+        - Cancellation or suspension of the supplies after its occurrence either wholly or partially
+        - In case of essential change or amendment in the supply, which leads to the change of the VAT due;
+        - Amendment of the supply value which is pre-agreed upon between the supplier and consumer;
+        - In case of goods or services refund.
+        - In case of change in Seller's or Buyer's information
+        """, requiredMode = RequiredMode.NOT_REQUIRED, example = "[\"Cancellation or suspension of the supplies after its occurrence either wholly or partially\"]")
     private List<String> creditOrDebitNoteIssuanceReasons = List.of();
 
+    @NonNull
     @Schema(title = "Invoice notes", description = "A textual note that gives unstructured information that is relevant to the Invoice as a whole.", requiredMode = RequiredMode.NOT_REQUIRED, example = "[\"testing invoice\", \"hello world\"]")
     private List<String> notes = List.of();
 
     @Schema(title = "Invoice currency code (ISO 4217 alpha-3)", description = "The currency in which all Invoice amounts are given, except for the Total VAT amount in accounting currency. If no code is given, the system will fallback to SAR", requiredMode = RequiredMode.NOT_REQUIRED, example = "SAR")
-    private Currency invoiceCurrency;
+    private Currency invoiceCurrency = Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE);
 
     @Schema(title = "Billing reference ID", description = "The sequential number (Invoice number BT-1) of the original invoice(s) that the credit/debit note is related to.", requiredMode = RequiredMode.NOT_REQUIRED, example = "{\n    \"id\": \"123456\"\n}")
     private DocumentReference billingReference;
@@ -143,6 +148,7 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
     }
 
     @Data
+    @NullMarked
     private static class DocumentReference implements Payloadable<MetadataPayload.DocumentReference, Void> {
         private final String id;
 
