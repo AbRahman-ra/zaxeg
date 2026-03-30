@@ -7,4 +7,8 @@ package sa.abrahman.zaxeg.infrastructure.in.contract;
  */
 public interface Payloadable<C, D> {
     C toPayload(D additionalData);
+
+    default C toPayload() {
+        return toPayload(null);
+    }
 }

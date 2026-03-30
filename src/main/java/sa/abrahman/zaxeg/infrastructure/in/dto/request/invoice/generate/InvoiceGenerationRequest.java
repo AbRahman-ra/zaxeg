@@ -28,8 +28,8 @@ public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPa
 
     @Override
     public InvoiceGenerationPayload toPayload(Void d) {
-        MetadataPayload metapay = metadata.toPayload(null);
-        PartiesPayload partiespay = parties.toPayload(null);
+        MetadataPayload metapay = metadata.toPayload();
+        PartiesPayload partiespay = parties.toPayload();
         LinesPayload linespay = lines.toPayload(metapay.getInvoiceCurrency());
         CheckoutDetailsPayload checkoutpay = checkout.toPayload(List.of(metapay.getInvoiceCurrency(), metapay.getTaxCurrency()));
 

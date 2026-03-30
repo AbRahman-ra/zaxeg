@@ -2,6 +2,8 @@ package sa.abrahman.zaxeg.core.port.in.payload;
 
 import java.util.List;
 
+import org.jspecify.annotations.NullMarked;
+
 import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.PaymentMethod;
@@ -9,6 +11,7 @@ import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons.TaxTotal;
 
 @Getter
 @Builder
+@NullMarked
 public class CheckoutDetailsPayload {
     private final PaymentMethod paymentMeansType;
     private final String paymentTerms;
@@ -31,6 +34,7 @@ public class CheckoutDetailsPayload {
 
     @Getter
     @Builder
+    @NullMarked
     public static class LegalMonetaryTotals {
         private final PayloadCommons.Amount lineExtensionAmount;
         private final PayloadCommons.Amount documentLevelAllowanceChargeTotalAmount;

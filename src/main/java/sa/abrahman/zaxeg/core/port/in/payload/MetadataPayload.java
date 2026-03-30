@@ -32,8 +32,12 @@ public class MetadataPayload {
 
     private InvoiceDocumentType invoiceDocumentType;
     private InvoiceTypeTransactions invoiceTypeTransactions;
-    private List<String> creditOrDebitNoteIssuanceReasons;
-    private List<String> notes;
+
+    @Builder.Default
+    private List<String> creditOrDebitNoteIssuanceReasons = List.of();
+
+    @Builder.Default
+    private List<String> notes = List.of();
     private Currency invoiceCurrency;
     private Currency taxCurrency;
 
@@ -48,6 +52,7 @@ public class MetadataPayload {
 
     @Getter
     @Builder
+    @NullMarked
     public static class InvoiceTypeTransactions {
         private InvoiceSubtype subtype;
 
@@ -72,5 +77,6 @@ public class MetadataPayload {
     }
 
     @Data
+    @NullMarked
     public static class DocumentReference { private final String id; }
 }
