@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
-import sa.abrahman.zaxeg.infrastructure.in.dto.response.APIResponse;
+import sa.abrahman.zaxeg.infrastructure.in.dto.response.ApiResponse;
 import sa.abrahman.zaxeg.infrastructure.out.exception.XMLGenerationException;
 import tools.jackson.databind.exc.InvalidFormatException;
 
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     // DTO Schema Validation (Missing fields, bad formatting)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<APIResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException e) {
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException e) {
         Map<String, String> validationErrors = new HashMap<>();
         String errorTitle = "Bad Request";
 
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
 
     // DTO Schema parsing (Malforms payloads and parsing errors)
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<APIResponse<String>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+    public ResponseEntity<ApiResponse<String>> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
         String errorMessage = "Malformed JSON request. Please check your payload structure.";
 
         // if Jackson Parsing error
@@ -63,26 +63,26 @@ public class GlobalExceptionHandler {
 
     // Infrastructure Failures (XML Formatting)
     @ExceptionHandler(XMLGenerationException.class)
-    public ResponseEntity<APIResponse<String>> handleXmlGenerationException(XMLGenerationException e) {
+    public ResponseEntity<ApiResponse<String>> handleXmlGenerationException(XMLGenerationException e) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
                 "An unexpected error occurred while generating the UBL 2.1 document.");
     }
 
     // UBL & ZATCA Business Rule Violations
     @ExceptionHandler(InvoiceRuleViolationException.class)
-    public ResponseEntity<APIResponse<String>> handleInvoiceRuleViolation(InvoiceRuleViolationException e) {
+    public ResponseEntity<ApiResponse<String>> handleInvoiceRuleViolation(InvoiceRuleViolationException e) {
         return buildResponse(HttpStatus.UNPROCESSABLE_CONTENT, "ZATCA Rule Violation", e.getMessage());
     }
 
     // Domain State Violations (e.g., Missing lines for financial calculation)
     @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<APIResponse<String>> handleIllegalStateException(IllegalStateException e) {
+    public ResponseEntity<ApiResponse<String>> handleIllegalStateException(IllegalStateException e) {
         return buildResponse(HttpStatus.BAD_REQUEST, "Invalid Document State", e.getMessage());
     }
 
     // General Other Exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<APIResponse<String>> handleGenericException(Exception e) {
+    public ResponseEntity<ApiResponse<String>> handleGenericException(Exception e) {
         // MUST log the stack trace here so you can fix bugs!
         e.printStackTrace();
 
@@ -91,8 +91,8 @@ public class GlobalExceptionHandler {
     }
 
     // ============ HELPER METHOD ============
-    private <T> ResponseEntity<APIResponse<T>> buildResponse(HttpStatus status, String errorTitle, T details) {
-        APIResponse<T> response = new APIResponse<>(LocalDateTime.now(), status.value(), errorTitle, details);
+    private <T> ResponseEntity<ApiResponse<T>> buildResponse(HttpStatus status, String errorTitle, T details) {
+        ApiResponse<T> response = new ApiResponse<>(LocalDateTime.now(), status.value(), errorTitle, details);
         return ResponseEntity.status(status).body(response);
     }
 }
