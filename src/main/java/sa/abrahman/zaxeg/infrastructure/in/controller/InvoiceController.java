@@ -13,6 +13,7 @@ import sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.InvoiceG
 import sa.abrahman.zaxeg.infrastructure.in.dto.response.ApiResponse;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class InvoiceController {
     private final InvoiceGenerator service;
 
-    @PostMapping(value = "/generate")
+    @PostMapping(value = "/generate", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Operation(summary = "Generate UBL 2.1 XML from JSON payload")
     public ResponseEntity<ApiResponse<String>> generate(@Valid @RequestBody InvoiceGenerationRequest request) {
         InvoiceGenerationPayload payload = request.toPayload();

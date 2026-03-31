@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.wrapper.Metadata;
@@ -34,6 +35,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         this.mapper = new XmlMapper();
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
         mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_EMPTY);
+        mapper.configure(ToXmlGenerator.Feature.WRITE_XML_DECLARATION, true);
     }
 
     @Override

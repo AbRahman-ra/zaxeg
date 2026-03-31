@@ -20,11 +20,6 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.ZatcaDefaultValues;
 public class XmlInvoice {
 
     /** Namespaces (Required by ZATCA) */
-    @JacksonXmlProperty(isAttribute = true, localName = UblInvoiceElements.ATTRIBUTES.XMLNS.XMLNS_NS)
-    @Builder.Default
-    private String xmlns = UblInvoiceElements.NAMESPACES.ROOT;
-
-    /** Namespaces (Required by ZATCA) */
     @JacksonXmlProperty(isAttribute = true, localName = UblInvoiceElements.ATTRIBUTES.XMLNS.CAC)
     @Builder.Default
     private String xmlnsCac = UblInvoiceElements.NAMESPACES.CAC;
@@ -41,48 +36,48 @@ public class XmlInvoice {
 
     // ============================ METADATA ============================
     @Builder.Default
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.PROFILE_ID)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.PROFILE_ID, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String profileId = ZatcaDefaultValues.DEFAULT_PROFILE_ID;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String id;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.UUID)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.UUID, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String uuid;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ISSUE_DATE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ISSUE_DATE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String issueDate;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ISSUE_TIME)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ISSUE_TIME, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String issueTime;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.INVOICE_TYPE_CODE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.INVOICE_TYPE_CODE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private XmlInvoiceTypeCode invoiceTypeCode;
 
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.NOTE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.NOTE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private List<String> notes;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.DOCUMENT_CURRENCY_CODE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.DOCUMENT_CURRENCY_CODE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String documentCurrencyCode;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.TAX_CURRENCY_CODE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.TAX_CURRENCY_CODE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String taxCurrencyCode;
 
     // --- Document References ---
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.BILLING_REFERENCE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.BILLING_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private XmlBillingReference billingReference;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ORDER_REFERENCE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ORDER_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private XmlDocumentReference purchaseOrder;
 
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.CONTRACT_DOCUMENT_REFERENCE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.CONTRACT_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private XmlDocumentReference contract;
 
     /**
      * Used for ICV, PIH, QR
      */
     @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ADDITIONAL_DOCUMENT_REFERENCE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ADDITIONAL_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private List<XmlAdditionalDocumentReference> additionalDocumentReferences;
 }
