@@ -3,12 +3,13 @@ package sa.abrahman.zaxeg.core.service.generator;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import sa.abrahman.zaxeg.core.factory.bean.InvoiceValidatorBeanNameResolver;
+import sa.abrahman.zaxeg.core.factory.model.InvoiceFactory;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.port.in.InvoiceGenerator;
 import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.port.out.InvoiceFormatter;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
-import sa.abrahman.zaxeg.core.service.validator.InvoiceValidatorBeanNameResolver;
 
 @Service
 public class ZatcaInvoiceGenerator implements InvoiceGenerator {

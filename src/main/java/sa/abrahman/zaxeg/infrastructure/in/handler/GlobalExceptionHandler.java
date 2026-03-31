@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
-import sa.abrahman.zaxeg.infrastructure.in.dto.APIResponse;
+import sa.abrahman.zaxeg.infrastructure.in.dto.response.APIResponse;
 import sa.abrahman.zaxeg.infrastructure.out.exception.XMLGenerationException;
 import tools.jackson.databind.exc.InvalidFormatException;
 

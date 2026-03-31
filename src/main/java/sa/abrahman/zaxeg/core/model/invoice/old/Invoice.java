@@ -14,7 +14,7 @@ import lombok.Setter;
 import sa.abrahman.zaxeg.core.model.invoice.old.meta.*;
 import sa.abrahman.zaxeg.core.model.invoice.old.party.*;
 import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
-import sa.abrahman.zaxeg.core.service.generator.InvoiceFactory;
+import sa.abrahman.zaxeg.core.factory.model.InvoiceFactory;
 import sa.abrahman.zaxeg.core.model.invoice.old.financial.*;
 
 /**

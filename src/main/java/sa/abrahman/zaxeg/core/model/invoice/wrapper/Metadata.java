@@ -62,7 +62,8 @@ public class Metadata {
      * BG-01, BT-22: A textual note that gives unstructured information that is
      * relevant to the Invoice as a whole.
      */
-    private List<String> notes;
+    @Builder.Default
+    private List<String> notes = List.of();
 
     /**
      * BT-05: The currency in which all Invoice amounts are given, except for the
@@ -95,6 +96,7 @@ public class Metadata {
     private DocumentReference contract;
 
     /** KSA-16: Invoice counter value */
+    @Nullable // TODO: remove nullable in phase ii integration
     private Long icv;
 
     /**
@@ -110,41 +112,44 @@ public class Metadata {
      * the equivalent for base64 encoded SHA256 of {@code "0"} (zero)
      * character.</li>
      * </ul>
-     *
-     * <p>
-     * More details can be found in the Security Features Implementation Standard.
-     * </p>
-     */
+    *
+    * <p>
+    * More details can be found in the Security Features Implementation Standard.
+    * </p>
+    */
+    @Nullable // TODO: remove nullable in phase ii integration
     private String pih;
 
     /**
      * KSA-14: QR code must contain:
-     *
-     * <ul>
-     * <li>Seller VAT number</li>
-     * <li>Seller Name</li>
-     * <li>VAT Total</li>
-     * <li>Invoice Total (including VAT)</li>
-     * <li>Hash of the XML invoice</li>
-     * <li>Invoice issue date and time</li>
-     * <li>QR Code stamp (For simplified tax invoices and associated notes, it will
-     * be applied by the seller's device. For the tax invoice and associated notes,
-     * it will be applied by ZATCA)</li>
-     * </ul>
-     *
-     * <p>
-     * More details can be found in the Security Features Implementation Standard.
-     * </p>
-     */
+    *
+    * <ul>
+    * <li>Seller VAT number</li>
+    * <li>Seller Name</li>
+    * <li>VAT Total</li>
+    * <li>Invoice Total (including VAT)</li>
+    * <li>Hash of the XML invoice</li>
+    * <li>Invoice issue date and time</li>
+    * <li>QR Code stamp (For simplified tax invoices and associated notes, it will
+    * be applied by the seller's device. For the tax invoice and associated notes,
+    * it will be applied by ZATCA)</li>
+    * </ul>
+    *
+    * <p>
+    * More details can be found in the Security Features Implementation Standard.
+    * </p>
+    */
+    @Nullable // TODO: remove nullable in phase ii integration
     private String qr;
 
     /**
      * KSA-15: Invoice cryptographic stamp
-     *
-     * <p>
-     * More details can be found in the Security Features Implementation Standard.
-     * </p>
-     */
+    *
+    * <p>
+    * More details can be found in the Security Features Implementation Standard.
+    * </p>
+    */
+    @Nullable // TODO: remove nullable in phase ii integration
     private CryptographicStamp cryptographicStamp;
 
     /**
@@ -181,5 +186,6 @@ public class Metadata {
     * </ul>
     * </ul>
     */
-    private List<String> creditOrDebitNoteIssuanceReasons;
+   @Builder.Default
+    private List<String> creditOrDebitNoteIssuanceReasons = List.of();
 }
