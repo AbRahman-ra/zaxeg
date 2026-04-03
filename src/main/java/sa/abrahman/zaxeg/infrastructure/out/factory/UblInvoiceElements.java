@@ -112,6 +112,7 @@ public final class UblInvoiceElements {
             public static final String PAYMENT_MEANS_CODE = "cbc:PaymentMeansCode";
             public static final String INSTRUCTION_NOTE = "cbc:InstructionNote";
             public static final String ACTUAL_DELIVERY_DATE = "cbc:ActualDeliveryDate";
+            public static final String LATEST_DELIVERY_DATE = "cbc:LatestDeliveryDate";
             public static final String TAX_EXEMPTION_REASON_CODE = "cbc:TaxExemptionReasonCode";
             public static final String TAX_EXEMPTION_REASON = "cbc:TaxExemptionReason";
             public static final String CHARGE_INDICATOR = "cbc:ChargeIndicator";

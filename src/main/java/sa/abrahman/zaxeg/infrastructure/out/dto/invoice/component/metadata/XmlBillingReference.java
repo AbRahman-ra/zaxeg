@@ -14,6 +14,6 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class XmlBillingReference {
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.INVOICE_DOCUMENT_REFERENCE)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.INVOICE_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private XmlDocumentReference invoiceDocumentReference;
 }

@@ -18,8 +18,10 @@ import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.wrapper.Metadata;
 import sa.abrahman.zaxeg.core.port.out.InvoiceFormatter;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.XmlInvoice;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.agg.XmlPaymentMeans;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlAdditionalDocumentReference;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlBillingReference;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlDelivery;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlDocumentReference;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlDocumentReferenceAttachment;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlEmbeddedDocumentBinaryObject;
@@ -76,7 +78,7 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         }
 
         if (meta.getContract() != null) {
-            XmlDocumentReference contract = new XmlDocumentReference(meta.getPurchaseOrder().getId());
+            XmlDocumentReference contract = new XmlDocumentReference(meta.getContract().getId());
             builder.contract(contract);
         }
 
@@ -124,6 +126,18 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
                     .build();
 
             additionalRefs.add(qr);
+        }
+
+        if (meta.getSupplyDate() != null) {
+            String supplyEndDate = meta.getSupplyEndDate() != null
+                    ? meta.getSupplyEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    : null;
+            builder.delivery(new XmlDelivery(meta.getSupplyDate().format(DateTimeFormatter.ISO_LOCAL_DATE), supplyEndDate));
+        }
+
+        if (meta.getCreditOrDebitNoteIssuanceReasons() != null && !meta.getCreditOrDebitNoteIssuanceReasons().isEmpty()) {
+            XmlPaymentMeans means = XmlPaymentMeans.builder().creditOrDebitNoteIssuanceReasons(meta.getCreditOrDebitNoteIssuanceReasons()).build();
+            builder.paymentMeans(means);
         }
 
         builder.additionalDocumentReferences(additionalRefs);

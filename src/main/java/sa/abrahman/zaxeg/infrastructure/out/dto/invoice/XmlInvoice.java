@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import lombok.Builder;
 import lombok.Data;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.agg.XmlPaymentMeans;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.*;
 import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 import sa.abrahman.zaxeg.infrastructure.out.factory.ZatcaDefaultValues;
@@ -80,4 +81,17 @@ public class XmlInvoice {
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ADDITIONAL_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private List<XmlAdditionalDocumentReference> additionalDocumentReferences;
+
+    /**
+     * Parties
+     */
+
+    /**
+     * Delivery
+     */
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.DELIVERY, namespace = UblInvoiceElements.NAMESPACES.ROOT)
+    private XmlDelivery delivery;
+
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.PAYMENT_MEANS, namespace = UblInvoiceElements.NAMESPACES.ROOT)
+    private XmlPaymentMeans paymentMeans;
 }

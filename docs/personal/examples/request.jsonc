@@ -1,5 +1,30 @@
 {
-    "metadata": {},
+    "metadata": {
+        "invoiceNumber": "1234567",
+        "invoiceUuid": "8f480da0-70f9-4674-8b63-8a3d6ebef9e6",
+        "issueDate": "2026-01-01",
+        "issueTime": "19:48:21",
+        "supplyDate": "2026-01-01",
+        "supplyEndDate": "2026-01-01",
+        "invoiceDocumentType": "TAX_INVOICE",
+        "invoiceTypeTransactions": {
+            "subtype": "STANDARD"
+        },
+        "creditOrDebitNoteIssuanceReasons": [
+            "Cancellation or suspension of the supplies after its occurrence either wholly or partially"
+        ],
+        "notes": ["testing invoice", "hello world"],
+        "invoiceCurrency": "SAR",
+        "billingReference": {
+            "id": "123456"
+        },
+        "purchaseOrder": {
+            "id": "PUR1234"
+        },
+        "contract": {
+            "id": "1234567890"
+        }
+    },
     "parties": {},
     "lines": [],
     "summary": {}

@@ -14,6 +14,6 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class XmlDocumentReference {
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID)
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String id;
 }
