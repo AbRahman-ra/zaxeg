@@ -1,7 +1,5 @@
 package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
 
-import java.util.List;
-
 import org.jspecify.annotations.NullMarked;
 
 import jakarta.validation.Valid;
