@@ -8,12 +8,12 @@ import lombok.Data;
 import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 
 /**
- * Maps to {@link sa.abrahman.zaxeg.core.model.invoice.wrapper.Metadata#billingReference Metadata.billingReference}
+ * Maps to {@link sa.abrahman.zaxeg.core.model.invoice.metadata.DocumentReference DocumentReference}
  */
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class XmlBillingReference {
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.INVOICE_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlDocumentReference invoiceDocumentReference;
+public class XmlMetadataDocumentReference {
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID, namespace = UblInvoiceElements.NAMESPACES.ROOT)
+    private String id;
 }

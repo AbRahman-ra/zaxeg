@@ -11,7 +11,7 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class XmlInvoiceTypeCode {
+public class XmlMetadataInvoiceTypeCode {
 
     /**
      * Maps to {@link sa.abrahman.zaxeg.core.model.invoice.metadata.InvoiceTypeTransactions InvoiceTypeTransactions}

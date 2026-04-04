@@ -31,6 +31,7 @@ public final class UblInvoiceElements {
             public static final String PROJECT_REFERENCE = "cac:ProjectReference";
             public static final String SIGNATURE = "cac:Signature";
             public static final String PARTY = "cac:Party";
+            public static final String PARTY_IDENTIFICATION = "cac:PartyIdentification";
             public static final String ACCOUNTING_SUPPLIER_PARTY = "cac:AccountingSupplierParty";
             public static final String ACCOUNTING_CUSTOMER_PARTY = "cac:AccountingCustomerParty";
             public static final String PAYEE_PARTY = "cac:PayeeParty";
@@ -62,6 +63,7 @@ public final class UblInvoiceElements {
             public static final String PARTY_LEGAL_ENTITY = "cac:PartyLegalEntity";
             public static final String INVOICE_DOCUMENT_REFERENCE = "cac:InvoiceDocumentReference";
             public static final String ATTACHMENT = "cac:Attachment";
+            public static final String COUNTRY = "cac:Country";
         }
 
         @UtilityClass
@@ -103,10 +105,12 @@ public final class UblInvoiceElements {
             public static final String IDENTIFICATION_CODE = "cbc:IdentificationCode";
             public static final String BUILDING_NUMBER = "cbc:BuildingNumber";
             public static final String STREET_NAME = "cbc:StreetName";
+            public static final String ADDITIONAL_STREET_NAME = "cbc:AdditionalStreetName";
+            public static final String PLOT_IDENTIFICATION = "cbc:PlotIdentification";
             public static final String CITY_SUBDIVISION_NAME = "cbc:CitySubdivisionName";
             public static final String CITY_NAME = "cbc:CityName";
             public static final String POSTAL_ZONE = "cbc:PostalZone";
-            public static final String COUNTRY = "cbc:Country";
+            public static final String COUNTRY_SUBENTITY = "cbc:CountrySubentity";
             public static final String COMPANY_ID = "cbc:CompanyID";
             public static final String REGISTRATION_NAME = "cbc:RegistrationName";
             public static final String PAYMENT_MEANS_CODE = "cbc:PaymentMeansCode";

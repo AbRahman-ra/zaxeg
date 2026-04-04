@@ -9,8 +9,9 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import lombok.Builder;
 import lombok.Data;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.agg.XmlPaymentMeans;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.aggregate.XmlAggregatePaymentMeans;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.*;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesAccountingParty;
 import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 import sa.abrahman.zaxeg.infrastructure.out.factory.ZatcaDefaultValues;
 
@@ -53,7 +54,7 @@ public class XmlInvoice {
     private String issueTime;
 
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.INVOICE_TYPE_CODE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlInvoiceTypeCode invoiceTypeCode;
+    private XmlMetadataInvoiceTypeCode invoiceTypeCode;
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.NOTE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
@@ -67,31 +68,33 @@ public class XmlInvoice {
 
     // --- Document References ---
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.BILLING_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlBillingReference billingReference;
+    private XmlMetadataBillingReference billingReference;
 
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ORDER_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlDocumentReference purchaseOrder;
+    private XmlMetadataDocumentReference purchaseOrder;
 
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.CONTRACT_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlDocumentReference contract;
+    private XmlMetadataDocumentReference contract;
 
     /**
      * Used for ICV, PIH, QR
      */
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ADDITIONAL_DOCUMENT_REFERENCE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private List<XmlAdditionalDocumentReference> additionalDocumentReferences;
+    private List<XmlMetadataAdditionalDocumentReference> additionalDocumentReferences;
 
-    /**
-     * Parties
-     */
+    // ============================ PARTIES ============================
 
-    /**
-     * Delivery
-     */
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ACCOUNTING_SUPPLIER_PARTY, namespace = UblInvoiceElements.NAMESPACES.ROOT)
+    private XmlPartiesAccountingParty accountingSupplierParty;
+
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ACCOUNTING_CUSTOMER_PARTY, namespace = UblInvoiceElements.NAMESPACES.ROOT)
+    private XmlPartiesAccountingParty accountingCustomerParty;
+
+    // ============================ METADATA.DELIVERY_INFO ============================
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.DELIVERY, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlDelivery delivery;
+    private XmlMetadataDelivery delivery;
 
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.PAYMENT_MEANS, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private XmlPaymentMeans paymentMeans;
+    private XmlAggregatePaymentMeans paymentMeans;
 }

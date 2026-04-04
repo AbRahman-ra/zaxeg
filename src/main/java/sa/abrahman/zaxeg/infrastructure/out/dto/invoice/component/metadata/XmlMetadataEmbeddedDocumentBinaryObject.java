@@ -3,17 +3,19 @@ package sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 
-/**
- * Maps to {@link sa.abrahman.zaxeg.core.model.invoice.metadata.DocumentReference DocumentReference}
- */
 @Data
-@AllArgsConstructor
+@Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class XmlDocumentReference {
-    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID, namespace = UblInvoiceElements.NAMESPACES.ROOT)
-    private String id;
+public class XmlMetadataEmbeddedDocumentBinaryObject {
+    /** e.g., "text/plain" */
+    @JacksonXmlProperty(isAttribute = true, localName = UblInvoiceElements.ATTRIBUTES.MIME_CODE)
+    private String mimeCode;
+
+    /** The Base64 hash */
+    @JacksonXmlProperty(isAttribute = false)
+    private String value;
 }

@@ -15,17 +15,28 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
+import sa.abrahman.zaxeg.core.model.invoice.party.Party;
+import sa.abrahman.zaxeg.core.model.invoice.wrapper.InvoiceParties;
 import sa.abrahman.zaxeg.core.model.invoice.wrapper.Metadata;
 import sa.abrahman.zaxeg.core.port.out.InvoiceFormatter;
 import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.XmlInvoice;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.agg.XmlPaymentMeans;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlAdditionalDocumentReference;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlBillingReference;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlDelivery;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlDocumentReference;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlDocumentReferenceAttachment;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlEmbeddedDocumentBinaryObject;
-import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlInvoiceTypeCode;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.aggregate.XmlAggregatePaymentMeans;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataAdditionalDocumentReference;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataBillingReference;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataDelivery;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataDocumentReference;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataDocumentReferenceAttachment;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataEmbeddedDocumentBinaryObject;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.metadata.XmlMetadataInvoiceTypeCode;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesAccountingParty;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesCountry;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesParty;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesPartyIdentification;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesPartyLegalEntity;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesPartyTaxScheme;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesPostalAddress;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesSchemeId;
+import sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.parties.XmlPartiesTaxScheme;
 import sa.abrahman.zaxeg.infrastructure.out.exception.XMLGenerationException;
 import sa.abrahman.zaxeg.infrastructure.out.factory.ZatcaDefaultValues;
 
@@ -51,41 +62,49 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
     }
 
     private XmlInvoice toDto(Invoice i) {
-        // METADATA
         Metadata meta = i.getMetadata();
+        InvoiceParties parties = i.getParties();
+        XmlInvoice.XmlInvoiceBuilder builder = XmlInvoice.builder();
 
+        formatMetadata(meta, builder);
+        formatParties(parties, builder);
+
+        return builder.build();
+    }
+
+    private void formatMetadata(Metadata meta, XmlInvoice.XmlInvoiceBuilder builder) {
         String typeCodeValue = String.valueOf(meta.getInvoiceDocumentType().getCode()); // e.g., "388"
         String typeCodeName = meta.getInvoiceTypeTransactions().code();
-        XmlInvoiceTypeCode typeCode = new XmlInvoiceTypeCode(typeCodeName, typeCodeValue);
+        XmlMetadataInvoiceTypeCode typeCode = new XmlMetadataInvoiceTypeCode(typeCodeName, typeCodeValue);
 
-        XmlInvoice.XmlInvoiceBuilder builder = XmlInvoice.builder().id(meta.getInvoiceNumber())
-        .uuid(meta.getInvoiceUuid().toString())
-        .issueDate(meta.getInvoiceIssueDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
-        .issueTime(meta.getInvoiceIssueTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
-        .invoiceTypeCode(typeCode)
-        .documentCurrencyCode(meta.getInvoiceCurrency().getCurrencyCode())
-        .taxCurrencyCode(meta.getTaxCurrency().getCurrencyCode())
-        .notes(meta.getNotes());
+        builder.id(meta.getInvoiceNumber())
+                .uuid(meta.getInvoiceUuid().toString())
+                .issueDate(meta.getInvoiceIssueDate().format(DateTimeFormatter.ISO_LOCAL_DATE))
+                .issueTime(meta.getInvoiceIssueTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")))
+                .invoiceTypeCode(typeCode)
+                .documentCurrencyCode(meta.getInvoiceCurrency().getCurrencyCode())
+                .taxCurrencyCode(meta.getTaxCurrency().getCurrencyCode())
+                .notes(meta.getNotes());
 
         if (meta.getBillingReference() != null) {
-            XmlBillingReference billingRef = new XmlBillingReference(new XmlDocumentReference(meta.getBillingReference().getId()));
+            XmlMetadataBillingReference billingRef = new XmlMetadataBillingReference(new XmlMetadataDocumentReference(meta.getBillingReference().getId()));
             builder.billingReference(billingRef);
         }
 
         if (meta.getPurchaseOrder() != null) {
-            XmlDocumentReference purchaseOrder = new XmlDocumentReference(meta.getPurchaseOrder().getId());
+            XmlMetadataDocumentReference purchaseOrder = new XmlMetadataDocumentReference(meta.getPurchaseOrder().getId());
             builder.purchaseOrder(purchaseOrder);
         }
 
         if (meta.getContract() != null) {
-            XmlDocumentReference contract = new XmlDocumentReference(meta.getContract().getId());
+            XmlMetadataDocumentReference contract = new XmlMetadataDocumentReference(meta.getContract().getId());
             builder.contract(contract);
         }
 
-        List<XmlAdditionalDocumentReference> additionalRefs = new ArrayList<>();
+        List<XmlMetadataAdditionalDocumentReference> additionalRefs = new ArrayList<>();
 
         if (meta.getIcv() != null) {
-            XmlAdditionalDocumentReference icv = XmlAdditionalDocumentReference.builder()
+            XmlMetadataAdditionalDocumentReference icv = XmlMetadataAdditionalDocumentReference.builder()
                     .id(ZatcaDefaultValues.ICV_DOCUMENT_REFERENCE_ID)
                     .uuid(meta.getIcv().toString())
                     .build();
@@ -93,16 +112,16 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         }
 
         if (meta.getPih() != null && !meta.getPih().isBlank()) {
-            XmlEmbeddedDocumentBinaryObject pihBo = XmlEmbeddedDocumentBinaryObject.builder()
+            XmlMetadataEmbeddedDocumentBinaryObject pihBo = XmlMetadataEmbeddedDocumentBinaryObject.builder()
                     .mimeCode(MediaType.TEXT_PLAIN_VALUE)
                     .value(meta.getPih())
                     .build();
 
-            XmlDocumentReferenceAttachment pihAttach = XmlDocumentReferenceAttachment.builder()
+            XmlMetadataDocumentReferenceAttachment pihAttach = XmlMetadataDocumentReferenceAttachment.builder()
                     .embeddedDocumentBinaryObject(pihBo)
                     .build();
 
-            XmlAdditionalDocumentReference pih = XmlAdditionalDocumentReference.builder()
+            XmlMetadataAdditionalDocumentReference pih = XmlMetadataAdditionalDocumentReference.builder()
                     .id(ZatcaDefaultValues.PIH_DOCUMENT_REFERENCE_ID)
                     .attachment(pihAttach)
                     .build();
@@ -111,16 +130,16 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
         }
 
         if (meta.getQr() != null && !meta.getQr().isBlank()) {
-            XmlEmbeddedDocumentBinaryObject qrBo = XmlEmbeddedDocumentBinaryObject.builder()
+            XmlMetadataEmbeddedDocumentBinaryObject qrBo = XmlMetadataEmbeddedDocumentBinaryObject.builder()
                     .mimeCode(MediaType.TEXT_PLAIN_VALUE)
                     .value(meta.getQr())
                     .build();
 
-            XmlDocumentReferenceAttachment qrAttach = XmlDocumentReferenceAttachment.builder()
+            XmlMetadataDocumentReferenceAttachment qrAttach = XmlMetadataDocumentReferenceAttachment.builder()
                     .embeddedDocumentBinaryObject(qrBo)
                     .build();
 
-            XmlAdditionalDocumentReference qr = XmlAdditionalDocumentReference.builder()
+            XmlMetadataAdditionalDocumentReference qr = XmlMetadataAdditionalDocumentReference.builder()
                     .id(ZatcaDefaultValues.QR_DOCUMENT_REFERENCE_ID)
                     .attachment(qrAttach)
                     .build();
@@ -132,16 +151,62 @@ public class JacksonInvoiceFormatter implements InvoiceFormatter {
             String supplyEndDate = meta.getSupplyEndDate() != null
                     ? meta.getSupplyEndDate().format(DateTimeFormatter.ISO_LOCAL_DATE)
                     : null;
-            builder.delivery(new XmlDelivery(meta.getSupplyDate().format(DateTimeFormatter.ISO_LOCAL_DATE), supplyEndDate));
+            builder.delivery(new XmlMetadataDelivery(meta.getSupplyDate().format(DateTimeFormatter.ISO_LOCAL_DATE), supplyEndDate));
         }
 
         if (meta.getCreditOrDebitNoteIssuanceReasons() != null && !meta.getCreditOrDebitNoteIssuanceReasons().isEmpty()) {
-            XmlPaymentMeans means = XmlPaymentMeans.builder().creditOrDebitNoteIssuanceReasons(meta.getCreditOrDebitNoteIssuanceReasons()).build();
+            XmlAggregatePaymentMeans means = XmlAggregatePaymentMeans.builder().creditOrDebitNoteIssuanceReasons(meta.getCreditOrDebitNoteIssuanceReasons()).build();
             builder.paymentMeans(means);
         }
 
         builder.additionalDocumentReferences(additionalRefs);
+    }
 
-        return builder.build();
+    private void formatParties(InvoiceParties parties, XmlInvoice.XmlInvoiceBuilder builder) {
+        builder.accountingSupplierParty(mapParty(parties.getSeller()));
+
+        if (parties.getBuyer() != null) {
+            builder.accountingCustomerParty(mapParty(parties.getBuyer()));
+        }
+    }
+
+    private XmlPartiesAccountingParty mapParty(Party domainParty) {
+        XmlPartiesParty.XmlPartiesPartyBuilder partyBuilder = XmlPartiesParty.builder();
+
+        // 1. Legal Entity (Name)
+        partyBuilder.partyLegalEntity(new XmlPartiesPartyLegalEntity(domainParty.getName()));
+
+        // 2. Tax Scheme (VAT Number) - Maps to BT-31 (Seller) / BT-48 (Buyer)
+        if (domainParty.getIdentification() != null) {
+            String vatNumber = domainParty.getIdentification().getCompanyId();
+            XmlPartiesTaxScheme vatScheme = new XmlPartiesTaxScheme(domainParty.getIdentification().getTaxScheme().name());
+            partyBuilder.partyTaxScheme(new XmlPartiesPartyTaxScheme(vatNumber, vatScheme));
+        }
+
+        // 3. Other Identifications (CRN, NAT, SAG, etc.) - Maps to BT-30 (Seller) / BT-47 (Buyer)
+        if (domainParty.getOtherIds() != null && !domainParty.getOtherIds().isEmpty()) {
+            List<XmlPartiesPartyIdentification> otherIds = domainParty.getOtherIds().stream()
+                    .map(id -> new XmlPartiesPartyIdentification(new XmlPartiesSchemeId(id.getSchemeId().name(), id.getValue())))
+                    .toList();
+            partyBuilder.partyIdentification(otherIds);
+        }
+
+        // 4. Postal Address - Specific ZATCA UBL mapping rules apply here
+        if (domainParty.getAddress() != null) {
+            var address = domainParty.getAddress();
+            partyBuilder.postalAddress(XmlPartiesPostalAddress.builder()
+                    .streetName(address.getStreet())
+                    .additionalStreetName(address.getAdditionalStreet())
+                    .buildingNumber(address.getBuildingNumber())
+                    .plotIdentification(address.getAdditionalNumber()) // ZATCA Rule: Additional Number maps to PlotIdentification
+                    .citySubdivisionName(address.getDistrict())      // ZATCA Rule: District maps to CitySubdivisionName
+                    .cityName(address.getCity())
+                    .postalZone(address.getPostalCode())
+                    .countrySubentity(address.getProvinceOrState())
+                    .country(new XmlPartiesCountry(address.getCountry().getCountry()))
+                    .build());
+        }
+
+        return new XmlPartiesAccountingParty(partyBuilder.build());
     }
 }

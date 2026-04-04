@@ -19,7 +19,8 @@ import sa.abrahman.zaxeg.core.model.invoice.wrapper.*;
 @Builder(toBuilder = true)
 @NullMarked
 public class Invoice {
-    public static final String DEFAULT_LOCALE_CODE = "SAR";
+    public static final String DEFAULT_CURRENCY_CODE = "SAR";
+    public static final String DEFAULT_LOCALE_CODE = "SA";
 
     /**
      * <p>

@@ -22,8 +22,8 @@ public class MetadataValidator implements InvoiceValidator {
     @Override
     public void validate(InvoiceGenerationPayload payload) {
         // initialization & sanity check
-        Function<String, InvoiceRuleViolationException> f = InvoiceRuleViolationException::new;
         MetadataPayload metadata = payload.getMetadata();
+        Function<String, InvoiceRuleViolationException> f = InvoiceRuleViolationException::new;
 
         // helpers
         boolean isStandardInvoice = metadata.getInvoiceTypeTransactions().getSubtype() == InvoiceSubtype.STANDARD;

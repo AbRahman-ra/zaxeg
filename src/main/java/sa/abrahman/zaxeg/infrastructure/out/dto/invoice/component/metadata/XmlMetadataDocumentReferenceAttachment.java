@@ -7,15 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 
+/** For the stamp */
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class XmlEmbeddedDocumentBinaryObject {
-    /** e.g., "text/plain" */
-    @JacksonXmlProperty(isAttribute = true, localName = UblInvoiceElements.ATTRIBUTES.MIME_CODE)
-    private String mimeCode;
-
-    /** The Base64 hash */
-    @JacksonXmlProperty(isAttribute = false)
-    private String value;
+public class XmlMetadataDocumentReferenceAttachment {
+    @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.EMBEDDED_DOCUMENT_BINARY_OBJECT)
+    private XmlMetadataEmbeddedDocumentBinaryObject embeddedDocumentBinaryObject;
 }

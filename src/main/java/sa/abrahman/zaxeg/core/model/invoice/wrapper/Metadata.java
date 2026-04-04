@@ -70,7 +70,7 @@ public class Metadata {
      * Total VAT amount in accounting currency.
      */
     @Builder.Default
-    private Currency invoiceCurrency = Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE);
+    private Currency invoiceCurrency = Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE);
 
     /**
      * BT-06: The currency used for VAT accounting and reporting purposes as
@@ -78,7 +78,7 @@ public class Metadata {
      * combination with the Total VAT amount in accounting currency (BT-111).
      */
     @Builder.Default
-    private Currency taxCurrency = Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE);
+    private Currency taxCurrency = Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE);
 
     /** BT-13: An identifier of a referenced purchase order, issued by the Buyer. */
     @Nullable

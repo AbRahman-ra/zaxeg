@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.agg;
+package sa.abrahman.zaxeg.infrastructure.out.dto.invoice.component.aggregate;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 
 @Getter
 @Builder
-public class XmlPaymentMeans {
+public class XmlAggregatePaymentMeans {
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.INSTRUCTION_NOTE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private List<String> creditOrDebitNoteIssuanceReasons;

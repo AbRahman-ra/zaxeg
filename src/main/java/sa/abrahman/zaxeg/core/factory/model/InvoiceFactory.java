@@ -23,7 +23,7 @@ public class InvoiceFactory {
 
         return Invoice.builder()
                 .metadata(from(payload.getMetadata()))
-                // .parties(from(payload.getParties()))
+                .parties(from(payload.getParties()))
                 // .lines(from(payload.getLines()))
                 // .checkout(from(payload.getCheckout()))
                 .build();

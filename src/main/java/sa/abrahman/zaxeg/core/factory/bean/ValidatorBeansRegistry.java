@@ -9,4 +9,5 @@ public class ValidatorBeansRegistry {
     public static final String PARTIES_VALIDATOR = "invoicePartiesValidator";
     public static final String LINES_VALIDATOR = "invoiceLinesValidator";
     public static final String CHECKOUT_VALIDATOR = "invoiceCheckoutValidator";
+    public static final String AGGREGATES_VALIDATOR = "invoiceAggregatesValidator";
 }

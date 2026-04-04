@@ -10,7 +10,7 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class XmlDelivery {
+public class XmlMetadataDelivery {
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ACTUAL_DELIVERY_DATE, namespace = UblInvoiceElements.NAMESPACES.ROOT)
     private String actualDeliveryDate;
 

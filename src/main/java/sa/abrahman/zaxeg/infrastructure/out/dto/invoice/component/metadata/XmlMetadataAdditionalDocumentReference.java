@@ -13,7 +13,7 @@ import sa.abrahman.zaxeg.infrastructure.out.factory.UblInvoiceElements;
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class XmlAdditionalDocumentReference {
+public class XmlMetadataAdditionalDocumentReference {
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CBC.ID)
     /** e.g., "ICV", "PIH", "QR" */
     private String id;
@@ -24,5 +24,5 @@ public class XmlAdditionalDocumentReference {
 
     /** Used for PIH and QR */
     @JacksonXmlProperty(localName = UblInvoiceElements.TAGS.CAC.ATTACHMENT)
-    private XmlDocumentReferenceAttachment attachment;
+    private XmlMetadataDocumentReferenceAttachment attachment;
 }

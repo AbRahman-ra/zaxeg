@@ -10,6 +10,7 @@ public class UblRules {
     public static final String BR_05 = "[BR-05]: An Invoice shall have an Invoice currency code (BT-5).";
     public static final String BR_06 = "[BR-06]: An Invoice shall contain the Seller name (BT-27).";
     public static final String BR_08 = "[BR_08]: An Invoice shall contain the Seller postal address (BG-5).";
+    public static final String BR_06_08 = "[BR_06][BR_08]: An Invoice shall contain the Seller name (BT-27). An Invoice shall contain the Seller postal address (BG-5).";
     public static final String BR_09 = "[BR_09]: The Seller postal address (BG-5) shall contain a Seller country code (BT-40).";
     public static final String BR_10 = "[BR_10]: An Invoice shall contain the Buyer postal address (BG-8). Not applicable for simplified tax invoices and associated credit notes and debit notes (KSA-2, position 1 and 2 = 02).";
     public static final String BR_13 = "[BR_13]: An Invoice shall have the Invoice total amount without VAT (BT-109).";

@@ -3,7 +3,9 @@ package sa.abrahman.zaxeg.core.port.in.payload;
 import java.util.List;
 import java.util.Locale;
 
+import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullUnmarked;
 import org.jspecify.annotations.Nullable;
 
 import lombok.Builder;
@@ -24,11 +26,16 @@ public class PartiesPayload {
 
     @Data
     @Builder
-    @NullMarked
+    @NullUnmarked
     public static class Party {
+        @NonNull
         private String name;
+
         private PartyTaxScheme identification;
-        private List<PartyIdentification> otherIds;
+
+        @Builder.Default
+        private List<PartyIdentification> otherIds = List.of();
+
         private Address address;
     }
 

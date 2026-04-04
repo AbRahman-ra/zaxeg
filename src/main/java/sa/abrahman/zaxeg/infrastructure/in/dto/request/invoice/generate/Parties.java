@@ -3,38 +3,50 @@ package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
 import java.util.List;
 import java.util.Locale;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.NullUnmarked;
+import org.jspecify.annotations.Nullable;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.Scheme;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxScheme;
 import sa.abrahman.zaxeg.core.port.in.payload.PartiesPayload;
+import sa.abrahman.zaxeg.core.validator.rule.UblRules;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
-@Data
+@Getter
+@NullMarked
 class Parties implements Payloadable<PartiesPayload, Void> {
 
     @Valid
-    @NotNull(message = "Seller Information is required")
-    @Schema(title = "Seller Information", requiredMode = RequiredMode.NOT_REQUIRED)
+    @NotNull(message = UblRules.BR_06_08)
+    @Schema(title = "Seller Information", requiredMode = RequiredMode.REQUIRED)
     private Party seller;
 
     @Valid
-    @Schema(title = "Seller Information", requiredMode = RequiredMode.REQUIRED)
+    @Nullable
+    @Schema(title = "Seller Information", requiredMode = RequiredMode.NOT_REQUIRED)
     private Party buyer;
 
     @Override
     public PartiesPayload toPayload(Void additionalData) {
-        return new PartiesPayload(seller.toPayload(null), buyer.toPayload(null));
+        return new PartiesPayload(seller.toPayload(), buyer != null ? buyer.toPayload() : null);
     }
 
-    @Data
+    // ==========================================================================
+    // ============================= NESTED CLASSES =============================
+    // ==========================================================================
+
+    @Getter
+    @NullUnmarked
     private static class Party implements Payloadable<PartiesPayload.Party, Void> {
 
         @Schema(title = "Seller/Buyer Name")
@@ -45,6 +57,7 @@ class Parties implements Payloadable<PartiesPayload, Void> {
         private PartyTaxScheme identification;
 
         @Valid
+        @NonNull
         @Schema(title = "Other Seller/Buyer IDs")
         private List<PartyIdentification> otherIds = List.of();
 
@@ -54,92 +67,90 @@ class Parties implements Payloadable<PartiesPayload, Void> {
 
         @Override
         public PartiesPayload.Party toPayload(Void d) {
-            return PartiesPayload.Party.builder()
-                    .name(name)
-                    .identification(identification.toPayload(null))
-                    .otherIds(otherIds.stream().map(oid -> oid.toPayload(null)).toList())
-                    .address(address.toPayload(null))
-                    .build();
+            return PartiesPayload.Party.builder().name(this.name)
+                    .identification(this.identification != null ? this.identification.toPayload() : null)
+                    .otherIds(this.otherIds != null ? this.otherIds.stream().map(id -> id.toPayload()).toList()
+                            : List.of())
+                    .address(this.address != null ? this.address.toPayload() : null).build();
         }
 
-        @Data
-        private static class PartyTaxScheme implements Payloadable<PartiesPayload.PartyTaxScheme, Void> {
+    }
 
-            @NotBlank(message = "Party VAT number must be provided")
-            @Schema(title = "Party VAT number value", requiredMode = RequiredMode.REQUIRED, example = "300000000000003")
-            private final String companyId;
+    @Getter
+    @NullUnmarked
+    private static class Address implements Payloadable<PartiesPayload.Address, Void> {
+        @Schema(title = "Address - Street", description = "Address line 1 - the main address line in an address", requiredMode = RequiredMode.NOT_REQUIRED, example = "Main Street 1")
+        private String street = "";
 
-            @Valid
-            @Schema(title = "Party Tax Key (the string value 'VAT')", requiredMode = RequiredMode.NOT_REQUIRED, example = "VAT")
-            private final TaxScheme taxScheme;
+        @Schema(title = "Address - Additional street", description = "Address line 2 - an additional address line in an address that can be used to give further details supplementing the main line.", requiredMode = RequiredMode.NOT_REQUIRED, example = "PO Box 1234")
+        private String additionalStreet = "";
 
-            @Override
-            public PartiesPayload.PartyTaxScheme toPayload(Void d) {
-                return new PartiesPayload.PartyTaxScheme(companyId, taxScheme);
-            }
+        @Schema(title = "Address - Building number", description = "Address building number", requiredMode = RequiredMode.NOT_REQUIRED, example = "1234")
+        private String buildingNumber = "";
+
+        @Schema(title = "Address - Additional number", description = "Address additional number", requiredMode = RequiredMode.NOT_REQUIRED, example = "22")
+        private String additionalNumber = "";
+
+        @Schema(title = "Address - City", description = "The common name of the city, town or village, where the Party's address is located.", requiredMode = RequiredMode.NOT_REQUIRED, example = "Riyadh")
+        private String city = "";
+
+        @Schema(title = "Address - Buyer postal code", description = "Post code", requiredMode = RequiredMode.NOT_REQUIRED, example = "12345")
+        private String postalCode = "";
+
+        @Schema(title = "Address - Province/State", description = "Country subdivision", requiredMode = RequiredMode.NOT_REQUIRED, example = "Riyadh Region")
+        private String provinceOrState = "";
+
+        @Schema(title = "Address - District", description = "The name of the subdivision of the Party city, town, or village in which its address is located, such as the name of its district or borough.", requiredMode = RequiredMode.NOT_REQUIRED, example = "District A")
+        private String district = "";
+
+        @Schema(title = "Address - Country", description = "ISO Locale and Country Code (spearated either by a hypen or an underscore), if not provided, the system will fallback to English Locale and Saudi Arabia (en-SA)", requiredMode = RequiredMode.NOT_REQUIRED, example = "en-SA")
+        private Locale country = Locale.of("", Invoice.DEFAULT_LOCALE_CODE);
+
+        @Override
+        public PartiesPayload.Address toPayload(Void d) {
+            return PartiesPayload.Address.builder().street(street).additionalStreet(additionalStreet)
+                    .buildingNumber(buildingNumber).additionalNumber(additionalNumber).city(city).postalCode(postalCode)
+                    .provinceOrState(provinceOrState).district(district).country(country).build();
         }
+    }
 
-        @Getter
-        @RequiredArgsConstructor
-        private static class PartyIdentification
-                implements Payloadable<PartiesPayload.PartyIdentification, Void> {
-            @Valid
-            @Schema(title = "Party Identification Key", requiredMode = RequiredMode.REQUIRED, example = "IQAMA")
-            private final Scheme schemeId;
+    @Getter
+    @AllArgsConstructor
+    @NullMarked
+    private static class PartyIdentification implements Payloadable<PartiesPayload.PartyIdentification, Void> {
+        @Valid
+        @NotNull(message = "Scheme ID is required")
+        @Schema(title = "Party Identification Key", requiredMode = RequiredMode.REQUIRED, example = "IQAMA")
+        private Scheme schemeId;
 
-            @NotBlank(message = "Party Identification must be provided")
-            @Schema(title = "Party Identification Value", requiredMode = RequiredMode.REQUIRED, example = "123123123")
-            private final String value;
+        @NotBlank(message = "Party Identification must be provided")
+        @Schema(title = "Party Identification Value", requiredMode = RequiredMode.REQUIRED, example = "123123123")
+        private String value;
 
-            @Override
-            public PartiesPayload.PartyIdentification toPayload(Void d) {
-                return new PartiesPayload.PartyIdentification(schemeId, value);
-            }
+        @Override
+        public PartiesPayload.PartyIdentification toPayload(Void d) {
+            return new PartiesPayload.PartyIdentification(schemeId, value);
         }
+    }
 
-        @Data
-        private static class Address implements Payloadable<PartiesPayload.Address, Void> {
-            @Schema(title = "Address - Street", description = "Address line 1 - the main address line in an address", requiredMode = RequiredMode.NOT_REQUIRED, example = "Main Street 1")
-            private String street = "";
+    @Getter
+    @AllArgsConstructor
+    @NullMarked
+    private static class PartyTaxScheme implements Payloadable<PartiesPayload.PartyTaxScheme, Void> {
 
-            @Schema(title = "Address - Additional street", description = "Address line 2 - an additional address line in an address that can be used to give further details supplementing the main line.", requiredMode = RequiredMode.NOT_REQUIRED, example = "PO Box 1234")
-            private String additionalStreet = "";
+        @NotBlank(message = "Party VAT number must be provided")
+        @Schema(title = "Party VAT number value", requiredMode = RequiredMode.REQUIRED, example = "300000000000003")
+        private String companyId;
 
-            @Schema(title = "Address - Building number", description = "Address building number", requiredMode = RequiredMode.NOT_REQUIRED, example = "1234")
-            private String buildingNumber = "";
+        @Valid
+        @Nullable
+        @Schema(title = "Party Tax Key (the string value 'VAT')", requiredMode = RequiredMode.NOT_REQUIRED, example = "VAT")
+        private TaxScheme taxScheme;
 
-            @Schema(title = "Address - Additional number", description = "Address additional number", requiredMode = RequiredMode.NOT_REQUIRED, example = "22")
-            private String additionalNumber = "";
-
-            @Schema(title = "Address - City", description = "The common name of the city, town or village, where the Party's address is located.", requiredMode = RequiredMode.NOT_REQUIRED, example = "Riyadh")
-            private String city = "";
-
-            @Schema(title = "Address - Buyer postal code", description = "Post code", requiredMode = RequiredMode.NOT_REQUIRED, example = "12345")
-            private String postalCode = "";
-
-            @Schema(title = "Address - Province/State", description = "Country subdivision", requiredMode = RequiredMode.NOT_REQUIRED, example = "Riyadh Region")
-            private String provinceOrState = "";
-
-            @Schema(title = "Address - District", description = "The name of the subdivision of the Party city, town, or village in which its address is located, such as the name of its district or borough.", requiredMode = RequiredMode.NOT_REQUIRED, example = "District A")
-            private String district = "";
-
-            @Schema(title = "Address - Country", description = "ISO Country Code, if not provided, the system will fallback to Saudi Arabia (SA)", requiredMode = RequiredMode.NOT_REQUIRED, example = "SA")
-            private Locale country = Locale.of("", Invoice.DEFAULT_LOCALE_CODE);
-
-            @Override
-            public PartiesPayload.Address toPayload(Void d) {
-                return PartiesPayload.Address.builder()
-                        .street(street)
-                        .additionalStreet(additionalStreet)
-                        .buildingNumber(buildingNumber)
-                        .additionalNumber(additionalNumber)
-                        .city(city)
-                        .postalCode(postalCode)
-                        .provinceOrState(provinceOrState)
-                        .district(district)
-                        .country(country)
-                        .build();
-            }
+        @Override
+        public PartiesPayload.PartyTaxScheme toPayload(Void d) {
+            return new PartiesPayload.PartyTaxScheme(this.companyId,
+                    this.taxScheme != null ? this.taxScheme : TaxScheme.VAT);
         }
     }
 }

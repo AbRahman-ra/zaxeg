@@ -4,7 +4,6 @@ import org.jspecify.annotations.NullMarked;
 
 import jakarta.validation.Valid;
 import lombok.Data;
-import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.*;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
@@ -15,8 +14,8 @@ public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPa
     @Valid
     private Metadata metadata;
 
-    // @Valid
-    // private Parties parties;
+    @Valid
+    private Parties parties;
 
     // @Valid
     // private Lines lines;
@@ -27,11 +26,10 @@ public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPa
     @Override
     public InvoiceGenerationPayload toPayload(Void d) {
         MetadataPayload metapay = metadata.toPayload();
-        // PartiesPayload partiespay = parties.toPayload();
+        PartiesPayload partiespay = parties.toPayload();
         // LinesPayload linespay = lines.toPayload(metapay.getInvoiceCurrency());
         // CheckoutDetailsPayload checkoutpay = checkout.toPayload(List.of(metapay.getInvoiceCurrency(), metapay.getTaxCurrency()));
 
-        return new InvoiceGenerationPayload(metapay, null, null, null);
-        // return new InvoiceGenerationPayload(metapay, partiespay, linespay, checkoutpay);
+        return new InvoiceGenerationPayload(metapay, partiespay, null, null);
     }
 }

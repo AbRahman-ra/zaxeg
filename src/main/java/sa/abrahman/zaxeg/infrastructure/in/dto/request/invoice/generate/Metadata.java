@@ -75,7 +75,7 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
 
     @Nullable
     @Schema(title = "Invoice currency code (ISO 4217 alpha-3)", description = "The currency in which all Invoice amounts are given, except for the Total VAT amount in accounting currency. If no code is given, the system will fallback to SAR", requiredMode = RequiredMode.NOT_REQUIRED, example = "SAR")
-    private Currency invoiceCurrency = Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE);
+    private Currency invoiceCurrency = Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE);
 
     @Nullable
     @Valid
@@ -107,8 +107,8 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
                 .invoiceTypeTransactions(this.invoiceTypeTransactions.toPayload())
                 .creditOrDebitNoteIssuanceReasons(this.creditOrDebitNoteIssuanceReasons)
                 .notes(this.notes)
-                .invoiceCurrency(this.invoiceCurrency != null ? this.invoiceCurrency : Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE))
-                .taxCurrency(Currency.getInstance(Invoice.DEFAULT_LOCALE_CODE)) // Strictly SAR for ZATCA
+                .invoiceCurrency(this.invoiceCurrency != null ? this.invoiceCurrency : Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE))
+                .taxCurrency(Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE)) // Strictly SAR for ZATCA
                 // Clean ternary checks instead of Optionals
                 .billingReference(this.billingReference != null ? this.billingReference.toPayload() : null)
                 .purchaseOrder(this.purchaseOrder != null ? this.purchaseOrder.toPayload() : null)
