@@ -18,8 +18,8 @@ public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPa
     @Valid
     private PartiesRequest parties;
 
-    // @Valid
-    // private Lines lines;
+    @Valid
+    private LinesRequest lines;
 
     // @Valid
     // private CheckoutDetails checkout;

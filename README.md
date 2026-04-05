@@ -1,5 +1,7 @@
 # (ZAXEG) ZATCA XML E-Invoice Generator
 
+## DO NOT USE THIS REPOSITORY YET!!! IT'S IN PROGRESS...
+
 - An open-source initiative to build a robust, Phase II compliant e-invoice generator for the Saudi Zakat, Tax & Customs Authority (ZATCA).
 - Building an invoice generator that comply with ZATCA e-invoicing phase 2 requirements
 - After [Evaluating early implementations of ZATCA API](https://github.com/AbRahman-ra/zatca-api-guideline) and [Having a look over someone's work](https://github.com/AbRahman-ra/php-zatca-xml) for e-invoicing 2 years back, and with a bigger knowledge in Java and XML. I decided to get back to the project again, and I am very ambitious I can get something working. However, **Your Contributions are highly appreciated**

@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.media.Schema.RequiredMode;
 import jakarta.validation.Valid;
@@ -11,6 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -22,8 +26,9 @@ import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Getter
-@RequiredArgsConstructor
-class LinesRequest implements Payloadable<LinesPayload, Currency> {
+@AllArgsConstructor
+@NullMarked
+public class LinesRequest implements Payloadable<LinesPayload, Currency> {
     @Valid
     @NotEmpty(message = InvoiceValidationRule.BR_16)
     @Schema(title = "Invoice Lines", requiredMode = RequiredMode.REQUIRED)
@@ -31,14 +36,18 @@ class LinesRequest implements Payloadable<LinesPayload, Currency> {
 
     @Override
     public LinesPayload toPayload(Currency data) {
-        return new LinesPayload(invoiceLines.stream().map(l -> l.toPayload(data)).toList());
+        return new LinesPayload(
+            this.invoiceLines != null
+            ? invoiceLines.stream().map(l -> l.toPayload(data)).toList()
+            : List.of());
     }
 
-    @Data
+    @Getter
+    @NullMarked
     private static class InvoiceLine implements Payloadable<LinesPayload.InvoiceLine, Currency> {
 
         @NotBlank(message = InvoiceValidationRule.BR_21)
-        @Schema(title = "Invoice Line ID", description = "A unique identifier for the individual line within the Invoice. Usually a sequential number (1, 2, 3...).", requiredMode = RequiredMode.REQUIRED, example = "INV0023")
+        @Schema(title = "Invoice Line ID", description = "A unique identifier for the individual line within the Invoice. Usually a sequential number (1, 2, 3...).", requiredMode = RequiredMode.REQUIRED, example = "1")
         private String id;
 
         @Valid
@@ -47,11 +56,11 @@ class LinesRequest implements Payloadable<LinesPayload, Currency> {
         @Schema(title = "The invoice line quantity (unit, value)", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"unit\": \"PCE\", \"count\": 4.0\n}")
         private Quantity quantity;
 
-        @Valid
         @NotNull(message = InvoiceValidationRule.BR_24)
         @Schema(title = "Invoice line net amount", description = "The total amount of the Invoice line, including allowances (discounts). It is the item net price multiplied with the quantity. The amount is “net” without VAT. Note: the currency must natch the document level currency", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"value\": 100.0,\n    \"currency\":\"SAR\"\n}")
         private BigDecimal netAmount;
 
+        @Nullable
         @Schema(title = "Invoice line net amount", description = "The total amount of the Invoice line, including allowances (discounts). It is the item net price multiplied with the quantity. The amount is “net” without VAT. Note: the currency must natch the document level currency", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"value\": 100.0,\n    \"currency\":\"SAR\"\n}")
         private List<InvoiceGenerationRequestCommons.AllowanceOrCharge> allowanceCharges = List.of();
 
