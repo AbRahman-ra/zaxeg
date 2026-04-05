@@ -35,15 +35,14 @@ public class MetadataValidator implements InvoiceValidator {
         // rules
         StringValueValidator.check(metadata.getInvoiceNumber(), f).exists(UblRules.BR_02);
         ObjectValueValidator.check(metadata.getInvoiceUuid(), f).exists(KsaRules.BR_KSA_03);
-        DateValueValidator.check(metadata.getIssueDate(), f).exists(UblRules.BR_03)
-                .notInFuture(KsaRules.BR_KSA_04);
+        DateValueValidator.check(metadata.getIssueDate(), f).exists(UblRules.BR_03).notInFuture(KsaRules.BR_KSA_04);
         ObjectValueValidator.check(metadata.getIssueTime(), f).exists(KsaRules.BR_KSA_70);
         ObjectValueValidator.check(metadata.getInvoiceDocumentType(), f).exists(UblRules.BR_04);
         ObjectValueValidator.check(metadata.getInvoiceTypeTransactions(), f).exists(KsaRules.BR_KSA_06)
                 .matches(t -> !(t.isSelfBilled() && t.isExports()), KsaRules.BR_KSA_07);
         ObjectValueValidator.check(metadata.getInvoiceCurrency(), f).exists(UblRules.BR_05);
         ObjectValueValidator.check(metadata.getTaxCurrency(), f).exists(KsaRules.BR_KSA_68)
-                .matches(c -> "sar".equalsIgnoreCase(c.getCurrencyCode()), KsaRules.BR_KSA_EN16391_02);
+                .matches(c -> "sar".equalsIgnoreCase(c.getCurrencyCode()), KsaRules.BR_KSA_EN16931_02);
         if (isCreditNote || isDebitNote) {
             ObjectValueValidator.check(metadata.getBillingReference(), f).exists(KsaRules.BR_KSA_56)
                     .matches(ref -> ref.getId() != null, KsaRules.BR_KSA_56);

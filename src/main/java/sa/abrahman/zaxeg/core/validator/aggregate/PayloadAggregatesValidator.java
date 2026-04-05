@@ -15,10 +15,13 @@ import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceSubtype;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.Scheme;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxExemptionCode;
 import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.LinesPayload;
+import sa.abrahman.zaxeg.core.port.in.payload.MetadataPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.PartiesPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons.TaxSubtotal;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 import sa.abrahman.zaxeg.core.validator.rule.KsaRules;
+import sa.abrahman.zaxeg.core.validator.rule.UblRules;
 
 /**
  * For doing validations accross subvalidators
@@ -28,6 +31,7 @@ public class PayloadAggregatesValidator implements InvoiceValidator {
     @Override
     public void validate(InvoiceGenerationPayload payload) {
         metadataAndPartiesValidations(payload);
+        metadataAndLinesValidations(payload);
         partiesAndCheckoutDetailsValidations(payload);
     }
 
@@ -67,6 +71,19 @@ public class PayloadAggregatesValidator implements InvoiceValidator {
                 .hasLength(15, KsaRules.BR_KSA_44)
                 .startsAndEndsWith("3", KsaRules.BR_KSA_44);
         }
+    }
+
+    private void metadataAndLinesValidations(InvoiceGenerationPayload payload) {
+        // initialization
+        MetadataPayload metadata = payload.getMetadata();
+        List<LinesPayload.InvoiceLine> lines = payload.getLines().getInvoiceLines();
+        Function<String, InvoiceRuleViolationException> f = InvoiceRuleViolationException::new;
+
+        // rules
+        CollectionValueValidator.check(lines, f).allMatch(l -> l.getNetAmount().getCurrency().equals(metadata.getInvoiceCurrency()), KsaRules.BR_KSA_CL_02);
+        CollectionValueValidator.check(lines, f).allMatch(
+                l -> l.getAllowanceCharges().stream().allMatch(ac -> ac.getAmount() != null && ac.getAmount().getCurrency().equals(metadata.getInvoiceCurrency())),
+                KsaRules.BR_KSA_CL_02);
     }
 
     private void partiesAndCheckoutDetailsValidations(InvoiceGenerationPayload payload) {

@@ -26,8 +26,7 @@ public class UblRules {
     public static final String BR_32 = "[BR_32]: Each Document level allowance (BG-20) shall have a Document level allowance VAT category code (BT-95).";
     public static final String BR_36 = "[BR_36]: Each Document level charge (BG-21) shall have a Document level charge amount (BT99).";
     public static final String BR_37 = "[BR_37]: Each Document level charge (BG-21) shall have a Document level charge VAT category code (BT-102).";
-    public static final String BR_41 = "[BR_41]: Each Invoice line allowance (BG-27) shall have an Invoice line allowance amount (BT136).";
-    public static final String BR_43 = "[BR_43]: Each Invoice line charge (BG-28) shall have an Invoice line charge amount (BT-141).";
+    public static final String BR_41_43 = "[BR_41][BR_43]: Each Invoice line allowance/charge (BG-27)/(BG-28) shall have an Invoice line allowance/charge amount (BT136)/(BT-141).";
     public static final String BR_45 = "[BR_45]: Each VAT breakdown (BG-23) shall have a VAT category taxable amount (BT-116).";
     public static final String BR_46 = "[BR_46]: Each VAT breakdown (BG-23) shall have a VAT category tax amount (BT-117).";
     public static final String BR_47 = "[BR_47]: Each VAT breakdown (BG-23) shall be defined through a VAT category code (BT118).";

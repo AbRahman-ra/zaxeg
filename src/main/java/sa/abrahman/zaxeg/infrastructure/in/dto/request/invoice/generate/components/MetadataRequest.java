@@ -19,7 +19,7 @@ import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.InvoiceSubtype;
 import sa.abrahman.zaxeg.core.port.in.payload.MetadataPayload;
-import sa.abrahman.zaxeg.core.validator.rule.AppliacationRules;
+import sa.abrahman.zaxeg.core.validator.rule.ImplicitRules;
 import sa.abrahman.zaxeg.core.validator.rule.UblRules;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
@@ -149,7 +149,7 @@ public class MetadataRequest implements Payloadable<MetadataPayload, Void> {
     @Data
     @NullMarked
     private static class DocumentReference implements Payloadable<MetadataPayload.DocumentReference, Void> {
-        @NotBlank(message = AppliacationRules.DOC_REF_ID_NOT_NULL)
+        @NotBlank(message = ImplicitRules.DOC_REF_ID_NOT_NULL)
         private String id;
 
         @Override

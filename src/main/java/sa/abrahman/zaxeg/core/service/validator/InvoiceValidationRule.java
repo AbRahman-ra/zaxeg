@@ -3,6 +3,7 @@ package sa.abrahman.zaxeg.core.service.validator;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
+@Deprecated
 public class InvoiceValidationRule {
     // BR - Integrity Constraints
     public static final String BR_02 = "[BR-02]: An Invoice shall have an Invoice number (BT-1).";
@@ -72,10 +73,10 @@ public class InvoiceValidationRule {
     public static final String BR_KSA_72 = "[BR-KSA-72]: If the Invoice is a simplified invoice type and is a summary invoice (KSA-2, position 1 and 2 = 02, position 6 = 1), then a supply date (KSA-5) and supply end date (KSA-24) must be present";
 
     // KSA - EN16931 Rules
-    public static final String BR_KSA_EN16391_02 = "[BR-KSA-EN16931-02]: VAT accounting currency code (BT-6) must be \"SAR\"";
-    public static final String BR_KSA_EN16391_03 = "[BR-KSA-EN16931-03]: Allowance/Charge amount (BT-92, BT-99, BT-136, BT-141) must equal base amount (BT93, BT-100, BT-137, BT142) * percentage (BT-94, BT-101, BT-138, BT-143) / 100 if base amount and percentage exists";
-    public static final String BR_KSA_EN16391_04_05 = "[BR-KSA-EN16931-04]: Allowance/Charge base amount (BT-93, BT-100, BT-137, BT-142) must be provided when allowance/charge percentage (BT-94, BT101, BT-138, BT-143) is provided. [BR-KSA-EN16931-05]: Allowance/Charge percentage (BT-94, BT101, BT-138, BT-143) must be provided when the allowance/charge base amount (BT-93, BT100, BT-137, BT-142) is provided.";
-    public static final String BR_KSA_EN16391_11 = "[BR-KSA-EN16931-11]: Invoice line net amount (BT-131) must equal (Invoiced quantity (BT129) * (Item net price (BT-146) / item price base quantity (BT-149))) + Sum of invoice line charge amount (BT-141) - Sum of invoice line allowance amount (BT-136)";
+    public static final String BR_KSA_EN16931_02 = "[BR-KSA-EN16931-02]: VAT accounting currency code (BT-6) must be \"SAR\"";
+    public static final String BR_KSA_EN16931_03 = "[BR-KSA-EN16931-03]: Allowance/Charge amount (BT-92, BT-99, BT-136, BT-141) must equal base amount (BT93, BT-100, BT-137, BT142) * percentage (BT-94, BT-101, BT-138, BT-143) / 100 if base amount and percentage exists";
+    public static final String BR_KSA_EN16931_04_05 = "[BR-KSA-EN16931-04]: Allowance/Charge base amount (BT-93, BT-100, BT-137, BT-142) must be provided when allowance/charge percentage (BT-94, BT101, BT-138, BT-143) is provided. [BR-KSA-EN16931-05]: Allowance/Charge percentage (BT-94, BT101, BT-138, BT-143) must be provided when the allowance/charge base amount (BT-93, BT100, BT-137, BT-142) is provided.";
+    public static final String BR_KSA_EN16931_11 = "[BR-KSA-EN16931-11]: Invoice line net amount (BT-131) must equal (Invoiced quantity (BT129) * (Item net price (BT-146) / item price base quantity (BT-149))) + Sum of invoice line charge amount (BT-141) - Sum of invoice line allowance amount (BT-136)";
 
     // KSA - F
     public static final String BR_KSA_F_02 = "[BR-KSA-F-02]: Allowance/Charge Indicator value MUST equal to `false`/`true` respectively";
