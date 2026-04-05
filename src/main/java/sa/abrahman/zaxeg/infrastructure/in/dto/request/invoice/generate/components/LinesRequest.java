@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
+package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.components;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -23,7 +23,7 @@ import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Getter
 @RequiredArgsConstructor
-class Lines implements Payloadable<LinesPayload, Currency> {
+class LinesRequest implements Payloadable<LinesPayload, Currency> {
     @Valid
     @NotEmpty(message = InvoiceValidationRule.BR_16)
     @Schema(title = "Invoice Lines", requiredMode = RequiredMode.REQUIRED)
@@ -53,11 +53,11 @@ class Lines implements Payloadable<LinesPayload, Currency> {
         private BigDecimal netAmount;
 
         @Schema(title = "Invoice line net amount", description = "The total amount of the Invoice line, including allowances (discounts). It is the item net price multiplied with the quantity. The amount is “net” without VAT. Note: the currency must natch the document level currency", requiredMode = RequiredMode.REQUIRED, example = "{\n    \"value\": 100.0,\n    \"currency\":\"SAR\"\n}")
-        private List<Commons.AllowanceOrCharge> allowanceCharges = List.of();
+        private List<InvoiceGenerationRequestCommons.AllowanceOrCharge> allowanceCharges = List.of();
 
         @Valid
         @Schema(title = "Total amounts", description = "VAT amount (taxAmount), Line amount invlusive VAT (roundingAmount)", requiredMode = RequiredMode.NOT_REQUIRED)
-        private Commons.TaxTotal vatLineAmount;
+        private InvoiceGenerationRequestCommons.TaxTotal vatLineAmount;
 
         @Valid
         @Schema(title = "Invoice line item data (without prices)")
@@ -68,14 +68,9 @@ class Lines implements Payloadable<LinesPayload, Currency> {
 
         @Override
         public LinesPayload.InvoiceLine toPayload(Currency data) {
-            return LinesPayload.InvoiceLine.builder()
-                    .id(id)
-                    .quantity(quantity.toPayload(null))
-                    .netAmount(new PayloadCommons.Amount(netAmount, data))
-                    .vatLineAmount(vatLineAmount.toPayload(data))
-                    .item(item.toPayload(null))
-                    .price(price.toPayload(data))
-                    .build();
+            return LinesPayload.InvoiceLine.builder().id(id).quantity(quantity.toPayload(null))
+                    .netAmount(new PayloadCommons.Amount(netAmount, data)).vatLineAmount(vatLineAmount.toPayload(data))
+                    .item(item.toPayload(null)).price(price.toPayload(data)).build();
         }
 
         @Getter
@@ -112,17 +107,15 @@ class Lines implements Payloadable<LinesPayload, Currency> {
 
             @NotNull(message = "Vat Information is required")
             @Schema(title = "VAT Information", description = "The VAT category code and rate for the invoiced item")
-            private Commons.TaxCategory classifiedTaxCategory;
+            private InvoiceGenerationRequestCommons.TaxCategory classifiedTaxCategory;
 
             @Override
             public LinesPayload.InvoiceLineItem toPayload(Void additionalData) {
-                return LinesPayload.InvoiceLineItem.builder()
-                        .name(name)
+                return LinesPayload.InvoiceLineItem.builder().name(name)
                         .itemBuyerIdentifier(itemBuyerIdentifier.toPayload(null))
                         .itemSellerIdentifier(itemSellerIdentifier.toPayload(null))
                         .itemStandardIdentifier(itemStandardIdentifier.toPayload(null))
-                        .classifiedTaxCategory(classifiedTaxCategory.toPayload(null))
-                        .build();
+                        .classifiedTaxCategory(classifiedTaxCategory.toPayload(null)).build();
 
             }
 
@@ -148,14 +141,12 @@ class Lines implements Payloadable<LinesPayload, Currency> {
             @Schema(title = "Item price base quantity", description = "The number of item units to which the price applies.")
             private Quantity quantity;
 
-            private Commons.AllowanceOrCharge allowanceOrCharge;
+            private InvoiceGenerationRequestCommons.AllowanceOrCharge allowanceOrCharge;
 
             @Override
             public LinesPayload.InvoiceLinePrice toPayload(Currency currency) {
-                return LinesPayload.InvoiceLinePrice.builder()
-                        .amount(new PayloadCommons.Amount(amount, currency))
-                        .quantity(quantity.toPayload(null))
-                        .allowanceOrCharge(allowanceOrCharge.toPayload(currency))
+                return LinesPayload.InvoiceLinePrice.builder().amount(new PayloadCommons.Amount(amount, currency))
+                        .quantity(quantity.toPayload(null)).allowanceOrCharge(allowanceOrCharge.toPayload(currency))
                         .build();
             }
         }

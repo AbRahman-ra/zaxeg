@@ -6,16 +6,17 @@ import jakarta.validation.Valid;
 import lombok.Data;
 import sa.abrahman.zaxeg.core.port.in.payload.*;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
+import sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.components.*;
 
 @Data
 @NullMarked
 public class InvoiceGenerationRequest implements Payloadable<InvoiceGenerationPayload, Void> {
 
     @Valid
-    private Metadata metadata;
+    private MetadataRequest metadata;
 
     @Valid
-    private Parties parties;
+    private PartiesRequest parties;
 
     // @Valid
     // private Lines lines;

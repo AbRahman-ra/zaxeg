@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
+package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.components;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -14,11 +14,10 @@ import sa.abrahman.zaxeg.core.port.in.payload.CheckoutDetailsPayload;
 import sa.abrahman.zaxeg.core.port.in.payload.PayloadCommons;
 import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
-import sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.Commons.TaxTotal;
 
 @Getter
 @Schema(title = "Invoice Checkout Details", description = "Document-level totals, payment instructions, and global discounts/fees")
-class CheckoutDetails implements Payloadable<CheckoutDetailsPayload, List<Currency>> {
+class CheckoutDetailsRequest implements Payloadable<CheckoutDetailsPayload, List<Currency>> {
 
     @NotNull(message = InvoiceValidationRule.BR_49)
     @Schema(title = "Payment Method", description = "BG16, BT-81: The means, expressed as code, for how a payment is expected to be or has been settled. Entries from the UNTDID 4461 code list", requiredMode = RequiredMode.REQUIRED, example = "IN_CASH")
@@ -32,7 +31,7 @@ class CheckoutDetails implements Payloadable<CheckoutDetailsPayload, List<Curren
 
     @Valid
     @Schema(title = "Document Level Allowances/Charges", description = "Global discounts or additional charges applied to the entire invoice", example = "SA9810000000000000000000")
-    private List<Commons.AllowanceOrCharge> documentLevelAllowanceCharges = List.of();
+    private List<InvoiceGenerationRequestCommons.AllowanceOrCharge> documentLevelAllowanceCharges = List.of();
 
     @Valid
     @Schema(description = "Pre-calculated totals provided by the client for strict validation against the engine's math")
@@ -40,11 +39,11 @@ class CheckoutDetails implements Payloadable<CheckoutDetailsPayload, List<Curren
 
     @Valid
     @Schema(title = "Invoice Tax Totals", description = "Total VAT amounts for the invoice in the document's native currency.", requiredMode = RequiredMode.NOT_REQUIRED)
-    private TaxTotal invoiceTaxTotals;
+    private InvoiceGenerationRequestCommons.TaxTotal invoiceTaxTotals;
 
     @Valid
     @Schema(title = "Invoice Tax Totals (Accounting Currency)", description = "Total VAT amounts strictly converted to the accounting currency (SAR) as required by ZATCA.", requiredMode = RequiredMode.NOT_REQUIRED)
-    private TaxTotal invoiceTaxTotalsInAccountingCurrency;
+    private InvoiceGenerationRequestCommons.TaxTotal invoiceTaxTotalsInAccountingCurrency;
 
     @Override
     public CheckoutDetailsPayload toPayload(List<Currency> additionalData) {
@@ -54,9 +53,7 @@ class CheckoutDetails implements Payloadable<CheckoutDetailsPayload, List<Curren
         Currency documentCurrency = additionalData.get(0);
         Currency taxCurrency = additionalData.get(1);
 
-        return CheckoutDetailsPayload.builder()
-                .paymentMeansType(paymentMeansType)
-                .paymentTerms(paymentTerms)
+        return CheckoutDetailsPayload.builder().paymentMeansType(paymentMeansType).paymentTerms(paymentTerms)
                 .paymentAccountIdentifier(paymentAccountIdentifier)
                 .documentLevelAllowanceCharges(
                         documentLevelAllowanceCharges.stream().map(ac -> ac.toPayload(documentCurrency)).toList())
@@ -74,8 +71,7 @@ class CheckoutDetails implements Payloadable<CheckoutDetailsPayload, List<Curren
         private BigDecimal lineExtensionAmount;
 
         /**
-         * alias for {@code documentLevelAllowanceChargeTotalAmount}, renamed different
-         * than payload and domain for ease
+         * alias for {@code documentLevelAllowanceChargeTotalAmount}, renamed different than payload and domain for ease
          */
         @Schema(title = "Total Allowance/Charge Amount", description = "Sum of all document-level allowances/charges.", requiredMode = RequiredMode.NOT_REQUIRED, example = "50.00")
         private BigDecimal totalAllowanceChargeAmount;
@@ -101,8 +97,7 @@ class CheckoutDetails implements Payloadable<CheckoutDetailsPayload, List<Curren
                     .invoiceTotalAmountWithoutVAT(new PayloadCommons.Amount(taxExclusiveAmount, currency))
                     .totalInclusiveAmount(new PayloadCommons.Amount(totalAmountInclusive, currency))
                     .prepaidAmount(new PayloadCommons.Amount(prepaidAmount, currency))
-                    .payableAmount(new PayloadCommons.Amount(payableAmount, currency))
-                    .build();
+                    .payableAmount(new PayloadCommons.Amount(payableAmount, currency)).build();
         }
     }
 }

@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
+package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.components;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,7 +26,7 @@ import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 @Data
 @NullMarked
 @Schema(title = "Document Metadata", description = "Document-level configurations and metadata", requiredMode = RequiredMode.REQUIRED)
-class Metadata implements Payloadable<MetadataPayload, Void> {
+public class MetadataRequest implements Payloadable<MetadataPayload, Void> {
 
     @NotBlank(message = UblRules.BR_02)
     @Schema(title = "Invoice number", description = "A unique identification of the Invoice", requiredMode = RequiredMode.REQUIRED, example = "1234567")
@@ -61,13 +61,13 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
     private InvoiceTypeTransactions invoiceTypeTransactions;
 
     @Schema(title = "Reasons for issuance of credit / debit note", description = """
-        Reasons for issuance of credit / debit note as per Article 40 (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit Note is issued for these 5 instances:
-        - Cancellation or suspension of the supplies after its occurrence either wholly or partially
-        - In case of essential change or amendment in the supply, which leads to the change of the VAT due;
-        - Amendment of the supply value which is pre-agreed upon between the supplier and consumer;
-        - In case of goods or services refund.
-        - In case of change in Seller's or Buyer's information
-        """, requiredMode = RequiredMode.NOT_REQUIRED, example = "[\"Cancellation or suspension of the supplies after its occurrence either wholly or partially\"]")
+            Reasons for issuance of credit / debit note as per Article 40 (paragraph 1) and Article 54 (3) of KSA VAT regulations, a Credit and Debit Note is issued for these 5 instances:
+            - Cancellation or suspension of the supplies after its occurrence either wholly or partially
+            - In case of essential change or amendment in the supply, which leads to the change of the VAT due;
+            - Amendment of the supply value which is pre-agreed upon between the supplier and consumer;
+            - In case of goods or services refund.
+            - In case of change in Seller's or Buyer's information
+            """, requiredMode = RequiredMode.NOT_REQUIRED, example = "[\"Cancellation or suspension of the supplies after its occurrence either wholly or partially\"]")
     private List<String> creditOrDebitNoteIssuanceReasons = List.of();
 
     @Schema(title = "Invoice notes", description = "A textual note that gives unstructured information that is relevant to the Invoice as a whole.", requiredMode = RequiredMode.NOT_REQUIRED, example = "[\"testing invoice\", \"hello world\"]")
@@ -96,24 +96,18 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
     public MetadataPayload toPayload(Void additionalData) {
         // nullables
 
-        return MetadataPayload.builder()
-                .invoiceNumber(this.invoiceNumber)
-                .invoiceUuid(this.invoiceUuid)
-                .issueDate(this.issueDate)
-                .issueTime(this.issueTime)
-                .supplyDate(this.supplyDate)
-                .supplyEndDate(this.supplyEndDate)
-                .invoiceDocumentType(this.invoiceDocumentType)
+        return MetadataPayload.builder().invoiceNumber(this.invoiceNumber).invoiceUuid(this.invoiceUuid)
+                .issueDate(this.issueDate).issueTime(this.issueTime).supplyDate(this.supplyDate)
+                .supplyEndDate(this.supplyEndDate).invoiceDocumentType(this.invoiceDocumentType)
                 .invoiceTypeTransactions(this.invoiceTypeTransactions.toPayload())
-                .creditOrDebitNoteIssuanceReasons(this.creditOrDebitNoteIssuanceReasons)
-                .notes(this.notes)
-                .invoiceCurrency(this.invoiceCurrency != null ? this.invoiceCurrency : Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE))
+                .creditOrDebitNoteIssuanceReasons(this.creditOrDebitNoteIssuanceReasons).notes(this.notes)
+                .invoiceCurrency(this.invoiceCurrency != null ? this.invoiceCurrency
+                        : Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE))
                 .taxCurrency(Currency.getInstance(Invoice.DEFAULT_CURRENCY_CODE)) // Strictly SAR for ZATCA
                 // Clean ternary checks instead of Optionals
                 .billingReference(this.billingReference != null ? this.billingReference.toPayload() : null)
                 .purchaseOrder(this.purchaseOrder != null ? this.purchaseOrder.toPayload() : null)
-                .contract(this.contract != null ? this.contract.toPayload() : null)
-                .build();
+                .contract(this.contract != null ? this.contract.toPayload() : null).build();
     }
 
     // ==========================================================================
@@ -121,8 +115,7 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
     // ==========================================================================
     @Data
     @NullMarked
-    private static class InvoiceTypeTransactions
-            implements Payloadable<MetadataPayload.InvoiceTypeTransactions, Void> {
+    private static class InvoiceTypeTransactions implements Payloadable<MetadataPayload.InvoiceTypeTransactions, Void> {
 
         @NotNull(message = UblRules.BR_04)
         @Schema(title = "Invoice subtype", requiredMode = RequiredMode.REQUIRED, example = "STANDARD")
@@ -148,14 +141,8 @@ class Metadata implements Payloadable<MetadataPayload, Void> {
             if (!thirdParty && !nominal && !exports && !summary && !selfBilled)
                 return MetadataPayload.InvoiceTypeTransactions.of(subtype);
 
-            return MetadataPayload.InvoiceTypeTransactions.builder()
-                    .subtype(subtype)
-                    .thirdParty(thirdParty)
-                    .nominal(nominal)
-                    .exports(exports)
-                    .summary(summary)
-                    .selfBilled(selfBilled)
-                    .build();
+            return MetadataPayload.InvoiceTypeTransactions.builder().subtype(subtype).thirdParty(thirdParty)
+                    .nominal(nominal).exports(exports).summary(summary).selfBilled(selfBilled).build();
         }
     }
 

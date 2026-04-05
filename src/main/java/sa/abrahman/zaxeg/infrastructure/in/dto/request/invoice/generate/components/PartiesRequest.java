@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
+package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.components;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,12 +19,13 @@ import sa.abrahman.zaxeg.core.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.Scheme;
 import sa.abrahman.zaxeg.core.model.invoice.predefined.TaxScheme;
 import sa.abrahman.zaxeg.core.port.in.payload.PartiesPayload;
+import sa.abrahman.zaxeg.core.validator.rule.KsaRules;
 import sa.abrahman.zaxeg.core.validator.rule.UblRules;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @Getter
 @NullMarked
-class Parties implements Payloadable<PartiesPayload, Void> {
+public class PartiesRequest implements Payloadable<PartiesPayload, Void> {
 
     @Valid
     @NotNull(message = UblRules.BR_06_08)
@@ -119,11 +120,11 @@ class Parties implements Payloadable<PartiesPayload, Void> {
     @NullMarked
     private static class PartyIdentification implements Payloadable<PartiesPayload.PartyIdentification, Void> {
         @Valid
-        @NotNull(message = "Scheme ID is required")
+        @NotNull(message = KsaRules.BR_KSA_08_14)
         @Schema(title = "Party Identification Key", requiredMode = RequiredMode.REQUIRED, example = "IQAMA")
         private Scheme schemeId;
 
-        @NotBlank(message = "Party Identification must be provided")
+        @NotBlank(message = KsaRules.BR_KSA_08_14)
         @Schema(title = "Party Identification Value", requiredMode = RequiredMode.REQUIRED, example = "123123123")
         private String value;
 
@@ -138,7 +139,7 @@ class Parties implements Payloadable<PartiesPayload, Void> {
     @NullMarked
     private static class PartyTaxScheme implements Payloadable<PartiesPayload.PartyTaxScheme, Void> {
 
-        @NotBlank(message = "Party VAT number must be provided")
+        @NotBlank(message = KsaRules.BR_KSA_40_44)
         @Schema(title = "Party VAT number value", requiredMode = RequiredMode.REQUIRED, example = "300000000000003")
         private String companyId;
 

@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate;
+package sa.abrahman.zaxeg.infrastructure.in.dto.request.invoice.generate.components;
 
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -21,7 +21,7 @@ import sa.abrahman.zaxeg.core.service.validator.InvoiceValidationRule;
 import sa.abrahman.zaxeg.infrastructure.in.contract.Payloadable;
 
 @UtilityClass
-class Commons {
+class InvoiceGenerationRequestCommons {
     @Getter
     @RequiredArgsConstructor
     static class Amount implements Payloadable<PayloadCommons.Amount, Void> {
@@ -56,13 +56,10 @@ class Commons {
 
         @Override
         public PayloadCommons.AllowanceOrCharge toPayload(Currency currency) {
-            return PayloadCommons.AllowanceOrCharge.builder()
-                    .isCharge(isCharge)
-                    .percentage(percentage)
+            return PayloadCommons.AllowanceOrCharge.builder().isCharge(isCharge).percentage(percentage)
                     .amount(new PayloadCommons.Amount(amount, currency))
                     .baseAmount(baseAmount == null ? null : new PayloadCommons.Amount(baseAmount, currency))
-                    .taxCategory(taxCategory.toPayload(null))
-                    .build();
+                    .taxCategory(taxCategory.toPayload(null)).build();
         }
     }
 
@@ -76,12 +73,9 @@ class Commons {
 
         @Override
         public PayloadCommons.TaxCategory toPayload(Void additionalData) {
-            return PayloadCommons.TaxCategory.builder()
-                    .categoryCode(categoryCode)
-                    .taxExemptionReason(taxExemptionReason)
-                    .taxExemptionReasonCode(taxExemptionReasonCode)
-                    .scheme(scheme)
-                    .build();
+            return PayloadCommons.TaxCategory.builder().categoryCode(categoryCode)
+                    .taxExemptionReason(taxExemptionReason).taxExemptionReasonCode(taxExemptionReasonCode)
+                    .scheme(scheme).build();
         }
     }
 
@@ -105,8 +99,7 @@ class Commons {
                 return PayloadCommons.TaxSubtotal.builder()
                         .taxableAmount(new PayloadCommons.Amount(taxableAmount, currency))
                         .taxAmount(new PayloadCommons.Amount(taxAmount, currency))
-                        .taxCategory(taxCategory == null ? null : taxCategory.toPayload(null))
-                        .build();
+                        .taxCategory(taxCategory == null ? null : taxCategory.toPayload(null)).build();
             }
         }
 
@@ -114,11 +107,9 @@ class Commons {
         public PayloadCommons.TaxTotal toPayload(Currency currency) {
             // nullables
             taxSubtotal = taxSubtotal == null ? List.of() : taxSubtotal;
-            return PayloadCommons.TaxTotal.builder()
-                    .taxAmount(new PayloadCommons.Amount(taxAmount, currency))
+            return PayloadCommons.TaxTotal.builder().taxAmount(new PayloadCommons.Amount(taxAmount, currency))
                     .roundingAmount(new PayloadCommons.Amount(roundingAmount, currency))
-                    .taxSubtotal(taxSubtotal.stream().map(t -> t.toPayload(currency)).toList())
-                    .build();
+                    .taxSubtotal(taxSubtotal.stream().map(t -> t.toPayload(currency)).toList()).build();
         }
     }
 }

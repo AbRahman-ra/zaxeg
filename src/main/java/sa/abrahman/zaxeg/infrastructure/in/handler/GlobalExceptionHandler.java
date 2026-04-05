@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import sa.abrahman.zaxeg.core.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.infrastructure.in.dto.response.ApiResponse;
-import sa.abrahman.zaxeg.infrastructure.out.exception.XMLGenerationException;
+import sa.abrahman.zaxeg.infrastructure.out.exception.XmlGenerationException;
 import tools.jackson.databind.exc.InvalidFormatException;
 
 @RestControllerAdvice
@@ -62,8 +62,8 @@ public class GlobalExceptionHandler {
     }
 
     // Infrastructure Failures (XML Formatting)
-    @ExceptionHandler(XMLGenerationException.class)
-    public ResponseEntity<ApiResponse<String>> handleXmlGenerationException(XMLGenerationException e) {
+    @ExceptionHandler(XmlGenerationException.class)
+    public ResponseEntity<ApiResponse<String>> handleXmlGenerationException(XmlGenerationException e) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error",
                 "An unexpected error occurred while generating the UBL 2.1 document.");
     }

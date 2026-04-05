@@ -8,14 +8,14 @@ import sa.abrahman.zaxeg.core.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.service.contract.InvoiceValidator;
 
 @Service(ValidatorBeansRegistry.FULL_INVOICE_VALIDATOR)
-public class ZATCAFullInvoiceValidator implements InvoiceValidator {
+public class ZatcaInvoiceValidator implements InvoiceValidator {
     private final InvoiceValidator metadata;
     private final InvoiceValidator parties;
     private final InvoiceValidator lines;
     private final InvoiceValidator checkout;
     private final InvoiceValidator aggregates;
 
-    public ZATCAFullInvoiceValidator(
+    public ZatcaInvoiceValidator(
             @Qualifier(ValidatorBeansRegistry.METADATA_VALIDATOR) InvoiceValidator metadata,
             @Qualifier(ValidatorBeansRegistry.PARTIES_VALIDATOR) InvoiceValidator parties,
             @Qualifier(ValidatorBeansRegistry.LINES_VALIDATOR) InvoiceValidator lines,

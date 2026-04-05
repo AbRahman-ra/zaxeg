@@ -28,7 +28,7 @@ The project is currently in the system design phase. I am actively evaluating th
 
 ## Architecture Diagram
 
-![architecture-diagram](./docs/ZAXEG.png)
+![architecture-diagram](./docs/personal/ZAXEG.png)
 
 ## Changelog
 
