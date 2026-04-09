@@ -20,11 +20,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import sa.abrahman.zaxeg.shared.constant.rule.*;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxExemptionCode;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.VATCategory;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.*;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons;
 
 @UtilityClass

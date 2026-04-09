@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceSubtype;
 import sa.abrahman.zaxeg.core.generate.domain.constant.ValidatorBeansRegistry;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.KsaRules;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.UblRules;
 import sa.abrahman.zaxeg.core.generate.domain.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.MetadataPayload;
 import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceValidator;
+import sa.abrahman.zaxeg.shared.constant.rule.KsaRules;
+import sa.abrahman.zaxeg.shared.constant.rule.UblRules;
 import sa.abrahman.zaxeg.shared.helper.*;
 
 @Service(ValidatorBeansRegistry.METADATA_VALIDATOR)

@@ -1,6 +1,5 @@
 package sa.abrahman.zaxeg.adapter.generate.in.http;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +25,10 @@ public class GenrateInvoiceController {
 
     @PostMapping(value = "/generate", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @Operation(summary = "Generate UBL 2.1 XML from JSON payload")
-    public ResponseEntity<ApiResponse<String>> generate(@Valid @RequestBody InvoiceGenerationRequest request) {
+    public ResponseEntity<ApiResponse<?>> generate(@Valid @RequestBody InvoiceGenerationRequest request) {
         InvoiceGenerationPayload payload = request.mapped();
-        String invoice = service.handle(payload);
-        return ResponseEntity.ok(ApiResponse.from(HttpStatus.OK.value(), "", invoice));
+        ApiResponse<?> response = service.handle(payload);
+        return ResponseEntity.status(response.status()).body(response);
     }
 
 }

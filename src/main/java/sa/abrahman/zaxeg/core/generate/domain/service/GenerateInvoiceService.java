@@ -1,31 +1,43 @@
 package sa.abrahman.zaxeg.core.generate.domain.service;
 
-import org.springframework.beans.factory.annotation.Qualifier;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.generate.domain.constant.ValidatorBeansRegistry;
 import sa.abrahman.zaxeg.core.generate.domain.factory.InvoiceFactory;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.generate.port.in.InvoiceGenerator;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.generate.port.out.InvoiceFormatter;
-import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceValidator;
+import sa.abrahman.zaxeg.shared.constant.StatusCode;
+import sa.abrahman.zaxeg.shared.dto.ApiResponse;
+import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceRuleValidator;
+import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceValidationFailStrategy;
 
 @Service
 public class GenerateInvoiceService implements InvoiceGenerator {
-    private final InvoiceValidator validator;
+    private final Collection<InvoiceRuleValidator> validators;
+    private final InvoiceValidationFailStrategy strategy;
     private final InvoiceFormatter formatter;
 
-    public GenerateInvoiceService(@Qualifier(ValidatorBeansRegistry.FULL_INVOICE_VALIDATOR) InvoiceValidator validator,
+    public GenerateInvoiceService(List<InvoiceRuleValidator> validators, InvoiceValidationFailStrategy strategy,
             InvoiceFormatter formatter) {
+        this.validators = validators;
+        this.strategy = strategy;
         this.formatter = formatter;
-        this.validator = validator;
     }
 
     @Override
-    public String handle(InvoiceGenerationPayload payload) {
-        validator.validate(payload);
+    public ApiResponse<?> handle(InvoiceGenerationPayload payload) {
+        Map<String, String> violations = strategy.execute(validators, payload);
+        if (!violations.isEmpty()) {
+            return ApiResponse.from(StatusCode.UNPROCESSABLE_CONTENT.code(), "Invalid Invoice", violations);
+        }
+
         Invoice invoice = InvoiceFactory.from(payload);
-        return formatter.format(invoice);
+        return ApiResponse.from(StatusCode.CREATED.code(), "Invoice Generated Successfully",
+                formatter.format(invoice));
     }
 }

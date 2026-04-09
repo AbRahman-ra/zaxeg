@@ -15,10 +15,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import sa.abrahman.zaxeg.shared.constant.rule.*;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.Scheme;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.*;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PartiesPayload;
 
@@ -70,7 +70,7 @@ public class PartiesRequest implements Mapable<PartiesPayload, Void> {
             return PartiesPayload.Party.builder().name(this.name)
                     .identification(this.identification != null ? this.identification.mapped() : null)
                     .otherIds(
-                            this.otherIds != null ? this.otherIds.stream().map(id -> id.mapped()).toList() : List.of())
+                            this.otherIds != null ? this.otherIds.stream().map(Mapable::mapped).toList() : List.of())
                     .address(this.address != null ? this.address.mapped() : null).build();
         }
 

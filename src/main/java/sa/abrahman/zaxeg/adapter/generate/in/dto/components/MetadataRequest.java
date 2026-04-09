@@ -15,10 +15,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import sa.abrahman.zaxeg.shared.constant.rule.*;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceSubtype;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.*;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.MetadataPayload;
 

@@ -4,9 +4,7 @@ import sa.abrahman.zaxeg.core.generate.domain.exception.InvoiceRuleViolationExce
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 
 /**
- * Invoice validator is not a port, but an internal abstraction layer between
- * {@link sa.abrahman.zaxeg.core.generate.port.in.InvoiceGenerator InvoiceGenerator} and
- * {@link sa.abrahman.zaxeg.core.generate.port.out.InvoiceFormatter InvoiceFormatter}
+ * Invoice validator is not a port, but an internal abstraction layer
  */
 public interface InvoiceValidator {
     /**

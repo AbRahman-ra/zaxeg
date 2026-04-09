@@ -13,8 +13,6 @@ import java.util.function.Predicate;
 import org.springframework.stereotype.Service;
 
 import sa.abrahman.zaxeg.core.generate.domain.constant.ValidatorBeansRegistry;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.KsaRules;
-import sa.abrahman.zaxeg.core.generate.domain.constant.rule.UblRules;
 import sa.abrahman.zaxeg.core.generate.domain.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.metadata.InvoiceTypeTransactions;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
@@ -22,6 +20,8 @@ import sa.abrahman.zaxeg.core.generate.port.in.payload.LinesPayload;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.MetadataPayload;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons;
 import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceValidator;
+import sa.abrahman.zaxeg.shared.constant.rule.KsaRules;
+import sa.abrahman.zaxeg.shared.constant.rule.UblRules;
 import sa.abrahman.zaxeg.shared.helper.*;
 
 @Service(ValidatorBeansRegistry.LINES_VALIDATOR)

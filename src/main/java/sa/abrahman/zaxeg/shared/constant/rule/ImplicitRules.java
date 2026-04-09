@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.generate.domain.constant.rule;
+package sa.abrahman.zaxeg.shared.constant.rule;
 
 import lombok.experimental.UtilityClass;
 
