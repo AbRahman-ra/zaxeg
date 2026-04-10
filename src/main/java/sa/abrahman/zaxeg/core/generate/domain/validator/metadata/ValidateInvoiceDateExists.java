@@ -1,25 +1,29 @@
-package sa.abrahman.zaxeg.core.generate.domain.validator.component.metadata;
+package sa.abrahman.zaxeg.core.generate.domain.validator.metadata;
 
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import sa.abrahman.zaxeg.core.generate.config.ValidatorsOrderRegistry;
 import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceRuleValidator;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.shared.dto.FailableResult;
 import sa.abrahman.zaxeg.shared.constant.rule.UblRules;
 
 @Component
-public class InvoiceNumberExistanceValidator implements InvoiceRuleValidator {
-    private static final String PATH = "metadata.invoiceNumber";
+@Order(ValidatorsOrderRegistry.METADATA_DATE_EXISTS)
+public class ValidateInvoiceDateExists implements InvoiceRuleValidator {
+    private static final String PATH = "metadata.issueDate[exists]";
     private static final String RULE = UblRules.BR_02;
 
     @Override
     public FailableResult<Entry<String, String>> run(InvoiceGenerationPayload data) {
-        if (!data.getMetadata().getInvoiceNumber().isBlank()) {
-            return FailableResult.of(true, null);
+        if (data.getMetadata().getIssueDate() == null) {
+            return FailableResult.failed(Map.entry(PATH, RULE));
         }
-        return FailableResult.of(false, Map.entry(PATH, RULE));
+
+        return FailableResult.okay();
     }
 }

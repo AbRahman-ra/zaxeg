@@ -44,7 +44,8 @@ public class MetadataValidator implements InvoiceValidator {
         ObjectValueValidator.check(metadata.getTaxCurrency(), f).exists(KsaRules.BR_KSA_68)
                 .matches(c -> "sar".equalsIgnoreCase(c.getCurrencyCode()), KsaRules.BR_KSA_EN16931_02);
         if (isCreditNote || isDebitNote) {
-            ObjectValueValidator.check(metadata.getBillingReference(), f).exists(KsaRules.BR_KSA_56)
+            ObjectValueValidator.check(metadata.getBillingReference(), f)
+                    .exists(KsaRules.BR_KSA_56)
                     .matches(ref -> ref.getId() != null, KsaRules.BR_KSA_56);
             CollectionValueValidator.check(metadata.getCreditOrDebitNoteIssuanceReasons(), f)
                     .notEmpty(KsaRules.BR_KSA_17);
