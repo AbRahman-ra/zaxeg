@@ -1,0 +1,75 @@
+src/
+├── core/
+│   ├── order/
+│   │   ├── domain/
+│   │   │   ├── Order.ts
+│   │   │   ├── OrderService.ts
+│   │   │   └── exceptions/
+│   │   │       ├── OrderNotFoundException.ts
+│   │   │       └── InsufficientStockException.ts
+│   │   └── ports/
+│   │       ├── in/
+│   │       │   └── IOrderService.ts
+│   │       └── out/
+│   │           ├── IOrderRepository.ts
+│   │           └── IEmailService.ts
+│   │
+│   └── invoice/
+│       ├── domain/
+│       │   ├── Invoice.ts
+│       │   ├── InvoiceService.ts
+│       │   ├── validation/
+│       │   │   ├── InvoiceValidator.ts          ← orchestrates all rules
+│       │   │   ├── ValidationStrategy.ts        ← fail-fast vs fail-safe interface
+│       │   │   ├── strategies/
+│       │   │   │   ├── FailFastStrategy.ts
+│       │   │   │   └── FailSafeStrategy.ts
+│       │   │   └── rules/
+│       │   │       ├── IValidationRule.ts
+│       │   │       ├── AmountValidationRule.ts
+│       │   │       ├── CustomerExistsRule.ts
+│       │   │       └── DueDateValidationRule.ts
+│       │   ├── generators/
+│       │   │   └── InvoiceGenerator.ts
+│       │   └── exceptions/
+│       │       ├── InvoiceValidationException.ts   ← wraps one or many errors
+│       │       └── InvoiceGenerationException.ts
+│       └── ports/
+│           ├── in/
+│           │   └── IInvoiceService.ts
+│           └── out/
+│               ├── IInvoiceRepository.ts
+│               └── IInvoiceNotifier.ts
+│
+└── adapters/
+    ├── invoice/
+    │   ├── in/
+    │   │   ├── http/
+    │   │   │   ├── InvoiceController.ts
+    │   │   │   └── dto/
+    │   │   │       ├── InvoiceRequest.dto.ts
+    │   │   │       └── InvoiceResponse.dto.ts
+    │   │   ├── mq/
+    │   │   │   ├── InvoiceMQConsumer.ts
+    │   │   │   └── dto/
+    │   │   │       └── InvoiceMQMessage.dto.ts
+    │   │   └── pkg/
+    │   │       ├── InvoicePackageAdapter.ts        ← internal SDK entry point
+    │   │       └── dto/
+    │   │           ├── InvoicePackageRequest.dto.ts
+    │   │           └── InvoicePackageResponse.dto.ts
+    │   └── out/
+    │       ├── db/
+    │       │   ├── PostgresInvoiceRepository.ts
+    │       │   └── exceptions/
+    │       │       └── InvoiceDbException.ts
+    │       └── notifier/
+    │           └── InvoiceEmailNotifier.ts
+    └── order/
+        └── in/
+            └── http/
+                ├── OrderController.ts
+                └── dto/
+                    ├── PlaceOrderRequest.dto.ts
+                    └── PlaceOrderResponse.dto.ts
+
