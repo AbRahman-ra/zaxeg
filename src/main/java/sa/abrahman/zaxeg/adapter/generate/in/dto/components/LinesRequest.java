@@ -21,7 +21,7 @@ import lombok.Builder;
 import lombok.Getter;
 import sa.abrahman.zaxeg.shared.constant.rule.*;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.MeasuringUnit;
+import sa.abrahman.zaxeg.core.generate.domain.constant.MeasuringUnit;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.LinesPayload;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons;
 

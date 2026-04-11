@@ -3,11 +3,12 @@ package sa.abrahman.zaxeg.core.generate.domain.validator.metadata;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import sa.abrahman.zaxeg.core.generate.config.ValidatorsOrderRegistry;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceDocumentType;
+import sa.abrahman.zaxeg.core.generate.domain.config.ValidatorsOrderRegistry;
+import sa.abrahman.zaxeg.core.generate.domain.constant.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceRuleValidator;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.shared.dto.FailableResult;
@@ -20,7 +21,7 @@ public class ValidateBillingReferenceIdExistsIfNeeded implements InvoiceRuleVali
     private static final String RULE = KsaRules.BR_KSA_56;
 
     @Override
-    public FailableResult<Entry<String, String>> run(InvoiceGenerationPayload data) {
+    public @NonNull FailableResult<Entry<String, String>> run(InvoiceGenerationPayload data) {
         boolean isCreditNote = data.getMetadata().getInvoiceDocumentType() == InvoiceDocumentType.CREDIT_NOTE;
         boolean isDebitNote = data.getMetadata().getInvoiceDocumentType() == InvoiceDocumentType.DEBIT_NOTE;
         var billingRef = data.getMetadata().getBillingReference();

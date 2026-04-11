@@ -22,9 +22,9 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import sa.abrahman.zaxeg.shared.constant.rule.*;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxExemptionCode;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.VATCategory;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxExemptionCode;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxScheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.VatCategory;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons;
 
 @UtilityClass
@@ -71,7 +71,7 @@ class InvoiceGenerationRequestCommons {
     static class TaxCategory implements Mapable<PayloadCommons.TaxCategory, Void> {
         @NotNull(message = KsaRules.BR_KSA_18)
         @NonNull
-        private VATCategory categoryCode;
+        private VatCategory categoryCode;
 
         private TaxExemptionCode taxExemptionReasonCode;
         private String taxExemptionReason;

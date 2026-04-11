@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import sa.abrahman.zaxeg.shared.constant.rule.UblRules;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.PaymentMethod;
+import sa.abrahman.zaxeg.core.generate.domain.constant.PaymentMethod;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.CheckoutDetailsPayload;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons;
 

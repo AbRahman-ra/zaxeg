@@ -6,7 +6,7 @@ import org.jspecify.annotations.NullMarked;
 
 import lombok.Builder;
 import lombok.Getter;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.PaymentMethod;
+import sa.abrahman.zaxeg.core.generate.domain.constant.PaymentMethod;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons.TaxTotal;
 
 @Getter

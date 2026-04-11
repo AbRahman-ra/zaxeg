@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.MeasuringUnit;
+import sa.abrahman.zaxeg.core.generate.domain.constant.MeasuringUnit;
 
 @Getter
 @RequiredArgsConstructor

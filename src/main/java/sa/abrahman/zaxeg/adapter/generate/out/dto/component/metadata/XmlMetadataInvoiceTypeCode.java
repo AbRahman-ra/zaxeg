@@ -21,7 +21,7 @@ public class XmlMetadataInvoiceTypeCode {
     private String name;
 
     /**
-     * Maps to {@link sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceDocumentType InvoiceDocumentType}
+     * Maps to {@link sa.abrahman.zaxeg.core.generate.domain.constant.InvoiceDocumentType InvoiceDocumentType}
      */
     @JacksonXmlText
     private String value;

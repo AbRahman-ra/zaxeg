@@ -6,6 +6,7 @@ import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 /**
  * Invoice validator is not a port, but an internal abstraction layer
  */
+@Deprecated
 public interface InvoiceValidator {
     /**
      * @param invoice

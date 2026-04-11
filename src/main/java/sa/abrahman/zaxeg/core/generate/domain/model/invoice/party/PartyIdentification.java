@@ -2,7 +2,7 @@ package sa.abrahman.zaxeg.core.generate.domain.model.invoice.party;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.Scheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.Scheme;
 
 @Getter
 @RequiredArgsConstructor

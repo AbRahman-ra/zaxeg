@@ -11,7 +11,7 @@ import org.jspecify.annotations.Nullable;
 
 import lombok.Builder;
 import lombok.Getter;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceDocumentType;
+import sa.abrahman.zaxeg.core.generate.domain.constant.InvoiceDocumentType;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.metadata.*;
 

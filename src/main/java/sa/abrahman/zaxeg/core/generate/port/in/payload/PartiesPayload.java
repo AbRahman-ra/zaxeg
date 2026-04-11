@@ -12,8 +12,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.Scheme;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.Scheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxScheme;
 
 @Getter
 @RequiredArgsConstructor

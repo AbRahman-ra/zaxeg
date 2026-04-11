@@ -5,10 +5,10 @@ public record FailableResult<D>(boolean ok, D payload) {
     }
 
     public static <D> FailableResult<D> failed(D payload) {
-        return new FailableResult<>(false, payload);
+        return of(false, payload);
     }
 
     public static <D> FailableResult<D> okay() {
-        return new FailableResult<>(true, null);
+        return of(true, null);
     }
 }

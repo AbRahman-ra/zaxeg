@@ -10,7 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.MeasuringUnit;
+import sa.abrahman.zaxeg.core.generate.domain.constant.MeasuringUnit;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PayloadCommons.AllowanceOrCharge;
 
 @Getter

@@ -2,7 +2,7 @@ package sa.abrahman.zaxeg.core.generate.domain.model.invoice.party;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxScheme;
 
 @Getter
 @RequiredArgsConstructor
@@ -16,7 +16,7 @@ public class PartyTaxScheme {
 
     /**
      * Creates a new {@code PartyTaxScheme} using {@code VAT} as the default tax scheme
-     * 
+     *
      * @param companyId
      * @return new instance
      */

@@ -3,6 +3,7 @@ package sa.abrahman.zaxeg.adapter.generate.in.dto;
 import java.util.List;
 
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import jakarta.validation.Valid;
 import lombok.Data;
@@ -30,8 +31,8 @@ public class InvoiceGenerationRequest implements Mapable<InvoiceGenerationPayloa
     public InvoiceGenerationPayload mapped(Void d) {
         MetadataPayload metapay = metadata.mapped();
         PartiesPayload partiespay = parties.mapped();
-        LinesPayload linespay = lines.mapped(metapay.getInvoiceCurrency());
-        CheckoutDetailsPayload checkoutpay = checkout.mapped(List.of(metapay.getInvoiceCurrency(), metapay.getTaxCurrency()));
+        LinesPayload linespay = null; // lines.mapped(metapay.getInvoiceCurrency());
+        CheckoutDetailsPayload checkoutpay = null; // checkout.mapped(List.of(metapay.getInvoiceCurrency(), metapay.getTaxCurrency()));
 
         return new InvoiceGenerationPayload(metapay, partiespay, linespay, checkoutpay);
     }

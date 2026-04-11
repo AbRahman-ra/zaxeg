@@ -17,8 +17,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import sa.abrahman.zaxeg.shared.constant.rule.*;
 import sa.abrahman.zaxeg.shared.contract.Mapable;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.Scheme;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.Scheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxScheme;
 import sa.abrahman.zaxeg.core.generate.domain.model.invoice.Invoice;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.PartiesPayload;
 

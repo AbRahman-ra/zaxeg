@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.generate.config;
+package sa.abrahman.zaxeg.core.generate.domain.config;
 
 public class ValidatorsOrderRegistry {
     // metadata validations
@@ -20,6 +20,20 @@ public class ValidatorsOrderRegistry {
     public static final int METADATA_SUPPLY_END_DATE = 16;
     public static final int METADATA_SUPPLY_AND_END_DATES_02 = 17;
 
+    // parties validations
+    public static final int PARTY_SELLER_EXISTS = 18;
+    public static final int PARTY_SELLER_ID = 19;
+    public static final int PARTY_SELLER_ADDRESS_EXISTS = 20;
+    public static final int PARTY_SELLER_ADDRESS_COMPLIANT = 21;
+    public static final int PARTY_SELLER_ADDRESS_BLDG = 22;
+    public static final int PARTY_SELLER_ADDRESS_ADD_NUMBER = 23;
+    public static final int PARTY_SELLER_ADDRESS_POSTAL_CODE = 24;
+    public static final int PARTY_SELLER_VAT_EXISTS = 25;
+    public static final int PARTY_SELLER_VAT_COMPLIANT = 26;
+    public static final int PARTY_BUYER_ADDRESS_EXISTS_IF_NEEDED = 27;
+    public static final int PARTY_BUYER_ADDRESS_COMPLIANT_IF_EXISTS = 28;
+    public static final int PARTY_BUYER_ADDRESS_COMPLIANT_IF_SAUDI_AND_EXISTS = 29;
+    public static final int PARTY_BUYER_ADDRESS_POSTAL_CODE = 30;
 
     /* This utility class should not be instantiated */
     private ValidatorsOrderRegistry() {}

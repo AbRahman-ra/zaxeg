@@ -4,11 +4,12 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jspecify.annotations.NonNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import sa.abrahman.zaxeg.core.generate.config.ValidatorsOrderRegistry;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.generate.domain.config.ValidatorsOrderRegistry;
+import sa.abrahman.zaxeg.core.generate.domain.constant.InvoiceSubtype;
 import sa.abrahman.zaxeg.core.generate.domain.contract.InvoiceRuleValidator;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.shared.dto.FailableResult;
@@ -21,8 +22,9 @@ public class ValidateSupplyAndSupplyEndDatesExistIfneeded implements InvoiceRule
     private static final String RULE = KsaRules.BR_KSA_72;
 
     @Override
-    public FailableResult<Entry<String, String>> run(InvoiceGenerationPayload data) {
-        boolean isSimplifiedInvoice = data.getMetadata().getInvoiceTypeTransactions().getSubtype() == InvoiceSubtype.SIMPLIFIED;
+    public @NonNull FailableResult<Entry<String, String>> run(InvoiceGenerationPayload data) {
+        boolean isSimplifiedInvoice = data.getMetadata().getInvoiceTypeTransactions()
+                .getSubtype() == InvoiceSubtype.SIMPLIFIED;
         boolean isSummaryInvoice = data.getMetadata().getInvoiceTypeTransactions().isSummary();
         LocalDate supplyDate = data.getMetadata().getSupplyDate();
         LocalDate supplyEndDate = data.getMetadata().getSupplyEndDate();

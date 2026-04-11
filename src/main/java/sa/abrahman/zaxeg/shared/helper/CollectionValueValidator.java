@@ -10,7 +10,7 @@ import java.util.function.Predicate;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Deprecated public class CollectionValueValidator<C, E extends RuntimeException> {
+@Deprecated(forRemoval = true) public class CollectionValueValidator<C, E extends RuntimeException> {
     private final Collection<C> subject;
     private final Function<String, E> exceptionFactory;
 

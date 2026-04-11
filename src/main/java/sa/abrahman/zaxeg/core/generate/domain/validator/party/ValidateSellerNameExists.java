@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.generate.domain.validator.metadata;
+package sa.abrahman.zaxeg.core.generate.domain.validator.party;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,16 +14,18 @@ import sa.abrahman.zaxeg.core.shared.dto.FailableResult;
 import sa.abrahman.zaxeg.shared.constant.rule.UblRules;
 
 @Component
-@Order(ValidatorsOrderRegistry.METADATA_NUMBER)
-public class ValidateInvoiceNumberExists implements InvoiceRuleValidator {
-    private static final String PATH = "metadata.invoiceNumber";
-    private static final String RULE = UblRules.BR_03;
+@Order(ValidatorsOrderRegistry.PARTY_SELLER_EXISTS)
+public class ValidateSellerNameExists implements InvoiceRuleValidator {
+    private static final String PATH = "parties.seller.name";
+    private static final String RULE = UblRules.BR_06;
 
     @Override
     public @NonNull FailableResult<Entry<String, String>> run(InvoiceGenerationPayload data) {
-        if (data.getMetadata().getInvoiceNumber() == null || data.getMetadata().getInvoiceNumber().isBlank()) {
+        if (data.getParties().getSeller() == null || data.getParties().getSeller().getName() == null
+                || data.getParties().getSeller().getName().isBlank()) {
             return FailableResult.failed(Map.entry(PATH, RULE));
         }
+
         return FailableResult.okay();
     }
 }

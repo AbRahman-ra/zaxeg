@@ -13,9 +13,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.UtilityClass;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxExemptionCode;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxScheme;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.VATCategory;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxExemptionCode;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxScheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.VatCategory;
 
 @UtilityClass
 public class PayloadCommons {
@@ -45,7 +45,7 @@ public class PayloadCommons {
     @Builder
     @NullMarked
     public static class TaxCategory {
-        private final VATCategory categoryCode;
+        private final VatCategory categoryCode;
 
         @Nullable
         private final TaxExemptionCode taxExemptionReasonCode;

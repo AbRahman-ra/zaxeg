@@ -6,10 +6,9 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceSubtype;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.Scheme;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.TaxExemptionCode;
-import sa.abrahman.zaxeg.core.generate.domain.constant.ValidatorBeansRegistry;
+import sa.abrahman.zaxeg.core.generate.domain.constant.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.generate.domain.constant.Scheme;
+import sa.abrahman.zaxeg.core.generate.domain.constant.TaxExemptionCode;
 import sa.abrahman.zaxeg.core.generate.domain.exception.InvoiceRuleViolationException;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.InvoiceGenerationPayload;
 import sa.abrahman.zaxeg.core.generate.port.in.payload.LinesPayload;
@@ -23,12 +22,13 @@ import sa.abrahman.zaxeg.shared.helper.ObjectValueValidator;
 import sa.abrahman.zaxeg.shared.helper.StringValueValidator;
 
 /**
+ * @deprecated
  * For doing validations accross subvalidators
  */
-@Service(ValidatorBeansRegistry.AGGREGATES_VALIDATOR)
+@Deprecated
 public class PayloadAggregatesValidator implements InvoiceValidator {
     @Override
-    public void validate(InvoiceGenerationPayload payload) {
+    @Deprecated public void validate(InvoiceGenerationPayload payload) {
         metadataAndPartiesValidations(payload);
         metadataAndLinesValidations(payload);
         partiesAndCheckoutDetailsValidations(payload);

@@ -1,5 +1,7 @@
 package sa.abrahman.zaxeg.core.shared.contract;
 
+import org.jspecify.annotations.NonNull;
+
 import sa.abrahman.zaxeg.core.shared.dto.FailableResult;
 
 /**
@@ -7,5 +9,5 @@ import sa.abrahman.zaxeg.core.shared.dto.FailableResult;
  * @param <R> the response returned by the job
  */
 public interface FailableJob<D, R> {
-    FailableResult<R> run(D data);
+    @NonNull FailableResult<R> run(D data);
 }

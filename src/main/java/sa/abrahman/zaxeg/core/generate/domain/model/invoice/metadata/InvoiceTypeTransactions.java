@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import lombok.Builder;
 import lombok.Getter;
-import sa.abrahman.zaxeg.core.generate.domain.constant.field.InvoiceSubtype;
+import sa.abrahman.zaxeg.core.generate.domain.constant.InvoiceSubtype;
 
 @Getter
 @Builder

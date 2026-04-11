@@ -1,4 +1,4 @@
-package sa.abrahman.zaxeg.core.generate.domain.constant.field;
+package sa.abrahman.zaxeg.core.generate.domain.constant;
 
 public enum MeasuringUnit {
     PCE, // piece
